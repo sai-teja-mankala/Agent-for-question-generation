@@ -1,5 +1,6 @@
 import json
 import logging
+from pathlib import Path
 from typing import Any, Dict, List
 
 from langgraph.graph import END, StateGraph
@@ -36,6 +37,50 @@ from .qg_types import GraphState, LevelOfQuiz, PipelineInput, PromptPayload, Que
 logger = logging.getLogger("pipeline")
 if not logger.handlers:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+
+
+_STATE_LOG_PATH = Path(__file__).resolve().parents[1] / "state_log.jsonl"
+_RESULT_QUESTIONS_PATH = Path(__file__).resolve().parents[1] / "result_questions.txt"
+
+
+def _append_json_line(record: Dict[str, Any], path: Path = _STATE_LOG_PATH) -> None:
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=True) + "\n")
+    except OSError as exc:
+        logger.warning("Failed to write state log: %s", exc)
+
+
+def _log_state_summary(state: GraphState, stage: str) -> None:
+    def _safe_len(value: Any) -> int:
+        return len(value) if isinstance(value, list) else 0
+
+    summary = {
+        "stage": stage,
+        "prompt_payloads": _safe_len(state.get("prompt_payloads")),
+        "raw_outputs": _safe_len(state.get("raw_outputs")),
+        "improved_outputs": _safe_len(state.get("improved_outputs")),
+        "distractor_validation_passed": _safe_len(state.get("distractor_validation_passed")),
+        "distractor_validation_failed": _safe_len(state.get("distractor_validation_failed")),
+        "distractor_correction_attempts": state.get("distractor_correction_attempts", 0),
+        "quality_validation_passed": _safe_len(state.get("quality_validation_passed")),
+        "quality_validation_failed": _safe_len(state.get("quality_validation_failed")),
+        "quality_correction_attempts": state.get("quality_correction_attempts", 0),
+        "formatted": _safe_len(state.get("formatted")),
+    }
+    logger.info("State summary: %s", summary)
+    _append_json_line({"type": "state_summary", **summary})
+
+
+def _log_formatted_output(state: GraphState) -> None:
+    _append_json_line(
+        {
+            "type": "formatted_output",
+            "formatted": state.get("formatted", []),
+        },
+        path=_RESULT_QUESTIONS_PATH,
+    )
 
 
 def _extract_json_text(content: str) -> str:
@@ -136,6 +181,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
 
     state["prompt_payloads"] = payloads
     logger.info("Built %s prompt payloads", len(payloads))
+    _log_state_summary(state, "build_prompt_payloads")
     return state
 
 
@@ -237,6 +283,7 @@ def generate_questions(state: GraphState) -> GraphState:
 
     state["raw_outputs"] = outputs
     logger.info("Generated %s raw outputs", len(outputs))
+    _log_state_summary(state, "generate_questions")
     return state
 
 
@@ -292,6 +339,7 @@ def improve_distractors(state: GraphState) -> GraphState:
 
     state["improved_outputs"] = improved
     logger.info("Improved %s outputs", len(improved))
+    _log_state_summary(state, "improve_distractors")
     return state
 
 
@@ -487,6 +535,7 @@ def validate_distractors(state: GraphState) -> GraphState:
     logger.info(
         "Distractor validation complete: %s passed, %s failed", len(passed), len(failed)
     )
+    _log_state_summary(state, "validate_distractors")
     return state
 
 
@@ -556,6 +605,7 @@ def correct_distractors(state: GraphState) -> GraphState:
     state["distractor_correction_attempts"] = state.get(
         "distractor_correction_attempts", 0
     ) + 1
+    _log_state_summary(state, "correct_distractors")
     return state
 
 
@@ -604,6 +654,7 @@ def validate_and_fix_format(state: GraphState) -> GraphState:
 
     state["improved_outputs"] = fixed
     logger.info("Format validation complete for %s outputs", len(fixed))
+    _log_state_summary(state, "validate_and_fix_format")
     return state
 
 
@@ -645,6 +696,7 @@ def validate_quality(state: GraphState) -> GraphState:
     logger.info(
         "Quality validation complete: %s passed, %s failed", len(passed), len(failed)
     )
+    _log_state_summary(state, "validate_quality")
     return state
 
 
@@ -699,6 +751,7 @@ def correct_quality(state: GraphState) -> GraphState:
     state["improved_outputs"] = passed_outputs + corrected_failed
     state["quality_validation_failed"] = []
     state["quality_correction_attempts"] = state.get("quality_correction_attempts", 0) + 1
+    _log_state_summary(state, "correct_quality")
     return state
 
 
@@ -718,6 +771,8 @@ def format_conversion(state: GraphState) -> GraphState:
         )
     state["formatted"] = formatted
     logger.info("Formatted %s outputs", len(formatted))
+    _log_state_summary(state, "format_conversion")
+    _log_formatted_output(state)
     return state
 
 
