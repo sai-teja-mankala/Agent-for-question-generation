@@ -21,11 +21,14 @@ class PipelineInput(TypedDict, total=False):
     assessmentContainerId: str
     internalAssessmentId: str
     learningObjectiveUuid: str
+    maxFillAttempts: int
+    maxFormatFixAttempts: int
 
 
 class PromptPayload(TypedDict):
     systemPrompt: str
     userPrompt: str
+    baseUserPrompt: str
     responseFormat: str
     intermediateFormat: str
     learningObjective: str
@@ -46,3 +49,4 @@ class GraphState(TypedDict):
     quality_validation_passed: List[Dict[str, Any]]
     quality_validation_failed: List[Dict[str, Any]]
     quality_correction_attempts: int
+    format_fix_attempts: int

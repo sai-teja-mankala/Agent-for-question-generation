@@ -17,11 +17,9 @@ from .prompts import (
     SYSTEM_PROMPT_TEMPLATE_QUALITY_CHECK,
     SYSTEM_PROMPT_TEMPLATE_RELEVANCY_CHECK,
     SYSTEM_PROMPT_TEMPLATE_FIX_FORMAT,
-    SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING,
     SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS,
     SYSTEM_PROMPT_TEMPLATE_DISTRACTOR_QUALITY,
     USER_PROMPT_TEMPLATE_FIX_FORMAT,
-    USER_PROMPT_TEMPLATE_IMPROVE_MATCHING,
     USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
     USER_PROMPT_TEMPLATE,
     USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
@@ -30,7 +28,6 @@ from .prompts import (
     USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY,
     USER_PROMPT_TEMPLATE_QUALITY_CHECK,
     USER_PROMPT_TEMPLATE_RELEVANCY_CHECK,
-    USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
 )
 from .qg_types import GraphState, LevelOfQuiz, PipelineInput, PromptPayload, QuestionType
 
@@ -67,9 +64,9 @@ def _log_state_summary(state: GraphState, stage: str) -> None:
         "quality_validation_passed": _safe_len(state.get("quality_validation_passed")),
         "quality_validation_failed": _safe_len(state.get("quality_validation_failed")),
         "quality_correction_attempts": state.get("quality_correction_attempts", 0),
+        "format_fix_attempts": state.get("format_fix_attempts", 0),
         "formatted": _safe_len(state.get("formatted")),
     }
-    logger.info("State summary: %s", summary)
     _append_json_line({"type": "state_summary", **summary})
 
 
@@ -81,6 +78,14 @@ def _log_formatted_output(state: GraphState) -> None:
         },
         path=_RESULT_QUESTIONS_PATH,
     )
+
+
+def _reset_run_files() -> None:
+    try:
+        _STATE_LOG_PATH.write_text("", encoding="utf-8")
+        _RESULT_QUESTIONS_PATH.write_text("", encoding="utf-8")
+    except OSError as exc:
+        logger.warning("Failed to reset run files: %s", exc)
 
 
 def _extract_json_text(content: str) -> str:
@@ -108,6 +113,11 @@ def _parse_json(content: str) -> Any:
     return parsed
 
 
+def _parse_json_raw(content: str) -> Any:
+    cleaned = _extract_json_text(content)
+    return json.loads(cleaned)
+
+
 
 
 def build_prompt_payloads(state: GraphState) -> GraphState:
@@ -128,6 +138,8 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
         for qtype in question_types:
             for level in difficulties:
                 if qtype == "MATCHING":
+                    correct_count = num_correct
+                    incorrect_count = num_incorrect
                     system_prompt = SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS.replace(
                         "{locale}", locale
                     )
@@ -138,13 +150,18 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         .replace("{source_text}", source_text)
                         .replace("{learning_obj}", lo)
                         .replace("{number_of_questions}", str(number_of_questions))
-                        .replace("{num_correct_options}", str(num_correct))
-                        .replace("{num_incorrect_options}", str(num_incorrect))
+                        .replace("{num_correct_options}", str(correct_count))
+                        .replace("{num_incorrect_options}", str(incorrect_count))
                         .replace("{intermediate_format}", INTERMEDIATE_FORMAT_MATCHING)
                     )
                     response_format = RES_FORMAT_MATCH_COLUMNS
                     intermediate_format = INTERMEDIATE_FORMAT_MATCHING
                 else:
+                    if qtype == "MULTIPLE_CHOICE_MULTI_SELECT":
+                        correct_count = max(1, min(num_correct, 3))
+                    else:
+                        correct_count = num_correct
+                    incorrect_count = num_incorrect
                     response_format = (
                         RES_FORMAT_MULTI_SELECT
                         if qtype == "MULTIPLE_CHOICE_MULTI_SELECT"
@@ -152,8 +169,8 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                     )
                     system_prompt = SYSTEM_PROMPT_TEMPLATE.replace(
                         "{locale}", locale
-                    ).replace("{num_correct_options}", str(num_correct)).replace(
-                        "{num_incorrect_options}", str(num_incorrect)
+                    ).replace("{num_correct_options}", str(correct_count)).replace(
+                        "{num_incorrect_options}", str(incorrect_count)
                     )
                     user_prompt = (
                         USER_PROMPT_TEMPLATE.replace(
@@ -162,8 +179,8 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         .replace("{source_text}", source_text)
                         .replace("{learning_obj}", lo)
                         .replace("{number_of_questions}", str(number_of_questions))
-                        .replace("{num_correct_options}", str(num_correct))
-                        .replace("{num_incorrect_options}", str(num_incorrect))
+                        .replace("{num_correct_options}", str(correct_count))
+                        .replace("{num_incorrect_options}", str(incorrect_count))
                         .replace("{intermediate_format}", INTERMEDIATE_FORMAT_MCQ)
                     )
                     intermediate_format = INTERMEDIATE_FORMAT_MCQ
@@ -171,6 +188,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                     {
                         "systemPrompt": system_prompt,
                         "userPrompt": user_prompt,
+                        "baseUserPrompt": user_prompt,
                         "responseFormat": response_format,
                         "intermediateFormat": intermediate_format,
                         "learningObjective": lo,
@@ -200,6 +218,7 @@ def generate_questions(state: GraphState) -> GraphState:
     for payload in state["prompt_payloads"]:
         attempt = 0
         last_result: Dict[str, Any] = {"error": "No attempts"}
+        current_prompt = payload.get("baseUserPrompt") or payload["userPrompt"]
         while attempt < max_attempts:
             attempt += 1
             logger.info(
@@ -213,7 +232,7 @@ def generate_questions(state: GraphState) -> GraphState:
                 model=deployment,
                 messages=[
                     {"role": "system", "content": payload["systemPrompt"]},
-                    {"role": "user", "content": payload["userPrompt"]},
+                    {"role": "user", "content": current_prompt},
                 ],
             )
             content = response.choices[0].message.content or ""
@@ -259,7 +278,7 @@ def generate_questions(state: GraphState) -> GraphState:
                 issues = relevancy.get("issues") or []
                 failure_reasons.append("Relevancy issues: " + "; ".join(issues))
             failure_reason_text = "\n".join(failure_reasons) or "Failed evaluation."
-            payload["userPrompt"] = USER_PROMPT_TEMPLATE_CORRECTION.replace(
+            current_prompt = USER_PROMPT_TEMPLATE_CORRECTION.replace(
                 "{learning_obj}", payload["learningObjective"]
             ).replace("{difficulty_level}", payload["difficultyLevel"]).replace(
                 "{question_type}", payload["questionType"]
@@ -298,44 +317,10 @@ def improve_distractors(state: GraphState) -> GraphState:
         if "error" in result:
             improved.append(item)
             continue
-
         if payload["questionType"] == "MATCHING":
-            prompt = USER_PROMPT_TEMPLATE_IMPROVE_MATCHING.replace(
-                "{question}", json.dumps(result)
-            ).replace("{res_format_match_columns}", payload["intermediateFormat"])
-
-            response = client.chat.completions.create(
-                model=deployment,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING},
-                    {"role": "user", "content": prompt},
-                ],
-            )
-            content = response.choices[0].message.content or ""
-            try:
-                parsed = _parse_json(content)
-            except json.JSONDecodeError:
-                parsed = {"error": "Invalid JSON from model", "raw": content}
-            improved.append({"payload": payload, "result": parsed})
+            improved.append({"payload": payload, "result": result})
             continue
-
-        prompt = USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS.replace(
-            "{question}", json.dumps(result)
-        ).replace("{res_format_multi_select_single_difficulty}", payload["intermediateFormat"])
-
-        response = client.chat.completions.create(
-            model=deployment,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS},
-                {"role": "user", "content": prompt},
-            ],
-        )
-        content = response.choices[0].message.content or ""
-        try:
-            parsed = _parse_json(content)
-        except json.JSONDecodeError:
-            parsed = {"error": "Invalid JSON from model", "raw": content}
-        improved.append({"payload": payload, "result": parsed})
+        improved.append(_improve_single_output(client, deployment, payload, result))
 
     state["improved_outputs"] = improved
     logger.info("Improved %s outputs", len(improved))
@@ -344,6 +329,8 @@ def improve_distractors(state: GraphState) -> GraphState:
 
 
 def _is_valid_format(result: Any, question_type: str) -> bool:
+    if isinstance(result, list) and result and isinstance(result[0], dict):
+        result = result[0]
     if not isinstance(result, dict):
         return False
     questions = result.get("questions")
@@ -387,6 +374,38 @@ def _extract_mcq_parts(question: Dict[str, Any]) -> Dict[str, Any]:
         "correct_answers": [a for a in correct_answers if a],
         "distractors": [d for d in distractors if d],
     }
+
+
+def _count_result_questions(result: Any) -> int:
+    if isinstance(result, dict):
+        questions = result.get("questions")
+        if isinstance(questions, list):
+            return len(questions)
+    return 0
+
+
+def _improve_single_output(
+    client, deployment: str, payload: Dict[str, Any], result: Any
+) -> Dict[str, Any]:
+    prompt = USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS.replace(
+        "{question}", json.dumps(result)
+    ).replace("{res_format_multi_select_single_difficulty}", payload["intermediateFormat"])
+
+    response = client.chat.completions.create(
+        model=deployment,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS},
+            {"role": "user", "content": prompt},
+        ],
+    )
+    content = response.choices[0].message.content or ""
+    try:
+        parsed = _parse_json(content)
+    except json.JSONDecodeError:
+        parsed = {"error": "Invalid JSON from model", "raw": content}
+    return {"payload": payload, "result": parsed}
+
+
 
 
 def evaluate_quality(
@@ -614,10 +633,12 @@ def validate_and_fix_format(state: GraphState) -> GraphState:
     client = build_client()
     deployment = get_deployment_name()
     fixed: List[Dict[str, Any]] = []
+    all_valid = True
     for item in state["improved_outputs"]:
         payload = item["payload"]
         result = item["result"]
         if not _is_valid_format(result, payload["questionType"]):
+            all_valid = False
             logger.info("Format invalid, attempting repair for %s", payload["questionType"])
             prompt = USER_PROMPT_TEMPLATE_FIX_FORMAT.replace(
                 "{res_format}", payload["intermediateFormat"]
@@ -647,13 +668,18 @@ def validate_and_fix_format(state: GraphState) -> GraphState:
         )
         content = response.choices[0].message.content or ""
         try:
-            parsed = _parse_json(content)
+            parsed = _parse_json_raw(content)
         except json.JSONDecodeError:
             parsed = {"error": "Invalid JSON from model", "raw": content}
         fixed.append({"payload": payload, "result": parsed})
 
     state["improved_outputs"] = fixed
     logger.info("Format validation complete for %s outputs", len(fixed))
+    state["format_fix_attempts"] = state.get("format_fix_attempts", 0) + 1
+    max_attempts = state["input"].get(
+        "maxFormatFixAttempts", state["input"].get("maxAttempts", 2)
+    )
+    state["format_loop"] = (not all_valid) and state["format_fix_attempts"] < max_attempts
     _log_state_summary(state, "validate_and_fix_format")
     return state
 
@@ -698,6 +724,8 @@ def validate_quality(state: GraphState) -> GraphState:
     )
     _log_state_summary(state, "validate_quality")
     return state
+
+
 
 
 def correct_quality(state: GraphState) -> GraphState:
@@ -806,6 +834,10 @@ def _route_from_validate_quality(state: GraphState) -> str:
     return "validate"
 
 
+def _route_from_format(state: GraphState) -> str:
+    return "validate" if state.get("format_loop", True) else "end"
+
+
 def build_graph():
     graph = StateGraph[GraphState, None, GraphState, GraphState](GraphState)
     graph.add_node("build_prompts", build_prompt_payloads)
@@ -842,11 +874,75 @@ def build_graph():
     )
     graph.add_edge("correct_quality", "validate_quality")
     graph.add_edge("validate", "format")
-    graph.add_edge("format", END)
+    graph.add_conditional_edges("format", _route_from_format, {"validate": "validate", "end": END})
     return graph.compile()
 
 
+def _fill_missing_questions(
+    app, payload: PipelineInput, final_state: Dict[str, Any]
+) -> Dict[str, Any]:
+    max_fill_attempts = payload.get("maxFillAttempts", 1)
+    target_count = payload.get("numberOfQuestions", 3)
+    attempt = 0
+    while attempt < max_fill_attempts:
+        missing_sections: List[Dict[str, Any]] = []
+        for item in final_state.get("formatted", []):
+            result = item.get("result")
+            current_count = _count_result_questions(result)
+            if current_count < target_count:
+                missing_sections.append(
+                    {
+                        "item": item,
+                        "missing": target_count - current_count,
+                    }
+                )
+        if not missing_sections:
+            break
+
+        for entry in missing_sections:
+            item = entry["item"]
+            missing = entry["missing"]
+            scoped_payload: PipelineInput = dict(payload)
+            scoped_payload["learningObjectives"] = [item["learningObjective"]]
+            scoped_payload["questionTypes"] = [item["questionType"]]
+            scoped_payload["difficultyLevels"] = [item["difficultyLevel"]]
+            scoped_payload["numberOfQuestions"] = missing
+
+            scoped_state = app.invoke(
+                {
+                    "input": scoped_payload,
+                    "prompt_payloads": [],
+                    "raw_outputs": [],
+                    "improved_outputs": [],
+                    "quality": [],
+                    "formatted": [],
+                }
+            )
+            new_entries = scoped_state.get("formatted", [])
+            if not new_entries:
+                continue
+            new_result = new_entries[0].get("result")
+            if not isinstance(new_result, dict):
+                continue
+            new_questions = new_result.get("questions")
+            if not isinstance(new_questions, list) or not new_questions:
+                continue
+
+            current_result = item.get("result")
+            if not isinstance(current_result, dict):
+                continue
+            current_questions = current_result.get("questions")
+            if not isinstance(current_questions, list):
+                continue
+            current_result["questions"] = current_questions + new_questions
+
+        attempt += 1
+
+    return final_state
+
+
 def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
+    _reset_run_files()
     app = build_graph()
     final_state = app.invoke(
         {
@@ -858,6 +954,7 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
             "formatted": [],
         }
     )
+    final_state = _fill_missing_questions(app, payload, final_state)
     learning_objectives = payload.get("learningObjectives", [])
     number_of_questions = payload.get("numberOfQuestions", 3)
     question_types = payload.get("questionTypes", ["MULTIPLE_CHOICE"])
