@@ -13,6 +13,11 @@ class PipelineInput(TypedDict, total=False):
     difficultyLevels: List[LevelOfQuiz]
     numCorrectOptions: int
     numIncorrectOptions: int
+    qualityRubric: str
+    qualityThreshold: int
+    relevancyRubric: str
+    relevancyThreshold: int
+    maxAttempts: int
     assessmentContainerId: str
     internalAssessmentId: str
     learningObjectiveUuid: str
@@ -22,6 +27,7 @@ class PromptPayload(TypedDict):
     systemPrompt: str
     userPrompt: str
     responseFormat: str
+    intermediateFormat: str
     learningObjective: str
     difficultyLevel: LevelOfQuiz
     questionType: QuestionType

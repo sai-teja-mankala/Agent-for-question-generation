@@ -72,6 +72,45 @@ RES_FORMAT_MATCH_COLUMNS = """
 ]
 """
 
+INTERMEDIATE_FORMAT_MCQ = """
+{
+  "questions": [
+    {
+      "question": "Question text",
+      "answers": [
+        {"answer": "Option A", "explanation": "Why it is correct/incorrect", "correct": true},
+        {"answer": "Option B", "explanation": "Why it is correct/incorrect", "correct": false}
+      ]
+    }
+  ]
+}
+"""
+
+INTERMEDIATE_FORMAT_MATCHING = """
+{
+  "questions": [
+    {
+      "question": "Match each term to its definition.",
+      "column_a_answers": [
+        {"Option-A": "Term A"},
+        {"Option-B": "Term B"}
+      ],
+      "column_b_answers": [
+        {"Option-1": "Definition 1"},
+        {"Option-2": "Definition 2"}
+      ],
+      "answers": [
+        {
+          "column_b_answers": "Definition 1",
+          "column_a_answers": "Term A",
+          "explanation": "Why this is the correct match"
+        }
+      ]
+    }
+  ]
+}
+"""
+
 SYSTEM_PROMPT_TEMPLATE = """
 You are a highly knowledgeable AI tasked with generating high-quality, educative, and comprehensive quizzes based on a given course transcript and learning objectives to test how good the learning objectives have been achieved.
 Make sure generated quizzes comply with the following quality standards:
@@ -98,22 +137,23 @@ Response MUST be valid JSON.
 """
 
 USER_PROMPT_TEMPLATE = """
-Generate questions as per the guidelines and comply with the quality standards provided in the system prompt,
+Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
 Transcript for question generation: '{source_text}' (Consider this if provided, otherwise ignore)
-These questions should strictly adhere to the learning objectives: '{learning_obj}'
-Do not alter, rephrase, do not split or infer new learning objectives. Use the given learning objective(s) exactly as they are.
-Generate exactly {number_of_questions} questions for each difficulty level (Beginner, Intermediate and Advanced) targeting each of the given learning objective for the given transcript and complying with the quality standards above.
-Ensure the response strictly follows this template for quiz generation: {res_format}
+Learning objectives: '{learning_obj}'
+Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
+Generate exactly {num_correct_options} correct answers and {num_incorrect_options} incorrect answers (distractors).
+Return JSON in this format:
+{intermediate_format}
 """
 
 USER_PROMPT_PER_DIFFICULTY = """
-Generate questions as per the guidelines and comply with the quality standards provided in the system prompt,
+Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
 Transcript for question generation: '{source_text}' (Consider this if provided, otherwise ignore)
-These questions should strictly adhere to the learning objectives: '{learning_obj}'
-Do not alter, rephrase, or infer new learning objectives. Use the given learning objective(s) exactly as they are.
-Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level targeting each of the given learning objective for the given transcript and complying with the quality standards above.
-Ensure the response strictly follows this template for quiz generation: {res_format}
-Make sure the 'LevelOfQuiz' value in the output is set to '{difficulty_level}'.
+Learning objectives: '{learning_obj}'
+Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
+Generate exactly {num_correct_options} correct answers and {num_incorrect_options} incorrect answers (distractors).
+Return JSON in this format:
+{intermediate_format}
 """
 
 SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS = """
@@ -141,20 +181,19 @@ Response MUST be valid JSON.
 USER_PROMPT_TEMPLATE_MATCH_COLUMNS = """
 Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
 Transcript for quiz generation: '{source_text}'
-These questions should strictly adhere to the learning objectives: '{learning_obj}'
-Do not alter, rephrase, do not split or infer new learning objectives. Use the given learning objective(s) exactly as they are.
-Generate exactly {number_of_questions} questions per each difficulty level (Beginner, Intermediate and Advanced) targeting per each learning objective of the given transcript and complying with the quality standards above.
-Ensure the response strictly follows this template for quiz generation: {res_format_match_columns}
+Learning objectives: '{learning_obj}'
+Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
+Return JSON in this format:
+{intermediate_format}
 """
 
 USER_PROMPT_MATCHING_PER_DIFFICULTY = """
 Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
 Transcript for quiz generation: '{source_text}'
-These questions should strictly adhere to the learning objectives: '{learning_obj}'
-Do not alter, rephrase, or infer new learning objectives. Use the given learning objective(s) exactly as they are.
-Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level targeting each of the given learning objective for the given transcript and complying with the quality standards above.
-Ensure the response strictly follows this template for quiz generation: {res_format}
-Make sure the 'LevelOfQuiz' value in the output is set to '{difficulty_level}'.
+Learning objectives: '{learning_obj}'
+Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
+Return JSON in this format:
+{intermediate_format}
 """
 
 SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS = """
@@ -176,4 +215,78 @@ Validate the following question:
 
 Question with answer choices : {question}
 Response format: {res_format_multi_select_single_difficulty}
+"""
+
+SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
+You are an expert assessment designer. Improve match-the-columns questions by adding or refining distractor options.
+Rules:
+- Keep the original question intent and correct matches.
+- Ensure exactly 4 options in column A and 4 options in column B.
+- Add plausible distractors if options are missing or too obvious.
+- Do not change the meaning of correct answers.
+- Return ONLY valid JSON in the exact response format.
+"""
+
+USER_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
+Improve the following matching question. Add or refine distractor options if needed.
+
+Question: {question}
+Response format: {res_format_match_columns}
+"""
+
+SYSTEM_PROMPT_TEMPLATE_FIX_FORMAT = """
+You are a strict JSON formatter. Convert the given content into the required response format.
+Rules:
+- Output ONLY valid JSON.
+- Match the provided response format exactly.
+- Preserve the original meaning and answers.
+"""
+
+USER_PROMPT_TEMPLATE_FIX_FORMAT = """
+Required response format: {res_format}
+
+Input to transform:
+{raw_output}
+"""
+
+SYSTEM_PROMPT_TEMPLATE_QUALITY_CHECK = """
+You are a strict rubric-based evaluator for assessment items.
+Return ONLY JSON with this schema:
+{
+  "score": 0-100,
+  "issues": ["..."],
+  "pass": true/false
+}
+Use the rubric and evaluate the provided questions.
+"""
+
+USER_PROMPT_TEMPLATE_QUALITY_CHECK = """
+Quality Rubric:
+{rubric}
+
+Questions JSON:
+{questions}
+
+Pass threshold: {threshold}
+"""
+
+SYSTEM_PROMPT_TEMPLATE_RELEVANCY_CHECK = """
+You are a strict evaluator for relevance of questions to learning objectives.
+Return ONLY JSON with this schema:
+{
+  "score": 0-100,
+  "issues": ["..."],
+  "pass": true/false
+}
+Evaluate relevance to the provided learning objectives.
+"""
+
+USER_PROMPT_TEMPLATE_RELEVANCY_CHECK = """
+Learning Objectives:
+{learning_objectives}
+
+Questions JSON:
+{questions}
+
+Pass threshold: {threshold}
 """

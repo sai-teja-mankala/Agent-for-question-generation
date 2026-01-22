@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/saiteja.mankala/Library/CloudStorage/OneDrive-SkillsoftCorporation/Documents/test quality of questions using ai/.venv"
+set -gx VIRTUAL_ENV "/Users/saiteja.mankala/Library/CloudStorage/OneDrive-SkillsoftCorporation/Documents/Agent-for-question-generation/.venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
