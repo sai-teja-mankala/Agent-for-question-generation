@@ -49,4 +49,7 @@ def run(request: PipelineRequest):
     if not payload.get("difficultyLevels"):
         raise ValueError("difficultyLevels is required and must be a non-empty array")
     result = run_pipeline(payload)
-    return result
+    return {
+        "summary": result.get("summary"),
+        "results": result.get("formatted", []),
+    }

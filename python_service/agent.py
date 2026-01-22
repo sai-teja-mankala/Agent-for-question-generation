@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Any, Dict, List, Literal, TypedDict
+from typing import Any, Dict, List
 
 from langgraph.graph import END, StateGraph
 
@@ -18,45 +18,13 @@ from .prompts import (
     USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
     USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
 )
-
-QuestionType = Literal["MULTIPLE_CHOICE", "MULTIPLE_CHOICE_MULTI_SELECT", "MATCHING"]
-LevelOfQuiz = Literal["Beginner", "Intermediate", "Advanced"]
+from .types import GraphState, LevelOfQuiz, PipelineInput, PromptPayload, QuestionType
 
 logger = logging.getLogger("pipeline")
 if not logger.handlers:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 
-class PipelineInput(TypedDict, total=False):
-    locale: str
-    sourceText: str
-    learningObjectives: List[str]
-    numberOfQuestions: int
-    questionTypes: List[QuestionType]
-    difficultyLevels: List[LevelOfQuiz]
-    numCorrectOptions: int
-    numIncorrectOptions: int
-    assessmentContainerId: str
-    internalAssessmentId: str
-    learningObjectiveUuid: str
-
-
-class PromptPayload(TypedDict):
-    systemPrompt: str
-    userPrompt: str
-    responseFormat: str
-    learningObjective: str
-    difficultyLevel: LevelOfQuiz
-    questionType: QuestionType
-
-
-class GraphState(TypedDict):
-    input: PipelineInput
-    prompt_payloads: List[PromptPayload]
-    raw_outputs: List[Dict[str, Any]]
-    improved_outputs: List[Dict[str, Any]]
-    quality: List[Dict[str, Any]]
-    formatted: List[Dict[str, Any]]
 
 
 def build_prompt_payloads(state: GraphState) -> GraphState:
