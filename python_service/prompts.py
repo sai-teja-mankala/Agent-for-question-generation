@@ -195,7 +195,7 @@ USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION = """
 You are correcting distractors only.
 Do NOT change the question stem or the correct answer.
 Keep the number of options unchanged.
-Improve ONLY the distractors based on these criteria:
+Improve ONLY the distractors on answer options based on these criteria:
 - Plausibility
 - Construct Relevance
 - Distinctiveness

@@ -40,3 +40,9 @@ class GraphState(TypedDict):
     improved_outputs: List[Dict[str, Any]]
     quality: List[Dict[str, Any]]
     formatted: List[Dict[str, Any]]
+    distractor_validation_passed: List[Dict[str, Any]]
+    distractor_validation_failed: List[Dict[str, Any]]
+    distractor_correction_attempts: int
+    quality_validation_passed: List[Dict[str, Any]]
+    quality_validation_failed: List[Dict[str, Any]]
+    quality_correction_attempts: int

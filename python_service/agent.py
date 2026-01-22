@@ -18,12 +18,15 @@ from .prompts import (
     SYSTEM_PROMPT_TEMPLATE_FIX_FORMAT,
     SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING,
     SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS,
+    SYSTEM_PROMPT_TEMPLATE_DISTRACTOR_QUALITY,
     USER_PROMPT_TEMPLATE_FIX_FORMAT,
     USER_PROMPT_TEMPLATE_IMPROVE_MATCHING,
     USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
     USER_PROMPT_TEMPLATE,
     USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
     USER_PROMPT_TEMPLATE_CORRECTION,
+    USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION,
+    USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY,
     USER_PROMPT_TEMPLATE_QUALITY_CHECK,
     USER_PROMPT_TEMPLATE_RELEVANCY_CHECK,
     USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
@@ -327,6 +330,17 @@ def _count_questions(result: Any) -> int:
     return len(questions)
 
 
+def _extract_mcq_parts(question: Dict[str, Any]) -> Dict[str, Any]:
+    answers = question.get("answers", [])
+    correct_answers = [a.get("answer") for a in answers if a.get("correct") is True]
+    distractors = [a.get("answer") for a in answers if a.get("correct") is False]
+    return {
+        "answers": answers,
+        "correct_answers": [a for a in correct_answers if a],
+        "distractors": [d for d in distractors if d],
+    }
+
+
 def evaluate_quality(
     client, deployment: str, result: Any, rubric: str, threshold: int
 ) -> Dict[str, Any]:
@@ -382,6 +396,169 @@ def evaluate_relevancy(
     return parsed
 
 
+def evaluate_distractor_quality(
+    client, deployment: str, question: Dict[str, Any], learning_objective: str
+) -> Dict[str, Any]:
+    parts = _extract_mcq_parts(question)
+    prompt = USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY.replace(
+        "{question}", question.get("question", "")
+    ).replace(
+        "{correct_answer}", json.dumps(parts["correct_answers"])
+    ).replace(
+        "{distractors}", json.dumps(parts["distractors"])
+    ).replace(
+        "{learning_objective}", learning_objective
+    ).replace(
+        "{skill_or_construct}", learning_objective
+    )
+    response = client.chat.completions.create(
+        model=deployment,
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT_TEMPLATE_DISTRACTOR_QUALITY},
+            {"role": "user", "content": prompt},
+        ],
+    )
+    content = response.choices[0].message.content or ""
+    try:
+        parsed = _parse_json(content)
+    except json.JSONDecodeError:
+        parsed = {"verdict": "FAIL", "overallNotes": "Invalid distractor quality JSON"}
+    return parsed
+
+
+def validate_distractors(state: GraphState) -> GraphState:
+    logger.info("Validating distractor quality")
+    client = build_client()
+    deployment = get_deployment_name()
+    passed: List[Dict[str, Any]] = []
+    failed: List[Dict[str, Any]] = []
+    for item in state["improved_outputs"]:
+        payload = item["payload"]
+        result = item["result"]
+        if "error" in result or payload["questionType"] == "MATCHING":
+            passed.append(item)
+            continue
+        questions = result.get("questions")
+        if not isinstance(questions, list):
+            passed.append(item)
+            continue
+        passed_questions: List[Dict[str, Any]] = []
+        failed_questions: List[Dict[str, Any]] = []
+        for idx, question in enumerate(questions):
+            if not isinstance(question, dict):
+                passed_questions.append({"index": idx, "question": question})
+                continue
+            evaluation = evaluate_distractor_quality(
+                client, deployment, question, payload["learningObjective"]
+            )
+            if evaluation.get("verdict") == "PASS":
+                passed_questions.append({"index": idx, "question": question})
+                continue
+            failure_reasons = [evaluation.get("overallNotes") or "Distractor quality failed."]
+            for entry in evaluation.get("distractors", []):
+                reason = entry.get("failReason")
+                if reason:
+                    failure_reasons.append(reason)
+            failed_questions.append(
+                {
+                    "index": idx,
+                    "question": question,
+                    "failure_reasons": [r for r in failure_reasons if r],
+                }
+            )
+        if failed_questions:
+            failed.append(
+                {
+                    "payload": payload,
+                    "result": result,
+                    "passed_questions": passed_questions,
+                    "failed_questions": failed_questions,
+                    "question_count": len(questions),
+                }
+            )
+        else:
+            passed.append(item)
+
+    state["distractor_validation_passed"] = passed
+    state["distractor_validation_failed"] = failed
+    state["improved_outputs"] = passed + [
+        {"payload": item["payload"], "result": item["result"]} for item in failed
+    ]
+    logger.info(
+        "Distractor validation complete: %s passed, %s failed", len(passed), len(failed)
+    )
+    return state
+
+
+def correct_distractors(state: GraphState) -> GraphState:
+    logger.info("Correcting failed distractors")
+    client = build_client()
+    deployment = get_deployment_name()
+    corrected_failed: List[Dict[str, Any]] = []
+    for item in state.get("distractor_validation_failed", []):
+        payload = item["payload"]
+        result = item["result"]
+        passed_questions = {
+            entry["index"]: entry["question"] for entry in item.get("passed_questions", [])
+        }
+        question_count = item.get("question_count") or 0
+        for failed_entry in item.get("failed_questions", []):
+            question = failed_entry.get("question")
+            failure_text = "\n".join(
+                failed_entry.get("failure_reasons") or ["Distractor quality failed."]
+            )
+            if not isinstance(question, dict):
+                continue
+            correction_prompt = USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION.replace(
+                "{failure_reasons}", failure_text
+            ).replace(
+                "{question_json}", json.dumps({"questions": [question]})
+            ).replace(
+                "{response_format}", payload["intermediateFormat"]
+            )
+            response = client.chat.completions.create(
+                model=deployment,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
+                    },
+                    {"role": "user", "content": correction_prompt},
+                ],
+            )
+            content = response.choices[0].message.content or ""
+            try:
+                corrected = _parse_json(content)
+                corrected_questions = corrected.get("questions")
+                if isinstance(corrected_questions, list) and corrected_questions:
+                    passed_questions[failed_entry["index"]] = corrected_questions[0]
+                else:
+                    passed_questions[failed_entry["index"]] = question
+            except json.JSONDecodeError:
+                passed_questions[failed_entry["index"]] = question
+
+        if question_count <= 0:
+            original_questions = result.get("questions")
+            if isinstance(original_questions, list):
+                question_count = len(original_questions)
+        rebuilt = [passed_questions.get(idx) for idx in range(question_count)]
+        original_questions = result.get("questions")
+        if isinstance(original_questions, list):
+            for idx, entry in enumerate(rebuilt):
+                if entry is None and idx < len(original_questions):
+                    rebuilt[idx] = original_questions[idx]
+        result["questions"] = rebuilt
+        corrected_failed.append({"payload": payload, "result": result})
+
+    passed_outputs = state.get("distractor_validation_passed", [])
+    state["improved_outputs"] = passed_outputs + corrected_failed
+    state["distractor_validation_failed"] = []
+    state["distractor_correction_attempts"] = state.get(
+        "distractor_correction_attempts", 0
+    ) + 1
+    return state
+
+
 def validate_and_fix_format(state: GraphState) -> GraphState:
     logger.info("Validating output format")
     client = build_client()
@@ -430,19 +607,98 @@ def validate_and_fix_format(state: GraphState) -> GraphState:
     return state
 
 
-def quality_check(state: GraphState) -> GraphState:
-    logger.info("Running quality checks")
-    quality_results: List[Dict[str, Any]] = []
-    for item in state["raw_outputs"]:
-        payload = item["payload"]
-        quality = item.get("quality", {"score": 0, "issues": ["Not evaluated"], "pass": False})
-        relevancy = item.get(
-            "relevancy", {"score": 0, "issues": ["Not evaluated"], "pass": False}
-        )
-        quality_results.append({"payload": payload, "quality": quality, "relevancy": relevancy})
+def validate_quality(state: GraphState) -> GraphState:
+    logger.info("Validating quality and relevancy")
+    client = build_client()
+    deployment = get_deployment_name()
+    rubric = state["input"].get("qualityRubric", "No rubric provided.")
+    threshold = state["input"].get("qualityThreshold", 85)
+    relevancy_threshold = state["input"].get("relevancyThreshold", 85)
+    learning_objectives = state["input"].get("learningObjectives", [])
 
-    state["quality"] = quality_results
-    logger.info("Quality checks complete for %s outputs", len(quality_results))
+    passed: List[Dict[str, Any]] = []
+    failed: List[Dict[str, Any]] = []
+    for item in state["improved_outputs"]:
+        payload = item["payload"]
+        result = item["result"]
+        quality = evaluate_quality(client, deployment, result, rubric, threshold)
+        relevancy = evaluate_relevancy(
+            client, deployment, result, learning_objectives, relevancy_threshold
+        )
+        entry = {
+            "payload": payload,
+            "result": result,
+            "quality": quality,
+            "relevancy": relevancy,
+        }
+        if quality.get("pass") and relevancy.get("pass"):
+            passed.append(entry)
+        else:
+            failed.append(entry)
+
+    state["quality_validation_passed"] = passed
+    state["quality_validation_failed"] = failed
+    state["quality"] = [
+        {"payload": entry["payload"], "quality": entry["quality"], "relevancy": entry["relevancy"]}
+        for entry in passed + failed
+    ]
+    logger.info(
+        "Quality validation complete: %s passed, %s failed", len(passed), len(failed)
+    )
+    return state
+
+
+def correct_quality(state: GraphState) -> GraphState:
+    logger.info("Correcting failed quality or relevancy")
+    client = build_client()
+    deployment = get_deployment_name()
+    corrected_failed: List[Dict[str, Any]] = []
+    for item in state.get("quality_validation_failed", []):
+        payload = item["payload"]
+        result = item["result"]
+        quality = item.get("quality", {})
+        relevancy = item.get("relevancy", {})
+        failure_reasons: List[str] = []
+        if not quality.get("pass"):
+            issues = quality.get("issues") or []
+            failure_reasons.append("Quality issues: " + "; ".join(issues))
+        if not relevancy.get("pass"):
+            issues = relevancy.get("issues") or []
+            failure_reasons.append("Relevancy issues: " + "; ".join(issues))
+        failure_reason_text = "\n".join([r for r in failure_reasons if r]) or "Failed evaluation."
+
+        correction_prompt = USER_PROMPT_TEMPLATE_CORRECTION.replace(
+            "{learning_obj}", payload["learningObjective"]
+        ).replace("{difficulty_level}", payload["difficultyLevel"]).replace(
+            "{question_type}", payload["questionType"]
+        ).replace(
+            "{failure_reasons}", failure_reason_text
+        ).replace(
+            "{question_json}", json.dumps(result)
+        ).replace(
+            "{response_format}", payload["intermediateFormat"]
+        )
+        response = client.chat.completions.create(
+            model=deployment,
+            messages=[
+                {"role": "system", "content": payload["systemPrompt"]},
+                {"role": "user", "content": correction_prompt},
+            ],
+        )
+        content = response.choices[0].message.content or ""
+        try:
+            corrected = _parse_json(content)
+        except json.JSONDecodeError:
+            corrected = {"error": "Invalid JSON from model", "raw": content}
+        corrected_failed.append({"payload": payload, "result": corrected})
+
+    passed_outputs = [
+        {"payload": entry["payload"], "result": entry["result"]}
+        for entry in state.get("quality_validation_passed", [])
+    ]
+    state["improved_outputs"] = passed_outputs + corrected_failed
+    state["quality_validation_failed"] = []
+    state["quality_correction_attempts"] = state.get("quality_correction_attempts", 0) + 1
     return state
 
 
@@ -465,20 +721,71 @@ def format_conversion(state: GraphState) -> GraphState:
     return state
 
 
+def _route_from_improve(state: GraphState) -> str:
+    has_mcq = any(
+        item.get("payload", {}).get("questionType") != "MATCHING"
+        for item in state.get("improved_outputs", [])
+    )
+    return "validate_distractors" if has_mcq else "validate_quality"
+
+
+def _route_from_validate_distractors(state: GraphState) -> str:
+    failed = state.get("distractor_validation_failed", [])
+    max_attempts = state["input"].get(
+        "maxDistractorFixAttempts", state["input"].get("maxAttempts", 2)
+    )
+    attempts = state.get("distractor_correction_attempts", 0)
+    if failed and attempts < max_attempts:
+        return "correct_distractors"
+    return "validate_quality"
+
+
+def _route_from_validate_quality(state: GraphState) -> str:
+    failed = state.get("quality_validation_failed", [])
+    max_attempts = state["input"].get(
+        "maxQualityFixAttempts", state["input"].get("maxAttempts", 2)
+    )
+    attempts = state.get("quality_correction_attempts", 0)
+    if failed and attempts < max_attempts:
+        return "correct_quality"
+    return "validate"
+
+
 def build_graph():
-    graph = StateGraph(GraphState)
+    graph = StateGraph[GraphState, None, GraphState, GraphState](GraphState)
     graph.add_node("build_prompts", build_prompt_payloads)
     graph.add_node("generate", generate_questions)
     graph.add_node("improve", improve_distractors)
+    graph.add_node("validate_distractors", validate_distractors)
+    graph.add_node("correct_distractors", correct_distractors)
+    graph.add_node("validate_quality", validate_quality)
+    graph.add_node("correct_quality", correct_quality)
     graph.add_node("validate", validate_and_fix_format)
-    graph.add_node("quality", quality_check)
     graph.add_node("format", format_conversion)
 
     graph.set_entry_point("build_prompts")
     graph.add_edge("build_prompts", "generate")
-    graph.add_edge("generate", "quality")
-    graph.add_edge("quality", "improve")
-    graph.add_edge("improve", "validate")
+    graph.add_edge("generate", "improve")
+    graph.add_conditional_edges(
+        "improve",
+        _route_from_improve,
+        {"validate_distractors": "validate_distractors", "validate_quality": "validate_quality"},
+    )
+    graph.add_conditional_edges(
+        "validate_distractors",
+        _route_from_validate_distractors,
+        {
+            "correct_distractors": "correct_distractors",
+            "validate_quality": "validate_quality",
+        },
+    )
+    graph.add_edge("correct_distractors", "validate_distractors")
+    graph.add_conditional_edges(
+        "validate_quality",
+        _route_from_validate_quality,
+        {"correct_quality": "correct_quality", "validate": "validate"},
+    )
+    graph.add_edge("correct_quality", "validate_quality")
     graph.add_edge("validate", "format")
     graph.add_edge("format", END)
     return graph.compile()
