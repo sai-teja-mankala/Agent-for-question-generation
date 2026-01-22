@@ -20,10 +20,10 @@ from .prompts import (
     SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS,
     USER_PROMPT_TEMPLATE_FIX_FORMAT,
     USER_PROMPT_TEMPLATE_IMPROVE_MATCHING,
-    USER_PROMPT_MATCHING_PER_DIFFICULTY,
-    USER_PROMPT_PER_DIFFICULTY,
+    USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
     USER_PROMPT_TEMPLATE,
     USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
+    USER_PROMPT_TEMPLATE_CORRECTION,
     USER_PROMPT_TEMPLATE_QUALITY_CHECK,
     USER_PROMPT_TEMPLATE_RELEVANCY_CHECK,
     USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
@@ -84,7 +84,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         "{locale}", locale
                     )
                     user_prompt = (
-                        USER_PROMPT_MATCHING_PER_DIFFICULTY.replace(
+                        USER_PROMPT_TEMPLATE_MATCH_COLUMNS.replace(
                             "{difficulty_level}", level
                         )
                         .replace("{source_text}", source_text)
@@ -108,7 +108,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         "{num_incorrect_options}", str(num_incorrect)
                     )
                     user_prompt = (
-                        USER_PROMPT_PER_DIFFICULTY.replace(
+                        USER_PROMPT_TEMPLATE.replace(
                             "{difficulty_level}", level
                         )
                         .replace("{source_text}", source_text)
@@ -202,14 +202,24 @@ def generate_questions(state: GraphState) -> GraphState:
                 quality.get("score"),
                 relevancy.get("score"),
             )
-            payload["userPrompt"] = (
-                payload["userPrompt"]
-                + "\n\nQuality Rubric:\n"
-                + rubric
-                + f"\nMinimum score: {threshold}"
-                + "\n\nRelevancy must align strictly to these learning objectives:\n"
-                + json.dumps(learning_objectives)
-                + f"\nMinimum relevancy score: {relevancy_threshold}"
+            failure_reasons: List[str] = []
+            if not quality.get("pass"):
+                issues = quality.get("issues") or []
+                failure_reasons.append("Quality issues: " + "; ".join(issues))
+            if not relevancy.get("pass"):
+                issues = relevancy.get("issues") or []
+                failure_reasons.append("Relevancy issues: " + "; ".join(issues))
+            failure_reason_text = "\n".join(failure_reasons) or "Failed evaluation."
+            payload["userPrompt"] = USER_PROMPT_TEMPLATE_CORRECTION.replace(
+                "{learning_obj}", payload["learningObjective"]
+            ).replace("{difficulty_level}", payload["difficultyLevel"]).replace(
+                "{question_type}", payload["questionType"]
+            ).replace(
+                "{failure_reasons}", failure_reason_text
+            ).replace(
+                "{question_json}", json.dumps(parsed)
+            ).replace(
+                "{response_format}", payload["intermediateFormat"]
             )
 
         else:
@@ -501,10 +511,13 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
     actual_total = 0
     for item in final_state.get("formatted", []):
         result = item.get("result")
-        if isinstance(result, list) and result:
-            questions = result[0].get("questions") if isinstance(result[0], dict) else None
-            if isinstance(questions, list):
-                actual_total += len(questions)
+        questions = None
+        if isinstance(result, dict):
+            questions = result.get("questions")
+        elif isinstance(result, list) and result and isinstance(result[0], dict):
+            questions = result[0].get("questions")
+        if isinstance(questions, list):
+            actual_total += len(questions)
     final_state["summary"] = {
         "assessmentContainerId": payload.get("assessmentContainerId"),
         "internalAssessmentId": payload.get("internalAssessmentId"),

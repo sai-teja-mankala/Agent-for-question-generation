@@ -146,14 +146,18 @@ Return JSON in this format:
 {intermediate_format}
 """
 
-USER_PROMPT_PER_DIFFICULTY = """
-Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
-Transcript for question generation: '{source_text}' (Consider this if provided, otherwise ignore)
-Learning objectives: '{learning_obj}'
-Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
-Generate exactly {num_correct_options} correct answers and {num_incorrect_options} incorrect answers (distractors).
-Return JSON in this format:
-{intermediate_format}
+USER_PROMPT_TEMPLATE_CORRECTION = """
+You are correcting a single failed question based on evaluation feedback.
+Do NOT change the learning objective, difficulty level, or question type.
+Only fix the specific failure reasons.
+Return ONLY valid JSON in the required response format.
+
+Learning Objective: {learning_obj}
+Declared Difficulty: {difficulty_level}
+Question Type: {question_type}
+Failure Reason(s): {failure_reasons}
+Original Question JSON: {question_json}
+Required Response Format: {response_format}
 """
 
 SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS = """
@@ -180,20 +184,145 @@ Response MUST be valid JSON.
 
 USER_PROMPT_TEMPLATE_MATCH_COLUMNS = """
 Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
-Transcript for quiz generation: '{source_text}'
+Transcript for quiz generation: '{source_text}' (Consider this if provided, otherwise ignore)
 Learning objectives: '{learning_obj}'
 Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
 Return JSON in this format:
 {intermediate_format}
 """
 
-USER_PROMPT_MATCHING_PER_DIFFICULTY = """
-Generate questions as per the guidelines and comply with the quality standards provided in the system prompt.
-Transcript for quiz generation: '{source_text}'
-Learning objectives: '{learning_obj}'
-Generate exactly {number_of_questions} questions for the '{difficulty_level}' difficulty level.
-Return JSON in this format:
-{intermediate_format}
+USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION = """
+You are correcting distractors only.
+Do NOT change the question stem or the correct answer.
+Keep the number of options unchanged.
+Improve ONLY the distractors based on these criteria:
+- Plausibility
+- Construct Relevance
+- Distinctiveness
+- Incorrectness Clarity
+- Misconception Representation
+
+Failure Reason(s): {failure_reasons}
+Question JSON: {question_json}
+Required Response Format: {response_format}
+"""
+
+SYSTEM_PROMPT_TEMPLATE_BLOOM_ALIGNMENT = """
+You are a strict assessment evaluator responsible for verifying
+whether a question’s cognitive demand correctly matches its declared
+DIFFICULTY level using Bloom’s Taxonomy.
+
+You must evaluate ONLY cognitive alignment.
+You do NOT rewrite the question.
+You do NOT suggest improvements.
+You ONLY determine correctness or failure.
+"""
+
+USER_PROMPT_TEMPLATE_BLOOM_ALIGNMENT = """
+Declared Difficulty Level: {difficulty_level}
+Question: {question}
+Options (if applicable): {options}
+Correct Answer: {correct_answer}
+Learning Objective: {learning_objective}
+
+AUTHORITATIVE DIFFICULTY ↔ BLOOM’S MAPPING (MANDATORY)
+
+EASY: KNOWLEDGE, UNDERSTAND
+INTERMEDIATE: APPLY, ANALYZE
+DIFFICULT: EVALUATE, CREATE
+
+Disallowed:
+- EASY: APPLY/ANALYZE/EVALUATE/CREATE
+- INTERMEDIATE: KNOWLEDGE/UNDERSTAND/EVALUATE/CREATE
+- DIFFICULT: KNOWLEDGE/UNDERSTAND/APPLY/ANALYZE
+
+EVALUATION RULES (STRICT)
+1) Determine the lowest Bloom’s level required to answer correctly.
+2) Compare to allowed levels for the declared difficulty.
+3) Below or above allowed range → FAIL.
+4) Any ambiguity → FAIL.
+
+AUTOMATIC FAILURE CONDITIONS
+- Cognitive demand is unclear or mixed
+- Question wording allows multiple cognitive interpretations
+- Learning objective conflicts with detected Bloom’s level
+
+OUTPUT FORMAT (STRICT JSON ONLY)
+{
+  "verdict": "PASS" | "FAIL",
+  "declaredDifficulty": "EASY | INTERMEDIATE | DIFFICULT",
+  "detectedBloomLevel": "KNOWLEDGE | UNDERSTAND | APPLY | ANALYZE | EVALUATE | CREATE",
+  "difficultyAlignment": true | false,
+  "failureReason": "<explicit Bloom–difficulty mismatch if FAIL, otherwise null>"
+}
+"""
+
+SYSTEM_PROMPT_TEMPLATE_DISTRACTOR_QUALITY = """
+You are a strict distractor evaluator. Assess EACH distractor individually.
+You must evaluate ONLY the distractor quality metrics below.
+Do NOT rewrite distractors. Do NOT suggest improvements.
+"""
+
+USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY = """
+Question: {question}
+Correct Answer: {correct_answer}
+Distractors: {distractors}
+Learning Objective: {learning_objective}
+Skill/Construct: {skill_or_construct}
+
+METRICS (score each 1–5)
+1) Plausibility
+- How realistic the distractor sounds as something a well-meaning leader might do/say.
+- High score = tempting to unsure learners.
+
+2) Construct Relevance
+- How directly the distractor relates to the specific skill/construct being assessed.
+- High score = wrong application of the target skill (not irrelevant or off-topic).
+
+3) Distinctiveness
+- How clearly it differs from correct answer AND other options in idea/approach.
+- High score = different type of mistake, not a near-duplicate.
+
+4) Incorrectness Clarity
+- How clearly the option is wrong in realistic leadership context.
+- High score = clearly wrong, not debatable or “it depends.”
+
+5) Misconception Representation
+- Whether it reflects a common misconception/error pattern.
+- High score = maps to recognizable misunderstanding.
+
+STRICT SCORING RULES
+- Use integers 1–5 only.
+- If any metric is ambiguous, score 2 or lower.
+- If distractor could be reasonably correct, Incorrectness Clarity must be ≤2.
+
+OUTPUT FORMAT (STRICT JSON ONLY)
+{
+  "verdict": "PASS" | "FAIL",
+  "overallNotes": "<short, objective summary>",
+  "distractors": [
+    {
+      "text": "<distractor>",
+      "scores": {
+        "plausibility": 1-5,
+        "constructRelevance": 1-5,
+        "distinctiveness": 1-5,
+        "incorrectnessClarity": 1-5,
+        "misconceptionRepresentation": 1-5
+      },
+      "pass": true | false,
+      "failReason": "<why it failed, else null>"
+    }
+  ],
+  "thresholds": {
+    "minAverageScore": 3.5,
+    "minPerMetricScore": 3
+  }
+}
+
+PASS/FAIL LOGIC
+- A distractor passes if ALL metrics >= minPerMetricScore AND average >= minAverageScore.
+- Overall verdict is PASS only if ALL distractors pass.
 """
 
 SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS = """
