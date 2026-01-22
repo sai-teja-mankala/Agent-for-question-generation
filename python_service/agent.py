@@ -38,6 +38,7 @@ if not logger.handlers:
 
 _STATE_LOG_PATH = Path(__file__).resolve().parents[1] / "state_log.jsonl"
 _RESULT_QUESTIONS_PATH = Path(__file__).resolve().parents[1] / "result_questions.txt"
+_FINAL_STATE_PATH = Path(__file__).resolve().parents[1] / "final_state.json"
 
 
 def _append_json_line(record: Dict[str, Any], path: Path = _STATE_LOG_PATH) -> None:
@@ -84,6 +85,7 @@ def _reset_run_files() -> None:
     try:
         _STATE_LOG_PATH.write_text("", encoding="utf-8")
         _RESULT_QUESTIONS_PATH.write_text("", encoding="utf-8")
+        _FINAL_STATE_PATH.write_text("", encoding="utf-8")
     except OSError as exc:
         logger.warning("Failed to reset run files: %s", exc)
 
@@ -941,6 +943,15 @@ def _fill_missing_questions(
     return final_state
 
 
+def _write_final_state(final_state: Dict[str, Any]) -> None:
+    try:
+        _FINAL_STATE_PATH.write_text(
+            json.dumps(final_state, ensure_ascii=True, indent=2), encoding="utf-8"
+        )
+    except OSError as exc:
+        logger.warning("Failed to write final state: %s", exc)
+
+
 def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
     _reset_run_files()
     app = build_graph()
@@ -955,6 +966,7 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
         }
     )
     final_state = _fill_missing_questions(app, payload, final_state)
+    _write_final_state(final_state)
     learning_objectives = payload.get("learningObjectives", [])
     number_of_questions = payload.get("numberOfQuestions", 3)
     question_types = payload.get("questionTypes", ["MULTIPLE_CHOICE"])
