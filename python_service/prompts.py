@@ -153,29 +153,48 @@ INTERMEDIATE_FORMAT_MATCHING = """
 """
 
 BLOOM_ALIGNMENT_GENERATION_GUIDANCE = """
-DIFFICULTY ↔ BLOOM’S TAXONOMY CONTRACT (STRICT)
+Generic Level Definitions (to adapt):
+Level 1: Recognizes the concept, recalls basic facts, but cannot apply. (Bloom: Remembering)
+Level 2: Understands fundamentals, applies in simple contexts. (Bloom: Understanding)
+Level 3: Applies skill independently in standard situations. (Bloom: Applying)
+Level 4: Analyzes, adapts, and integrates skill across contexts. (Bloom: Analyzing)
+Level 5: Mastery; evaluates, innovates, and sets best practices. (Bloom: Evaluating & Creating)
 
-EASY:
-- Bloom levels allowed: KNOWLEDGE, UNDERSTAND
-- Question intent: definition, recognition, explanation, identification
-- Disallowed: scenarios, judgment, application, decision-making
+Generic Level Definitions (Explained):
+Level 1
+Skill Complexity: Very basic; recognizes the concept but cannot perform it.
+Skill Knowledge: Possesses surface-level familiarity; can recall facts, terms, or definitions.
+Bloom's Taxonomy Alignment: Remembering (recognize, list, recall).
+Definition: Individuals know that the skill exists, understand its basic purpose, and can identify when it is relevant, but they do not yet apply it.
 
-INTERMEDIATE:
-- Bloom levels allowed: APPLY, ANALYZE
-- Question intent: apply a concept to a situation, analyze cause–effect, choose an appropriate action
-- REQUIRED: contextual or situational framing
-- Disallowed: pure recall, opinion-only judgment
+Level 2
+Skill Complexity: Simple, structured tasks with predictable outcomes.
+Skill Knowledge: Understands basic principles and simple processes; limited breadth.
+Bloom's Taxonomy Alignment: Understanding (explain, summarize, classify).
+Definition: Individuals can describe the fundamentals of the skill and apply it in straightforward, guided situations but lack adaptability in unfamiliar contexts.
 
-ADVANCED (DIFFICULT):
-- Bloom levels allowed: EVALUATE, CREATE
-- Question intent: assess trade-offs, critique approaches, prioritize actions, design responses
-- REQUIRED: complex scenario with constraints or competing priorities
-- Disallowed: recall, simple application, single obvious answer
+Level 3
+Skill Complexity: Moderate; applies the skill to standard problems and varying contexts.
+Skill Knowledge: Demonstrates working knowledge of methods, tools, and practices.
+Bloom's Taxonomy Alignment: Applying (execute, implement, use).
+Definition: Individuals apply the skill independently in routine tasks, make appropriate choices among standard methods, and achieve consistent results.
 
-Rules:
-- A question must target ONE Bloom level only.
-- If Bloom level is ambiguous → generation must be rewritten.
-- Difficulty must NEVER be inferred; it must be demonstrated by the question.
+Level 4
+Skill Complexity: Advanced; handles complexity and interdependencies within the skill.
+Skill Knowledge: Strong understanding of concepts, techniques, and multiple approaches.
+Bloom's Taxonomy Alignment: Analyzing (differentiate, compare, organize).
+Definition: Individuals can analyze situations, adapt the skill to diverse scenarios, and integrate it with other knowledge areas to solve complex problems.
+
+Level 5
+Skill Complexity: Expert-level; applies the skill to novel, complex, and strategic contexts.
+Skill Knowledge: Deep mastery, including principles, cross-domain integration, and innovation.
+Bloom's Taxonomy Alignment: Evaluating & Creating (design, innovate, justify, set standards).
+Definition: Individuals demonstrate mastery by critically evaluating, designing, and innovating within the skill area. They extend its application to new domains and establish best practices.
+
+Canonical Mapping (authoritative):
+- Easy: Level 1, Level 2
+- Intermediate: Level 3
+- Advanced: Level 4, Level 5
 """
 
 SYSTEM_PROMPT_TEMPLATE = """
@@ -192,6 +211,42 @@ STRICT RULES:
 
 DIFFICULTY ↔ BLOOM MAPPING (MANDATORY):
 {bloom_alignment}
+
+Difficulty-to-Cognition Mapping (MANDATORY):
+
+Easy questions MUST align ONLY with:
+- Level 1 (Recognizes, recalls, identifies concepts; no application)
+- Level 2 (Explains, summarizes, classifies; applies only in simple, guided contexts)
+
+Intermediate questions MUST align ONLY with:
+- Level 3 (Applies the skill independently in standard, routine situations)
+
+Advanced questions MUST align ONLY with:
+- Level 4 (Analyzes, adapts, integrates across contexts)
+- Level 5 (Evaluates, designs, innovates, sets best practices)
+
+Hard constraints:
+- Do NOT generate application, analysis, evaluation, or judgment questions for Easy.
+- Do NOT generate recall-only or definition-only questions for Intermediate.
+- Do NOT generate opinion-only or generic explanation questions for Advanced.
+
+Difficulty-to-Cognition Mapping (MANDATORY):
+
+Easy questions MUST align ONLY with:
+- Level 1 (Recognizes, recalls, identifies concepts; no application)
+- Level 2 (Explains, summarizes, classifies; applies only in simple, guided contexts)
+
+Intermediate questions MUST align ONLY with:
+- Level 3 (Applies the skill independently in standard, routine situations)
+
+Advanced questions MUST align ONLY with:
+- Level 4 (Analyzes, adapts, integrates across contexts)
+- Level 5 (Evaluates, designs, innovates, sets best practices)
+
+Hard constraints:
+- Do NOT generate application, analysis, evaluation, or judgment questions for Easy.
+- Do NOT generate recall-only or definition-only questions for Intermediate.
+- Do NOT generate opinion-only or generic explanation questions for Advanced.
 
 CONTENT RULES:
 - Use clear, professional English.
@@ -543,6 +598,22 @@ Fail the question if:
 - Question is generic or recall-only when higher difficulty is declared
 - Distractors are implausible or irrelevant
 - Question does not clearly measure the learning objective
+
+Cognitive Alignment Check (FAIL FAST):
+
+Validate that each question’s cognitive demand strictly matches its difficulty label.
+
+Rules:
+- Easy questions must demonstrate Level 1 or Level 2 cognition only.
+  Fail if the question requires independent application, decision-making, or scenario adaptation.
+- Intermediate questions must demonstrate Level 3 cognition.
+  Fail if the question can be answered by recall, definition, or surface explanation.
+- Advanced questions must demonstrate Level 4 or Level 5 cognition.
+  Fail if the question only asks to explain, describe, or give opinions without analysis, evaluation, or synthesis.
+
+If misalignment is detected:
+- Mark the question as INVALID
+- Provide a short reason referencing the violated level boundary
 
 Return ONLY JSON:
 {
