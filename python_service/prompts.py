@@ -4,12 +4,12 @@ RES_FORMAT = """
     "LearningObjective": "Learning objective 1",
     "questions": [
       {
-        "question": "What is the capital of France?",
-        "answers": [
-          {"answer": "Paris", "explanation": "Paris is the capital city of France.", "correct": true},
-          {"answer": "London", "explanation": "London is the capital of the UK, not France.", "correct": false},
-          {"answer": "Berlin", "explanation": "Berlin is the capital of Germany.", "correct": false},
-          {"answer": "Rome", "explanation": "Rome is the capital of Italy.", "correct": false}
+        "questionText": "What is the capital of France?",
+        "answer": [
+          {"answerText": "Paris", "explanation": "Paris is the capital city of France.", "isCorrect": true},
+          {"answerText": "London", "explanation": "London is the capital of the UK, not France.", "isCorrect": false},
+          {"answerText": "Berlin", "explanation": "Berlin is the capital of Germany.", "isCorrect": false},
+          {"answerText": "Rome", "explanation": "Rome is the capital of Italy.", "isCorrect": false}
         ]
       }
     ]
@@ -23,13 +23,13 @@ RES_FORMAT_MULTI_SELECT = """
     "LearningObjective": "Learning objective 1",
     "questions": [
       {
-        "question": "Which of the following are programming languages?",
-        "answers": [
-          {"answer": "Python", "explanation": "Python is a popular programming language.", "correct": true},
-          {"answer": "Java", "explanation": "Java is widely used for building enterprise applications.", "correct": true},
-          {"answer": "HTML", "explanation": "HTML is a markup language, not a programming language.", "correct": false},
-          {"answer": "CSS", "explanation": "CSS is used for styling web pages, not for programming logic.", "correct": false},
-          {"answer": "Photoshop", "explanation": "Photoshop is an image editing tool, not a programming language.", "correct": false}
+        "questionText": "Which of the following are programming languages?",
+        "answer": [
+          {"answerText": "Python", "explanation": "Python is a popular programming language.", "isCorrect": true},
+          {"answerText": "Java", "explanation": "Java is widely used for building enterprise applications.", "isCorrect": true},
+          {"answerText": "HTML", "explanation": "HTML is a markup language, not a programming language.", "isCorrect": false},
+          {"answerText": "CSS", "explanation": "CSS is used for styling web pages, not for programming logic.", "isCorrect": false},
+          {"answerText": "Photoshop", "explanation": "Photoshop is an image editing tool, not a programming language.", "isCorrect": false}
         ]
       }
     ]
@@ -43,7 +43,7 @@ RES_FORMAT_MATCH_COLUMNS = """
     "LearningObjective": "Learning objective 1",
     "questions": [
       {
-        "question": "Match each term to its definition.",
+        "questionText": "Match each term to its definition.",
         "column_a_answers": [
           {"Option-A": "Project"},
           {"Option-B": "Program"},
@@ -67,6 +67,50 @@ RES_FORMAT_MATCH_COLUMNS = """
     ]
   }
 ]
+"""
+
+DEFAULT_QUALITY_RUBRIC = """
+Quality Rubric for MCQ/Matching Items (0–100)
+
+1) Learning Objective Alignment (0–20)
+- 0–5: Question is off-topic or only loosely related.
+- 6–12: Partially aligned; tests a related concept but not the LO.
+- 13–20: Directly and clearly measures the LO.
+
+2) Cognitive Level Alignment (Bloom vs Difficulty) (0–20)
+- 0–5: Bloom level clearly mismatched to declared difficulty.
+- 6–12: Partially aligned; ambiguous cognitive demand.
+- 13–20: Clear and correct Bloom alignment.
+
+3) Question Clarity & Precision (0–15)
+- 0–5: Ambiguous, vague, or poorly worded.
+- 6–10: Mostly clear but still some ambiguity.
+- 11–15: Clear, precise, and unambiguous.
+
+4) Distractor Quality (0–20)
+- 0–5: Implausible or irrelevant distractors.
+- 6–12: Mixed quality; some weak or too obvious.
+- 13–20: Plausible, distinct, and misconception-based.
+
+5) Answer Key Validity (0–10)
+- 0–3: Correct answer unclear or multiple correct options.
+- 4–7: Mostly valid but potentially arguable.
+- 8–10: Single, clearly correct answer.
+
+6) Non-redundancy & Balance (0–10)
+- 0–3: Repetitive, overlapping options or stems.
+- 4–7: Minor redundancy.
+- 8–10: Balanced, non-overlapping options.
+
+7) Language & Tone (0–5)
+- 0–2: Poor grammar, awkward phrasing.
+- 3–4: Mostly correct with minor issues.
+- 5: Professional, polished language.
+
+Scoring guidance:
+- >=85 = PASS
+- 70-84 = Needs minor improvement
+- <70 = FAIL
 """
 
 INTERMEDIATE_FORMAT_MCQ = """

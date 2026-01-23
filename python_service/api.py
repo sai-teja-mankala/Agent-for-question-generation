@@ -6,12 +6,17 @@ from .agent import run_pipeline
 app = FastAPI()
 
 
+class LearningObjectiveItem(BaseModel):
+    id: str | None = None
+    description: str | None = None
+
+
 class PipelineRequest(BaseModel):
     assessmentContainerId: str | None = None
     internalAssessmentId: str | None = None
     locale: str | None = None
     sourceText: str | None = None
-    learningObjectives: list[str] | None = None
+    learningObjectives: list[str | LearningObjectiveItem] | None = None
     learningObjective: list[str] | None = None
     learningObjectiveUuid: str | list[str] | None = None
     numberOfQuestions: int | None = None
@@ -52,8 +57,4 @@ def run(request: PipelineRequest):
         raise ValueError("questionTypes is required and must be a non-empty array")
     if not payload.get("difficultyLevels"):
         raise ValueError("difficultyLevels is required and must be a non-empty array")
-    result = run_pipeline(payload)
-    return {
-        "summary": result.get("summary"),
-        "results": result.get("formatted", []),
-    }
+    return run_pipeline(payload)

@@ -1,0 +1,100 @@
+{
+  "data": {
+    "internalAssessmentId": null,
+    "assessmentContainerId": null,
+    "sourceText": "",
+    "learningObjectives": [
+      {
+        "id": null,
+        "description": "Communicates openly and actively listens to create a psychologically safe environment that fosters empathy and trust"
+      }
+    ],
+    "questionType": [
+      "MULTIPLE_CHOICE"
+    ],
+    "numberOfQuestions": 1,
+    "assessmentStatus": "Draft",
+    "difficultyLevel": [
+      "easy",
+      "Intermediate"
+    ]
+  },
+  "learningObjectives": [
+    {
+      "learningObjective": "Communicates openly and actively listens to create a psychologically safe environment that fosters empathy and trust",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "d6dee2b3-3f69-4b33-9abd-bac40b39d45b",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "Which of the following behaviors is most likely to create a psychologically safe environment that fosters empathy and trust in a team setting?",
+          "answer": [
+            {
+              "answerId": "ca16f69a-cd71-4e23-9b82-550df69274da",
+              "answerText": "Acknowledging team members' contributions and encouraging their input during discussions.",
+              "explanation": "This behavior promotes open communication and shows appreciation for team members' ideas, fostering a safe environment.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "5a1cb99f-503c-43b5-9b79-120babe1bcff",
+              "answerText": "Focusing primarily on one's own tasks without engaging with others.",
+              "explanation": "While it seems efficient individually, it does not promote communication or listening, hence not fostering a safe environment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "72be6afa-58b6-432b-a080-9f4c97b163e1",
+              "answerText": "Criticizing team members without offering constructive feedback.",
+              "explanation": "This behavior can decrease psychological safety and trust among team members.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "0f9af7a9-c503-4fb7-a7c6-d56dd56b4f8e",
+              "answerText": "Interrupting others frequently to express one's own opinions.",
+              "explanation": "This disrupts open communication and indicates a lack of active listening, which is contrary to creating a safe environment.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "f3e5c7cb-9cc5-4c08-98e7-11d99e4cba86",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "In a team meeting, you notice that one of your colleagues is reluctant to share their ideas due to fear of judgment. Which of the following actions would best demonstrate open communication and active listening to foster a psychologically safe environment?",
+          "answer": [
+            {
+              "answerId": "c4c22dad-4aa8-4e6c-bead-4fc5f8bb0962",
+              "answerText": "A) Ignore the colleague to let them decide whether to speak up or not.",
+              "explanation": "Ignoring the colleague does not encourage communication or reflect active listening.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "9452e251-c46c-4b32-b73b-6524bcd99be4",
+              "answerText": "B) Reassure your colleague by openly inviting them to share their thoughts and genuinely acknowledging their ideas.",
+              "explanation": "This action demonstrates open communication and active listening by creating a welcoming environment where the colleague feels safe to express their ideas.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "948955b6-b4fd-43d3-b4e4-4a170928530d",
+              "answerText": "C) Repeat your own ideas multiple times to steer the discussion in a specific direction.",
+              "explanation": "Repeating your own ideas can dominate the conversation and discourage others from speaking.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "faa481d3-f7e1-48f3-a513-e6614f952d45",
+              "answerText": "D) Challenge their hesitation directly by emphasizing the importance of contribution.",
+              "explanation": "Challenging them may increase their discomfort and inhibit them from sharing openly.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}

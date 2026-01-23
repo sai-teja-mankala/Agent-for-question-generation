@@ -6,7 +6,7 @@ QuestionType = Literal["MULTIPLE_CHOICE", "MULTIPLE_CHOICE_MULTI_SELECT", "MATCH
 class PipelineInput(TypedDict, total=False):
     locale: str
     sourceText: str
-    learningObjectives: List[str]
+    learningObjectives: List[Any]
     numberOfQuestions: int
     questionTypes: List[QuestionType]
     difficultyLevels: List[str]

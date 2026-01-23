@@ -2,12 +2,14 @@ import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List
+from uuid import uuid4
 
 from langgraph.graph import END, StateGraph
 
 from .llm import build_client, get_deployment_name
 from .prompts import (
     BLOOM_ALIGNMENT_GENERATION_GUIDANCE,
+    DEFAULT_QUALITY_RUBRIC,
     INTERMEDIATE_FORMAT_MATCHING,
     INTERMEDIATE_FORMAT_MCQ,
     RES_FORMAT,
@@ -73,10 +75,12 @@ def _log_state_summary(state: GraphState, stage: str) -> None:
 
 
 def _log_formatted_output(state: GraphState) -> None:
+    formatted = state.get("formatted", [])
+    results = [item.get("result") for item in formatted if isinstance(item, dict)]
     _append_json_line(
         {
-            "type": "formatted_output",
-            "formatted": state.get("formatted", []),
+            "type": "questions_output",
+            "results": results,
         },
         path=_RESULT_QUESTIONS_PATH,
     )
@@ -121,6 +125,38 @@ def _parse_json_raw(content: str) -> Any:
     return json.loads(cleaned)
 
 
+def _normalize_learning_objectives(payload: PipelineInput) -> List[Dict[str, Any]]:
+    raw = payload.get("learningObjectives") or []
+    normalized: List[Dict[str, Any]] = []
+    uuid_list = payload.get("learningObjectiveUuid")
+    uuid_values: List[str | None] = []
+    if isinstance(uuid_list, list):
+        uuid_values = [str(val) if val else None for val in uuid_list]
+    elif isinstance(uuid_list, str):
+        uuid_values = [uuid_list]
+
+    for idx, item in enumerate(raw):
+        if isinstance(item, dict):
+            description = (
+                item.get("description")
+                or item.get("learningObjective")
+                or item.get("text")
+                or ""
+            )
+            lo_id = item.get("id") or item.get("learningObjectiveUuid")
+        else:
+            description = str(item)
+            lo_id = None
+        if not lo_id and idx < len(uuid_values):
+            lo_id = uuid_values[idx]
+        normalized.append({"id": lo_id, "description": description})
+    return normalized
+
+
+def _learning_objective_descriptions(payload: PipelineInput) -> List[str]:
+    return [entry["description"] for entry in _normalize_learning_objectives(payload) if entry.get("description")]
+
+
 
 
 def build_prompt_payloads(state: GraphState) -> GraphState:
@@ -129,7 +165,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
     locale = data.get("locale", "en")
     source_text = data.get("sourceText", "")
     number_of_questions = data.get("numberOfQuestions", 3)
-    rubric = data.get("qualityRubric") or BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+    rubric = data.get("qualityRubric") or DEFAULT_QUALITY_RUBRIC.strip()
     bloom_alignment = BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
     question_types = data.get("questionTypes", ["MULTIPLE_CHOICE"])
     num_correct = data.get("numCorrectOptions", 1)
@@ -139,7 +175,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
     )
 
     payloads: List[PromptPayload] = []
-    for lo in data.get("learningObjectives", []):
+    for lo in _learning_objective_descriptions(data):
         for qtype in question_types:
             for level in difficulties:
                 if qtype == "MATCHING":
@@ -213,11 +249,11 @@ def generate_questions(state: GraphState) -> GraphState:
     client = build_client()
     deployment = get_deployment_name()
     number_of_questions = state["input"].get("numberOfQuestions", 3)
-    rubric = state["input"].get("qualityRubric") or BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+    rubric = state["input"].get("qualityRubric") or DEFAULT_QUALITY_RUBRIC.strip()
     threshold = state["input"].get("qualityThreshold", 85)
     relevancy_threshold = state["input"].get("relevancyThreshold", 85)
     max_attempts = state["input"].get("maxAttempts", 2)
-    learning_objectives = state["input"].get("learningObjectives", [])
+    learning_objectives = _learning_objective_descriptions(state["input"])
 
     outputs: List[Dict[str, Any]] = []
     for payload in state["prompt_payloads"]:
@@ -342,21 +378,25 @@ def _is_valid_format(result: Any, question_type: str) -> bool:
     if not isinstance(questions, list) or not questions:
         return False
     for question in questions:
-        if not isinstance(question, dict) or "question" not in question:
+        if not isinstance(question, dict):
+            return False
+        if "question" not in question and "questionText" not in question:
             return False
         if question_type == "MATCHING":
             if "column_a_answers" not in question or "column_b_answers" not in question:
                 return False
-            if "answers" not in question:
+            if "answers" not in question and "answer" not in question:
                 return False
         else:
-            answers = question.get("answers")
+            answers = question.get("answers") or question.get("answer")
             if not isinstance(answers, list) or not answers:
                 return False
             for ans in answers:
                 if not isinstance(ans, dict):
                     return False
-                if "answer" not in ans or "explanation" not in ans or "correct" not in ans:
+                has_answer = "answer" in ans or "answerText" in ans
+                has_correct = "correct" in ans or "isCorrect" in ans
+                if not has_answer or "explanation" not in ans or not has_correct:
                     return False
     return True
 
@@ -371,9 +411,17 @@ def _count_questions(result: Any) -> int:
 
 
 def _extract_mcq_parts(question: Dict[str, Any]) -> Dict[str, Any]:
-    answers = question.get("answers", [])
-    correct_answers = [a.get("answer") for a in answers if a.get("correct") is True]
-    distractors = [a.get("answer") for a in answers if a.get("correct") is False]
+    answers = question.get("answers") or question.get("answer") or []
+    correct_answers = [
+        a.get("answer") or a.get("answerText")
+        for a in answers
+        if a.get("correct") is True or a.get("isCorrect") is True
+    ]
+    distractors = [
+        a.get("answer") or a.get("answerText")
+        for a in answers
+        if a.get("correct") is False or a.get("isCorrect") is False
+    ]
     return {
         "answers": answers,
         "correct_answers": [a for a in correct_answers if a],
@@ -382,6 +430,8 @@ def _extract_mcq_parts(question: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _count_result_questions(result: Any) -> int:
+    if isinstance(result, list) and result and isinstance(result[0], dict):
+        result = result[0]
     if isinstance(result, dict):
         questions = result.get("questions")
         if isinstance(questions, list):
@@ -681,9 +731,7 @@ def validate_and_fix_format(state: GraphState) -> GraphState:
     state["improved_outputs"] = fixed
     logger.info("Format validation complete for %s outputs", len(fixed))
     state["format_fix_attempts"] = state.get("format_fix_attempts", 0) + 1
-    max_attempts = state["input"].get(
-        "maxFormatFixAttempts", state["input"].get("maxAttempts", 2)
-    )
+    max_attempts = state["input"].get("maxFormatFixAttempts", 2)
     state["format_loop"] = (not all_valid) and state["format_fix_attempts"] < max_attempts
     _log_state_summary(state, "validate_and_fix_format")
     return state
@@ -693,10 +741,10 @@ def validate_quality(state: GraphState) -> GraphState:
     logger.info("Validating quality and relevancy")
     client = build_client()
     deployment = get_deployment_name()
-    rubric = state["input"].get("qualityRubric") or BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+    rubric = state["input"].get("qualityRubric") or DEFAULT_QUALITY_RUBRIC.strip()
     threshold = state["input"].get("qualityThreshold", 85)
     relevancy_threshold = state["input"].get("relevancyThreshold", 85)
-    learning_objectives = state["input"].get("learningObjectives", [])
+    learning_objectives = _learning_objective_descriptions(state["input"])
 
     passed: List[Dict[str, Any]] = []
     failed: List[Dict[str, Any]] = []
@@ -790,16 +838,34 @@ def correct_quality(state: GraphState) -> GraphState:
 
 def format_conversion(state: GraphState) -> GraphState:
     logger.info("Formatting results")
+    client = build_client()
+    deployment = get_deployment_name()
     formatted: List[Dict[str, Any]] = []
     for item in state["improved_outputs"]:
         payload = item["payload"]
         result = item["result"]
+        prompt = USER_PROMPT_TEMPLATE_FIX_FORMAT.replace(
+            "{res_format}", payload["responseFormat"]
+        ).replace("{raw_output}", json.dumps(result))
+        response = client.chat.completions.create(
+            model=deployment,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT_TEMPLATE_FIX_FORMAT},
+                {"role": "user", "content": prompt},
+            ],
+        )
+        content = response.choices[0].message.content or ""
+        try:
+            parsed = _parse_json_raw(content)
+        except json.JSONDecodeError:
+            parsed = {"error": "Invalid JSON from model", "raw": content}
         formatted.append(
             {
+                "payload": payload,
                 "learningObjective": payload["learningObjective"],
                 "difficultyLevel": payload["difficultyLevel"],
                 "questionType": payload["questionType"],
-                "result": result,
+                "result": parsed,
             }
         )
     state["formatted"] = formatted
@@ -836,7 +902,7 @@ def _route_from_validate_quality(state: GraphState) -> str:
     attempts = state.get("quality_correction_attempts", 0)
     if failed and attempts < max_attempts:
         return "correct_quality"
-    return "validate"
+    return "end"
 
 
 def _route_from_format(state: GraphState) -> str:
@@ -856,9 +922,6 @@ def build_graph():
     graph.add_node("correct_distractors", correct_distractors)
     graph.add_node("validate_quality", validate_quality)
     graph.add_node("correct_quality", correct_quality)
-    graph.add_node("validate", validate_and_fix_format)
-    graph.add_node("format", format_conversion)
-
     graph.set_entry_point("build_prompts")
     graph.add_edge("build_prompts", "generate")
     graph.add_edge("generate", "improve")
@@ -879,11 +942,9 @@ def build_graph():
     graph.add_conditional_edges(
         "validate_quality",
         _route_from_validate_quality,
-        {"correct_quality": "correct_quality", "validate": "validate"},
+        {"correct_quality": "correct_quality", "end": END},
     )
     graph.add_edge("correct_quality", "validate_quality")
-    graph.add_edge("validate", "format")
-    graph.add_conditional_edges("format", _route_from_format, {"validate": "validate", "end": END})
     return graph.compile()
 
 
@@ -891,61 +952,63 @@ def _fill_missing_questions(
     app, payload: PipelineInput, final_state: Dict[str, Any]
 ) -> Dict[str, Any]:
     max_fill_attempts = payload.get("maxFillAttempts", 1)
+    if max_fill_attempts < 1:
+        return final_state
     target_count = payload.get("numberOfQuestions", 3)
-    attempt = 0
-    while attempt < max_fill_attempts:
-        missing_sections: List[Dict[str, Any]] = []
-        for item in final_state.get("formatted", []):
-            result = item.get("result")
-            current_count = _count_result_questions(result)
-            if current_count < target_count:
-                missing_sections.append(
-                    {
-                        "item": item,
-                        "missing": target_count - current_count,
-                    }
-                )
-        if not missing_sections:
-            break
-
-        for entry in missing_sections:
-            item = entry["item"]
-            missing = entry["missing"]
-            scoped_payload: PipelineInput = dict(payload)
-            scoped_payload["learningObjectives"] = [item["learningObjective"]]
-            scoped_payload["questionTypes"] = [item["questionType"]]
-            scoped_payload["difficultyLevels"] = [item["difficultyLevel"]]
-            scoped_payload["numberOfQuestions"] = missing
-
-            scoped_state = app.invoke(
+    missing_sections: List[Dict[str, Any]] = []
+    for item in final_state.get("improved_outputs", []):
+        result = item.get("result")
+        current_count = _count_result_questions(result)
+        if current_count < target_count:
+            missing_sections.append(
                 {
-                    "input": scoped_payload,
-                    "prompt_payloads": [],
-                    "raw_outputs": [],
-                    "improved_outputs": [],
-                    "quality": [],
-                    "formatted": [],
+                    "item": item,
+                    "missing": target_count - current_count,
                 }
             )
-            new_entries = scoped_state.get("formatted", [])
-            if not new_entries:
-                continue
-            new_result = new_entries[0].get("result")
-            if not isinstance(new_result, dict):
-                continue
-            new_questions = new_result.get("questions")
-            if not isinstance(new_questions, list) or not new_questions:
-                continue
+    if not missing_sections:
+        return final_state
 
-            current_result = item.get("result")
-            if not isinstance(current_result, dict):
-                continue
-            current_questions = current_result.get("questions")
-            if not isinstance(current_questions, list):
-                continue
-            current_result["questions"] = current_questions + new_questions
+    for entry in missing_sections:
+        item = entry["item"]
+        missing = entry["missing"]
+        scoped_payload: PipelineInput = dict(payload)
+        scoped_payload["learningObjectives"] = [item["payload"]["learningObjective"]]
+        scoped_payload["questionTypes"] = [item["payload"]["questionType"]]
+        scoped_payload["difficultyLevels"] = [item["payload"]["difficultyLevel"]]
+        scoped_payload["numberOfQuestions"] = missing
 
-        attempt += 1
+        scoped_state = app.invoke(
+            {
+                "input": scoped_payload,
+                "prompt_payloads": [],
+                "raw_outputs": [],
+                "improved_outputs": [],
+                "quality": [],
+                "formatted": [],
+            }
+        )
+        new_entries = scoped_state.get("improved_outputs", [])
+        if not new_entries:
+            continue
+        new_result = new_entries[0].get("result")
+        if isinstance(new_result, list) and new_result and isinstance(new_result[0], dict):
+            new_result = new_result[0]
+        if not isinstance(new_result, dict):
+            continue
+        new_questions = new_result.get("questions")
+        if not isinstance(new_questions, list) or not new_questions:
+            continue
+
+        current_result = item.get("result")
+        if isinstance(current_result, list) and current_result and isinstance(current_result[0], dict):
+            current_result = current_result[0]
+        if not isinstance(current_result, dict):
+            continue
+        current_questions = current_result.get("questions")
+        if not isinstance(current_questions, list):
+            continue
+        current_result["questions"] = current_questions + new_questions
 
     return final_state
 
@@ -957,6 +1020,103 @@ def _write_final_state(final_state: Dict[str, Any]) -> None:
         )
     except OSError as exc:
         logger.warning("Failed to write final state: %s", exc)
+
+
+def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[str, Any]:
+    normalized_los = _normalize_learning_objectives(payload)
+    lo_index = {entry["description"]: entry for entry in normalized_los}
+
+    objectives_out: List[Dict[str, Any]] = []
+    for idx, entry in enumerate(normalized_los, start=1):
+        objectives_out.append(
+            {
+                "learningObjective": entry.get("description", ""),
+                "learningObjectiveUuid": entry.get("id"),
+                "learningObjectiveOrder": idx,
+                "questions": [],
+            }
+        )
+
+    for item in items:
+        payload_item = item.get("payload", {})
+        lo_text = payload_item.get("learningObjective") or item.get("learningObjective")
+        objective = next(
+            (obj for obj in objectives_out if obj.get("learningObjective") == lo_text), None
+        )
+        if not objective:
+            continue
+        result = item.get("result")
+        questions = []
+        if isinstance(result, dict):
+            questions = result.get("questions") or []
+        elif isinstance(result, list) and result and isinstance(result[0], dict):
+            questions = result[0].get("questions") or []
+        for question in questions:
+            question_type = payload_item.get("questionType") or item.get("questionType")
+            answers_out: List[Dict[str, Any]] = []
+            scenario_focus = None
+            answer_items = []
+            if isinstance(question, dict):
+                answer_items = question.get("answers") or question.get("answer") or []
+            for answer in answer_items:
+                answers_out.append(
+                    {
+                        "answerId": str(uuid4()),
+                        "answerText": answer.get("answer") or answer.get("answerText"),
+                        "explanation": answer.get("explanation"),
+                        "isCorrect": (
+                            answer.get("correct")
+                            if answer.get("correct") is not None
+                            else answer.get("isCorrect")
+                        ),
+                    }
+                )
+            if isinstance(question, dict):
+                scenario_focus = (
+                    question.get("scenarioFocus")
+                    or question.get("context")
+                    or question.get("learningObjective")
+                    or question.get("LearningObjective")
+                )
+            objective["questions"].append(
+                {
+                    "id": str(uuid4()),
+                    "questionType": question_type,
+                    "aiGeneratedDifficulty": payload_item.get("difficultyLevel")
+                    or item.get("difficultyLevel"),
+                    "questionText": (
+                        question.get("questionText") or question.get("question")
+                        if isinstance(question, dict)
+                        else None
+                    ),
+                    "answer": answers_out,
+                    "isUploaded": False,
+                    "scenarioFocus": scenario_focus,
+                }
+            )
+
+    data_learning_objectives = []
+    for entry in normalized_los:
+        data_learning_objectives.append(
+            {"id": entry.get("id"), "description": entry.get("description", "")}
+        )
+
+    return {
+        "data": {
+            "internalAssessmentId": payload.get("internalAssessmentId"),
+            "assessmentContainerId": payload.get("assessmentContainerId"),
+            "sourceText": payload.get("sourceText", ""),
+            "learningObjectives": data_learning_objectives,
+            "questionType": payload.get("questionTypes", []),
+            "numberOfQuestions": payload.get("numberOfQuestions", 3),
+            "assessmentStatus": payload.get("assessmentStatus", "Draft"),
+            "difficultyLevel": payload.get(
+                "difficultyLevels", []
+            ),
+        },
+        "learningObjectives": objectives_out,
+        "questionGenerationStatus": "READY_FOR_REVIEW",
+    }
 
 
 def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
@@ -973,38 +1133,11 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
         }
     )
     final_state = _fill_missing_questions(app, payload, final_state)
-    _write_final_state(final_state)
-    learning_objectives = payload.get("learningObjectives", [])
-    number_of_questions = payload.get("numberOfQuestions", 3)
-    question_types = payload.get("questionTypes", ["MULTIPLE_CHOICE"])
-    difficulty_levels = payload.get(
-        "difficultyLevels", ["Beginner", "Intermediate", "Advanced"]
-    )
-    expected_total = (
-        len(learning_objectives)
-        * number_of_questions
-        * len(question_types)
-        * len(difficulty_levels)
-    )
-    actual_total = 0
-    for item in final_state.get("formatted", []):
-        result = item.get("result")
-        questions = None
-        if isinstance(result, dict):
-            questions = result.get("questions")
-        elif isinstance(result, list) and result and isinstance(result[0], dict):
-            questions = result[0].get("questions")
-        if isinstance(questions, list):
-            actual_total += len(questions)
-    final_state["summary"] = {
-        "assessmentContainerId": payload.get("assessmentContainerId"),
-        "internalAssessmentId": payload.get("internalAssessmentId"),
-        "learningObjectiveUuid": payload.get("learningObjectiveUuid"),
-        "learningObjectivesCount": len(learning_objectives),
-        "numberOfQuestions": number_of_questions,
-        "questionTypesCount": len(question_types),
-        "difficultyLevelsCount": len(difficulty_levels),
-        "expectedTotalQuestions": expected_total,
-        "actualTotalQuestions": actual_total,
-    }
-    return final_state
+    final_state = format_conversion(final_state)
+    final_state = validate_and_fix_format(final_state)
+    if final_state.get("format_loop"):
+        final_state = format_conversion(final_state)
+        final_state = validate_and_fix_format(final_state)
+    output = _build_output(payload, final_state.get("improved_outputs", []))
+    _write_final_state(output)
+    return output
