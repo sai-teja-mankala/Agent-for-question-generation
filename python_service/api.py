@@ -23,7 +23,6 @@ class PipelineRequest(BaseModel):
     numIncorrectOptions: int | None = None
     qualityRubric: str | None = None
     qualityThreshold: int | None = None
-    relevancyRubric: str | None = None
     relevancyThreshold: int | None = None
     maxAttempts: int | None = None
 

@@ -1,7 +1,6 @@
 from typing import Any, Dict, List, Literal, TypedDict
 
 QuestionType = Literal["MULTIPLE_CHOICE", "MULTIPLE_CHOICE_MULTI_SELECT", "MATCHING"]
-LevelOfQuiz = Literal["Beginner", "Intermediate", "Advanced"]
 
 
 class PipelineInput(TypedDict, total=False):
@@ -10,12 +9,11 @@ class PipelineInput(TypedDict, total=False):
     learningObjectives: List[str]
     numberOfQuestions: int
     questionTypes: List[QuestionType]
-    difficultyLevels: List[LevelOfQuiz]
+    difficultyLevels: List[str]
     numCorrectOptions: int
     numIncorrectOptions: int
     qualityRubric: str
     qualityThreshold: int
-    relevancyRubric: str
     relevancyThreshold: int
     maxAttempts: int
     assessmentContainerId: str
@@ -32,7 +30,7 @@ class PromptPayload(TypedDict):
     responseFormat: str
     intermediateFormat: str
     learningObjective: str
-    difficultyLevel: LevelOfQuiz
+    difficultyLevel: str
     questionType: QuestionType
 
 

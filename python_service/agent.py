@@ -7,6 +7,7 @@ from langgraph.graph import END, StateGraph
 
 from .llm import build_client, get_deployment_name
 from .prompts import (
+    BLOOM_ALIGNMENT_GENERATION_GUIDANCE,
     INTERMEDIATE_FORMAT_MATCHING,
     INTERMEDIATE_FORMAT_MCQ,
     RES_FORMAT,
@@ -29,7 +30,7 @@ from .prompts import (
     USER_PROMPT_TEMPLATE_QUALITY_CHECK,
     USER_PROMPT_TEMPLATE_RELEVANCY_CHECK,
 )
-from .qg_types import GraphState, LevelOfQuiz, PipelineInput, PromptPayload, QuestionType
+from .qg_types import GraphState, PipelineInput, PromptPayload, QuestionType
 
 logger = logging.getLogger("pipeline")
 if not logger.handlers:
@@ -128,10 +129,12 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
     locale = data.get("locale", "en")
     source_text = data.get("sourceText", "")
     number_of_questions = data.get("numberOfQuestions", 3)
+    rubric = data.get("qualityRubric") or BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+    bloom_alignment = BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
     question_types = data.get("questionTypes", ["MULTIPLE_CHOICE"])
     num_correct = data.get("numCorrectOptions", 1)
     num_incorrect = data.get("numIncorrectOptions", 3)
-    difficulties: List[LevelOfQuiz] = data.get(
+    difficulties: List[str] = data.get(
         "difficultyLevels", ["Beginner", "Intermediate", "Advanced"]
     )
 
@@ -144,7 +147,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                     incorrect_count = num_incorrect
                     system_prompt = SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS.replace(
                         "{locale}", locale
-                    )
+                    ).replace("{rubric}", rubric).replace("{bloom_alignment}", bloom_alignment)
                     user_prompt = (
                         USER_PROMPT_TEMPLATE_MATCH_COLUMNS.replace(
                             "{difficulty_level}", level
@@ -173,7 +176,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         "{locale}", locale
                     ).replace("{num_correct_options}", str(correct_count)).replace(
                         "{num_incorrect_options}", str(incorrect_count)
-                    )
+                    ).replace("{rubric}", rubric).replace("{bloom_alignment}", bloom_alignment)
                     user_prompt = (
                         USER_PROMPT_TEMPLATE.replace(
                             "{difficulty_level}", level
@@ -210,7 +213,7 @@ def generate_questions(state: GraphState) -> GraphState:
     client = build_client()
     deployment = get_deployment_name()
     number_of_questions = state["input"].get("numberOfQuestions", 3)
-    rubric = state["input"].get("qualityRubric", "No rubric provided.")
+    rubric = state["input"].get("qualityRubric") or BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
     threshold = state["input"].get("qualityThreshold", 85)
     relevancy_threshold = state["input"].get("relevancyThreshold", 85)
     max_attempts = state["input"].get("maxAttempts", 2)
@@ -690,7 +693,7 @@ def validate_quality(state: GraphState) -> GraphState:
     logger.info("Validating quality and relevancy")
     client = build_client()
     deployment = get_deployment_name()
-    rubric = state["input"].get("qualityRubric", "No rubric provided.")
+    rubric = state["input"].get("qualityRubric") or BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
     threshold = state["input"].get("qualityThreshold", 85)
     relevancy_threshold = state["input"].get("relevancyThreshold", 85)
     learning_objectives = state["input"].get("learningObjectives", [])
@@ -837,7 +840,11 @@ def _route_from_validate_quality(state: GraphState) -> str:
 
 
 def _route_from_format(state: GraphState) -> str:
-    return "validate" if state.get("format_loop", True) else "end"
+    format_loop = state.get("format_loop")
+    if format_loop is None:
+        # Safety guard: if the flag was never set, do not loop endlessly.
+        return "end"
+    return "validate" if format_loop else "end"
 
 
 def build_graph():
