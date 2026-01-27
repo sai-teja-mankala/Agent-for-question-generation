@@ -209,10 +209,10 @@ STRICT RULES:
 - NEVER generate opinion-based or generic questions.
 - NEVER ask trivial or overly broad questions.
 
-DIFFICULTY ↔ BLOOM MAPPING (MANDATORY):
+**DIFFICULTY ↔ BLOOM MAPPING (MANDATORY):**
 {bloom_alignment}
 
-Difficulty-to-Cognition Mapping (MANDATORY):
+**IMPORTANT: Difficulty-to-Cognition Mapping (MANDATORY):**
 
 Easy questions MUST align ONLY with:
 - Level 1 (Recognizes, recalls, identifies concepts; no application)
@@ -253,6 +253,8 @@ CONTENT RULES:
 - Avoid vague wording and subjective phrasing.
 - Avoid “all of the above / none of the above”.
 - Ensure distractors are plausible and aligned to the same construct.
+- Ensure options are parallel in structure and similar in length/tone.
+- Avoid giveaway options that are obviously wrong or easy to eliminate.
 - Ensure exactly the requested number of correct and incorrect options.
 - Do NOT introduce information not present in the provided transcript (if any).
 
@@ -264,6 +266,7 @@ STRUCTURAL CONSTRAINTS (HIGH LEVEL ONLY):
 QUALITY BAR:
 - Questions must be realistic, educative, and discriminating.
 - A learner who does not understand the concept should plausibly choose a distractor.
+- If quality cues are not explicit, choose options that would be defensible to a partially competent learner and are not obvious eliminations.
 
 Quality Rubric (use this as strict measurement during generation):
 {rubric}
@@ -272,6 +275,7 @@ Output requirements:
 - Do NOT worry about final JSON formatting but it should be valid JSON.
 - A later system will convert your output into the required schema.
 - Focus ONLY on cognitive quality, Bloom alignment, and learning objective alignment.
+- Before returning, validate that all rules are satisfied and revise if any rule is violated.
 """
 
 USER_PROMPT_TEMPLATE = """
@@ -336,6 +340,8 @@ CONTENT RULES:
 - Avoid vague wording and subjective phrasing.
 - Avoid “all of the above / none of the above”.
 - Ensure distractors are plausible and aligned to the same construct.
+- Ensure options are parallel in structure and similar in length/tone.
+- Avoid giveaway options that are obviously wrong or easy to eliminate.
 - Do NOT introduce information not present in the provided transcript (if any).
 - Generate Match the following or Match the columns type questions.
 - Match the following or Match the columns should have 4 options.
@@ -349,6 +355,7 @@ STRUCTURAL CONSTRAINTS (HIGH LEVEL ONLY):
 QUALITY BAR:
 - Questions must be realistic, educative, and discriminating.
 - A learner who does not understand the concept should plausibly choose a distractor.
+- If quality cues are not explicit, choose options that would be defensible to a partially competent learner and are not obvious eliminations.
 
 Quality Rubric (use this as strict measurement during generation):
 {rubric}
@@ -357,6 +364,7 @@ Output requirements:
 - Do NOT worry about final JSON formatting but it should be valid JSON.
 - A later system will convert your output into the required schema.
 - Focus ONLY on cognitive quality, Bloom alignment, and learning objective alignment.
+- Before returning, validate that all rules are satisfied and revise if any rule is violated.
 """
 
 USER_PROMPT_TEMPLATE_MATCH_COLUMNS = """
@@ -386,7 +394,7 @@ USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION = """
 You are correcting distractors only.
 Do NOT change the question stem or the correct answer.
 Keep the number of options unchanged.
-Improve ONLY the distractors on answer options based on these criteria:
+Use the failure reasons to rewrite ONLY the distractors so they meet the required criteria:
 - Plausibility
 - Construct Relevance
 - Distinctiveness
@@ -460,19 +468,9 @@ OUTPUT FORMAT (STRICT JSON ONLY)
 SYSTEM_PROMPT_TEMPLATE_DISTRACTOR_QUALITY = """
 You are a strict distractor evaluator. Assess EACH distractor individually.
 You must evaluate ONLY the distractor quality metrics below.
-Do NOT rewrite distractors. Do NOT suggest improvements.
-"""
-
-USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY = """
-Question: {question}
-Correct Answer: {correct_answer}
-Distractors: {distractors}
-Learning Objective: {learning_objective}
-Skill/Construct: {skill_or_construct}
-
 METRICS (score each 1–5)
 1) Plausibility
-- How realistic the distractor sounds as something a well-meaning leader might do/say.
+- How realistic the distractor sounds as a choice a partially informed learner might choose.
 - High score = tempting to unsure learners.
 
 2) Construct Relevance
@@ -481,20 +479,34 @@ METRICS (score each 1–5)
 
 3) Distinctiveness
 - How clearly it differs from correct answer AND other options in idea/approach.
-- High score = different type of mistake, not a near-duplicate.
+- High score = different type of mistake, not a near-duplicate, but still plausible enough to be tempting.
 
 4) Incorrectness Clarity
-- How clearly the option is wrong in realistic leadership context.
+- How clearly the option is wrong in the given context.
 - High score = clearly wrong, not debatable or “it depends.”
 
 5) Misconception Representation
 - Whether it reflects a common misconception/error pattern.
 - High score = maps to recognizable misunderstanding.
 
+6) Non-obviousness
+- Whether the distractor avoids being obviously wrong, jokey, off-topic, or extreme.
+- High score = not easily eliminated by test-taking cues.
+
+7) Parallelism & Length Parity
+- Whether the distractor matches the correct option in length, tone, and formality.
+- High score = similar structure and specificity, no giveaway wording.
+
+Distinctiveness enforcement:
+- Each distractor must map to a different misconception bucket.
+- If two distractors share the same misconception bucket, mark those distractors as FAIL and mention the shared bucket in failReason.
+
 STRICT SCORING RULES
 - Use integers 1–5 only.
 - If any metric is ambiguous, score 2 or lower.
 - If distractor could be reasonably correct, Incorrectness Clarity must be ≤2.
+- If a distractor is obviously wrong, score Non-obviousness ≤2.
+- If distractor length/tone is mismatched, score Parallelism & Length Parity ≤2.
 
 OUTPUT FORMAT (STRICT JSON ONLY)
 {
@@ -508,52 +520,132 @@ OUTPUT FORMAT (STRICT JSON ONLY)
         "constructRelevance": 1-5,
         "distinctiveness": 1-5,
         "incorrectnessClarity": 1-5,
-        "misconceptionRepresentation": 1-5
+        "misconceptionRepresentation": 1-5,
+        "nonObviousness": 1-5,
+        "parallelismLengthParity": 1-5
       },
       "pass": true | false,
       "failReason": "<why it failed, else null>"
     }
   ],
   "thresholds": {
-    "minAverageScore": 3.5,
-    "minPerMetricScore": 3
+    "minAverageScore": 4.5,
+    "minPerMetricScore": 4.5
   }
 }
 
 PASS/FAIL LOGIC
 - A distractor passes if ALL metrics >= minPerMetricScore AND average >= minAverageScore.
 - Overall verdict is PASS only if ALL distractors pass.
+Do NOT rewrite distractors. Do NOT suggest improvements.
+"""
+
+USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY = """
+Validate the following parameters:
+Question: {question}
+Correct Answer: {correct_answer}
+Distractors: {distractors}
+Learning Objective: {learning_objective}
+Skill/Construct: {skill_or_construct}
+
+Weak distractor patterns to FAIL if present (verbatim or close paraphrase):
+- "Interrupting frequently"
+- "Ignoring feedback"
+- "Only leaders should speak"
+- "Avoiding discussion"
+- "Criticizing mistakes immediately"
+
+If a distractor fails for repeated misconception, include the bucket label in failReason.
 """
 
 SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS = """
-You are an expert item writer.
+You are an expert assessment and item-writing specialist.
 
-DISTRACTOR QUALITY TARGETS (must optimize all options):
-1) Plausibility: sounds realistic to a learner who is unsure.
-2) Construct Relevance: clearly targets the same skill/learning objective as the correct answer.
-3) Distinctiveness: each distractor represents a different wrong idea; no near-duplicates.
-4) Incorrectness Clarity: clearly wrong in this context; not debatable or "it depends".
-5) Misconception Representation: maps to a common misunderstanding.
+Your task is to REVIEW and REWRITE the distractors (incorrect options) of a multiple-choice question to ensure they test critical thinking and strategic judgment rather than simple recall.
 
-Rules:
-- Do NOT change the question stem.
-- Do NOT change the correct answer.
-- Do NOT change difficulty or Bloom level.
-- Each distractor must:
-  - Target the same learning objective
-  - Represent a realistic misconception
-  - Be clearly incorrect in context
-  - Be similar in length and tone to the correct answer
-- Avoid overlaps between distractors.
+Your Core Objectives:
+1) Reveal Gaps in Strategic Thinking: Distractors should not be "factually false" in a vacuum; they should be suboptimal choices that a learner might make if they lack nuance or focus on the wrong priority.
+2) Eliminate "Easy" Recall: If a distractor can be eliminated simply because it is a "bad" or "incorrect" fact, it is too weak.
+3) Plausible Competitors: Ensure distractors represent "near-miss" decisions—actions that are technically correct in other contexts but incorrect for this specific scenario.
+4) Preserve the original intent, topic, and difficulty band of the item.
 
-Return ONLY valid JSON in the exact response format.
+For each question you receive, follow this process:
+1) Analyze the item
+- Identify the core concept or skill being assessed.
+- Identify why the correct answer is correct.
+- Identify typical misconceptions, common errors, or confusions a partially competent learner might have for this concept.
+
+2) Evaluate current distractors
+- For EACH incorrect option, check:
+  1) Plausibility
+- How realistic the distractor sounds as a choice a partially informed learner might choose.
+- High score = tempting to unsure learners.
+
+2) Construct Relevance
+- How directly the distractor relates to the specific skill/construct being assessed.
+- High score = wrong application of the target skill (not irrelevant or off-topic).
+
+3) Distinctiveness
+- How clearly it differs from correct answer AND other options in idea/approach.
+- High score = different type of mistake, not a near-duplicate.
+
+4) Incorrectness Clarity
+- How clearly the option is wrong in the given context.
+- High score = clearly wrong, not debatable or “it depends.”
+
+5) Misconception Representation
+- Whether it reflects a common misconception/error pattern.
+- High score = maps to recognizable misunderstanding.
+
+6) Non-obviousness
+- Whether the distractor avoids being obviously wrong, jokey, off-topic, or extreme.
+- High score = not easily eliminated by test-taking cues.
+
+7) Parallelism & Length Parity
+- Whether the distractor matches the correct option in length, tone, and formality.
+- High score = similar structure and specificity, no giveaway wording.
+- POLICY COMPLIANCE:
+    - It is never NULL, empty, or just whitespace.
+    - It is never “all of the above”, “none of the above”, or equivalent phrases.
+    - It is not at extreme values when numerical ranges are used (for example, not always the maximum or minimum boundary unless that is pedagogically justified).
+    - It does not reveal the correct answer or contain solution steps.
+
+3) Rewrite distractors when needed
+If a distractor fails any check above, REWRITE IT.
+- Keep the total number of options the same.
+- NEVER modify:
+  - The question stem.
+  - The correct option’s content.
+  - The label of which option is correct.
+- When rewriting:
+  - Base new distractors on realistic misconceptions or near-miss answers.
+  - Maintain similar length, tone, and level of technicality across all options.
+  - Ensure all options remain mutually exclusive and parallel in structure.
+  - Avoid giveaway phrasing (e.g., "always", "never") unless all options use similar qualifiers.
+  - Avoid weak, generic, or cartoonish negatives (e.g., interrupting, ignoring, avoiding, criticizing immediately).
+  - Incorrect answers should not be obvious and should avoid leading words or adjectives.
+  - Avoid binary right-or-wrong framing and provide answers where all options are correct, but the best-fit decision demonstrates critical thinking and nuanced understanding.
+  - Avoid clues such as:
+    - The correct option being the only one with qualifiers (e.g., “always”, “typically”, “in most cases”).
+    - The correct option being noticeably longer, more precise, or more technical.
+    - Grammatical mismatches between stem and incorrect options.
+  - If the current options are weak or too easy to eliminate, generate 20–30 candidate distractors internally, then select the best set that is most plausible, parallel, and hard to eliminate.
+
+4) Explanations (internal reasoning)
+Do NOT include reasoning in the final output returned to the user.
+
+OUTPUT REQUIREMENTS:
+- Only return the improved question in EXACTLY the format specified in the user prompt (including labels, ordering, and any metadata placeholders).
+- Do not add, remove, or reorder answer choices.
+- Do not add any commentary, explanation, or markdown.
+- If no changes are needed, return the question exactly as received, preserving formatting.
 """
 
 USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS = """
-Validate the following question:
+Question with answer choices: {question}
 
-Question with answer choices : {question}
-Response format: {res_format_multi_select_single_difficulty}
+Return ONLY the improved question in this format:
+{res_format_multi_select_single_difficulty}
 """
 
 SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
@@ -598,6 +690,8 @@ Fail the question if:
 - Question is generic or recall-only when higher difficulty is declared
 - Distractors are implausible or irrelevant
 - Question does not clearly measure the learning objective
+- Advanced questions lack trade-offs, competing priorities, or strategic judgment
+- Two or more distractors represent the same misconception or error type
 
 Cognitive Alignment Check (FAIL FAST):
 

@@ -224,6 +224,15 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         .replace("{num_incorrect_options}", str(incorrect_count))
                         .replace("{intermediate_format}", INTERMEDIATE_FORMAT_MCQ)
                     )
+                    if qtype == "MULTIPLE_CHOICE_MULTI_SELECT":
+                        system_prompt = system_prompt.replace(
+                            "Ensure exactly the requested number of correct and incorrect options.",
+                            "For multi-select, ensure between 1 and 3 correct options and the requested number of incorrect options.",
+                        )
+                        user_prompt = user_prompt.replace(
+                            "Generate exactly {num_correct_options} correct options.",
+                            "Generate between 1 and 3 correct options.",
+                        )
                     intermediate_format = INTERMEDIATE_FORMAT_MCQ
                 payloads.append(
                     {
@@ -794,10 +803,16 @@ def correct_quality(state: GraphState) -> GraphState:
         failure_reasons: List[str] = []
         if not quality.get("pass"):
             issues = quality.get("issues") or []
-            failure_reasons.append("Quality issues: " + "; ".join(issues))
+            issue_text = "; ".join(
+                [issue if isinstance(issue, str) else json.dumps(issue) for issue in issues]
+            )
+            failure_reasons.append("Quality issues: " + issue_text)
         if not relevancy.get("pass"):
             issues = relevancy.get("issues") or []
-            failure_reasons.append("Relevancy issues: " + "; ".join(issues))
+            issue_text = "; ".join(
+                [issue if isinstance(issue, str) else json.dumps(issue) for issue in issues]
+            )
+            failure_reasons.append("Relevancy issues: " + issue_text)
         failure_reason_text = "\n".join([r for r in failure_reasons if r]) or "Failed evaluation."
 
         correction_prompt = USER_PROMPT_TEMPLATE_CORRECTION.replace(
@@ -1102,18 +1117,6 @@ def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[s
         )
 
     return {
-        "data": {
-            "internalAssessmentId": payload.get("internalAssessmentId"),
-            "assessmentContainerId": payload.get("assessmentContainerId"),
-            "sourceText": payload.get("sourceText", ""),
-            "learningObjectives": data_learning_objectives,
-            "questionType": payload.get("questionTypes", []),
-            "numberOfQuestions": payload.get("numberOfQuestions", 3),
-            "assessmentStatus": payload.get("assessmentStatus", "Draft"),
-            "difficultyLevel": payload.get(
-                "difficultyLevels", []
-            ),
-        },
         "learningObjectives": objectives_out,
         "questionGenerationStatus": "READY_FOR_REVIEW",
     }

@@ -1,24 +1,4 @@
 {
-  "data": {
-    "internalAssessmentId": null,
-    "assessmentContainerId": null,
-    "sourceText": "",
-    "learningObjectives": [
-      {
-        "id": null,
-        "description": "Communicates openly and actively listens to create a psychologically safe environment that fosters empathy and trust"
-      }
-    ],
-    "questionType": [
-      "MULTIPLE_CHOICE"
-    ],
-    "numberOfQuestions": 1,
-    "assessmentStatus": "Draft",
-    "difficultyLevel": [
-      "easy",
-      "Intermediate"
-    ]
-  },
   "learningObjectives": [
     {
       "learningObjective": "Communicates openly and actively listens to create a psychologically safe environment that fosters empathy and trust",
@@ -26,33 +6,33 @@
       "learningObjectiveOrder": 1,
       "questions": [
         {
-          "id": "d6dee2b3-3f69-4b33-9abd-bac40b39d45b",
+          "id": "7d9579e6-6783-4bd1-be30-485b7730d55b",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "Which of the following behaviors is most likely to create a psychologically safe environment that fosters empathy and trust in a team setting?",
+          "questionText": "Which of the following best demonstrates open communication in a team setting?",
           "answer": [
             {
-              "answerId": "ca16f69a-cd71-4e23-9b82-550df69274da",
-              "answerText": "Acknowledging team members' contributions and encouraging their input during discussions.",
-              "explanation": "This behavior promotes open communication and shows appreciation for team members' ideas, fostering a safe environment.",
+              "answerId": "50876c35-4da6-43df-ab3c-e4eeaa87b1a8",
+              "answerText": "A) Frequently interrupting others to share your opinions",
+              "explanation": "This demonstrates poor communication as it does not allow others to express their thoughts.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "962f6b81-3a04-4c7f-8250-5c0fc0055df0",
+              "answerText": "B) Actively seeking input and ensuring all voices are heard during discussions",
+              "explanation": "This demonstrates open communication by valuing everyone's input and fostering a safe environment.",
               "isCorrect": true
             },
             {
-              "answerId": "5a1cb99f-503c-43b5-9b79-120babe1bcff",
-              "answerText": "Focusing primarily on one's own tasks without engaging with others.",
-              "explanation": "While it seems efficient individually, it does not promote communication or listening, hence not fostering a safe environment.",
+              "answerId": "3f9df16f-cb51-4b84-9503-7b55b1ff507c",
+              "answerText": "C) Avoiding difficult conversations to maintain harmony",
+              "explanation": "Avoiding conversations can lead to issues being unresolved and does not reflect open communication.",
               "isCorrect": false
             },
             {
-              "answerId": "72be6afa-58b6-432b-a080-9f4c97b163e1",
-              "answerText": "Criticizing team members without offering constructive feedback.",
-              "explanation": "This behavior can decrease psychological safety and trust among team members.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "0f9af7a9-c503-4fb7-a7c6-d56dd56b4f8e",
-              "answerText": "Interrupting others frequently to express one's own opinions.",
-              "explanation": "This disrupts open communication and indicates a lack of active listening, which is contrary to creating a safe environment.",
+              "answerId": "a896ca7a-051f-40c6-94fc-b918564884e1",
+              "answerText": "D) Dominating the conversation to ensure your viewpoints are prioritized",
+              "explanation": "Dominating conversations prevents others from contributing and does not foster open communication.",
               "isCorrect": false
             }
           ],
@@ -60,33 +40,790 @@
           "scenarioFocus": null
         },
         {
-          "id": "f3e5c7cb-9cc5-4c08-98e7-11d99e4cba86",
+          "id": "4026a4a6-c9bb-4bb9-bfa3-1512ad1fff6f",
           "questionType": "MULTIPLE_CHOICE",
-          "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "In a team meeting, you notice that one of your colleagues is reluctant to share their ideas due to fear of judgment. Which of the following actions would best demonstrate open communication and active listening to foster a psychologically safe environment?",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "Which of the following practices best contributes to creating a psychologically safe environment that fosters empathy and trust?",
           "answer": [
             {
-              "answerId": "c4c22dad-4aa8-4e6c-bead-4fc5f8bb0962",
-              "answerText": "A) Ignore the colleague to let them decide whether to speak up or not.",
-              "explanation": "Ignoring the colleague does not encourage communication or reflect active listening.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "9452e251-c46c-4b32-b73b-6524bcd99be4",
-              "answerText": "B) Reassure your colleague by openly inviting them to share their thoughts and genuinely acknowledging their ideas.",
-              "explanation": "This action demonstrates open communication and active listening by creating a welcoming environment where the colleague feels safe to express their ideas.",
+              "answerId": "3a63f79e-5722-4fe4-8f68-e6aedfde9641",
+              "answerText": "Sharing personal experiences in group discussions to build connections.",
+              "explanation": "This practice enhances understanding and empathy among team members by promoting open communication and shared experiences.",
               "isCorrect": true
             },
             {
-              "answerId": "948955b6-b4fd-43d3-b4e4-4a170928530d",
-              "answerText": "C) Repeat your own ideas multiple times to steer the discussion in a specific direction.",
-              "explanation": "Repeating your own ideas can dominate the conversation and discourage others from speaking.",
+              "answerId": "aeab884e-7f38-4f1c-a0f3-6e4363695b3b",
+              "answerText": "Criticizing colleagues' ideas without offering constructive feedback.",
+              "explanation": "This approach can damage relationships and trust as it focuses on criticism without supporting growth or understanding.",
               "isCorrect": false
             },
             {
-              "answerId": "faa481d3-f7e1-48f3-a513-e6614f952d45",
-              "answerText": "D) Challenge their hesitation directly by emphasizing the importance of contribution.",
-              "explanation": "Challenging them may increase their discomfort and inhibit them from sharing openly.",
+              "answerId": "ea601b6b-5870-4142-9f2e-f610eccfaaef",
+              "answerText": "Interrupting others during a meeting to express your own opinions.",
+              "explanation": "Interrupting others can prevent effective communication and hinder the building of trust and empathy by not valuing their contributions.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "edc0b5f5-a315-418f-8854-906e6018e9d4",
+              "answerText": "Avoiding eye contact during conversations to minimize pressure.",
+              "explanation": "Avoiding eye contact can be perceived as disinterest or avoidance, neither of which contributes to trust or a sense of safety.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "7d544136-ff1b-4f62-badf-189e7f77dc51",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "What is the best response to ensure open communication and active listening when a team member expresses concerns about a project deadline?",
+          "answer": [
+            {
+              "answerId": "82eee76f-4980-40f4-8c98-62d0e878a4cd",
+              "answerText": "Immediately assure them that everything will be fine without addressing their concerns.",
+              "explanation": "This response does not demonstrate active listening as it dismisses the team member's concerns.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "f1b67da4-1b92-4747-a042-76ddc6638a0b",
+              "answerText": "Interrupt them to provide similar examples from the past to show understanding.",
+              "explanation": "This response interrupts the speaker, which is not a part of active listening.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ad01b212-b2e9-43f8-a3ad-12f93c073e86",
+              "answerText": "Encourage them to share more details and ask clarifying questions to better understand the issue.",
+              "explanation": "This response promotes open communication and active listening by showing genuine interest in understanding the team member's concerns.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "236b68a5-d5d1-4c62-97bb-3c7748512b53",
+              "answerText": "Agree quickly before moving on to the next topic to maintain meeting efficiency.",
+              "explanation": "This response prioritizes meeting efficiency over addressing the concern, which does not support open communication.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "4176b2f9-aef8-4f57-8642-abe7f749f65a",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "You are working in a team meeting where a sensitive topic is being discussed. How can you apply active listening skills to help create a psychologically safe environment that fosters empathy and trust?",
+          "answer": [
+            {
+              "answerId": "f1f9e6be-4133-4400-91bc-3d4a56128ffb",
+              "answerText": "Nod your head occasionally, make eye contact, and summarize what the speaker has said to confirm your understanding.",
+              "explanation": "This option describes active listening techniques that show the speaker you are engaged and understanding, essential for fostering empathy and trust.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "0fe2d599-20c8-4893-aaf5-5339b9c4df4d",
+              "answerText": "Focus solely on preparing your response while the speaker is talking to ensure you have a strong rebuttal.",
+              "explanation": "This option distracts from actively listening and can prevent genuine understanding, which is necessary for creating a psychologically safe environment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "79bb8bcc-d0a5-4fcb-b821-6ac03ca135ab",
+              "answerText": "Interject with your own experiences frequently to show that you have faced similar situations.",
+              "explanation": "While sharing experiences can be supportive, frequent interjections shift the focus away from the speaker and can hinder the creation of a safe environment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "c65648c8-9629-4112-a9a1-d445dd0db7a4",
+              "answerText": "Avoid asking questions to prevent disrupting the flow of the conversation.",
+              "explanation": "Avoiding questions can inhibit the validation and understanding process, which are crucial for psychological safety.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "aec12548-1cb7-43de-8401-5df0c6485c50",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Which of the following strategies is most effective for analyzing and adapting communication to promote psychological safety and trust within a diverse team?",
+          "answer": [
+            {
+              "answerId": "2ad35f8b-7128-4fc0-b1b8-cc2483166de6",
+              "answerText": "Using a standard checklist of communication techniques for all situations",
+              "explanation": "This approach does not account for individual differences and can fail to address specific needs of team members.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "dbfab655-5079-4adb-9a5b-e95caee3bcfe",
+              "answerText": "Adapting communication styles to address the unique cultural and personal backgrounds of team members",
+              "explanation": "This method considers individual differences and is key for fostering empathy and trust in a diverse team.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "aaca7fb3-b34c-43a1-8698-9b9e368834ed",
+              "answerText": "Focusing exclusively on verbal communication to ensure messages are clear",
+              "explanation": "Relying solely on verbal communication may overlook important non-verbal cues and cultural differences.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ff204fb1-b1c8-4cec-b7da-407e23614ef6",
+              "answerText": "Encouraging team members to keep personal experiences out of professional discussions",
+              "explanation": "This can hinder openness and willingness to share, which are crucial for psychological safety and trust.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "a7be6cfa-b940-4021-9dde-c964a8a6e252",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "An organization seeks to innovate its team communication strategies to foster empathy and trust. What is the best practice for evaluating current communication methods to effectively create a psychologically safe environment?",
+          "answer": [
+            {
+              "answerId": "f3bd626a-6c70-46f1-847f-764f853ffecc",
+              "answerText": "Applying a uniform communication training program across every department",
+              "explanation": "A uniform approach may not address specific needs and challenges unique to each department.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ca46b572-89b8-43a7-ab7d-2f671799fb3f",
+              "answerText": "Conducting regular feedback sessions to assess how communication impacts team dynamics",
+              "explanation": "Regular feedback allows for ongoing assessment and adaptation of communication strategies to meet team needs.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "30630afb-06fb-4802-a79d-31438cf03138",
+              "answerText": "Relying on leadership to interpret communication challenges and suggest improvements",
+              "explanation": "Sole reliance on leadership may overlook valuable insights from team members and hinder open communication.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "2936cbbd-89b3-4aa4-91ce-643f280e49ad",
+              "answerText": "Implementing a no-criticism policy during all team meetings to maintain harmony",
+              "explanation": "Such a policy might prevent honest feedback, which is necessary for improvement and building trust.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Consistently gives and receives meaningful feedback and recognition and fosters a culture of feedback and recognition.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 2,
+      "questions": [
+        {
+          "id": "6eb5c4f5-c711-4504-ba04-e9cd9fade7ca",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "Which of the following best describes a fundamental element of giving meaningful feedback?",
+          "answer": [
+            {
+              "answerId": "41c73e2e-d95c-4536-ab43-1d654b2c0a81",
+              "answerText": "Ensuring feedback is specific and related to the individual's behaviors or outputs.",
+              "explanation": "This option is correct because effective feedback focuses on specific behaviors or outcomes, making it actionable.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "576cdcaf-bf45-46a7-ae12-b7a98cde1b5b",
+              "answerText": "Making general statements that could apply to anyone.",
+              "explanation": "This option is incorrect as general feedback lacks the specificity needed for meaningful improvement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "3710f2be-1c51-46f5-bf79-22755ff424dd",
+              "answerText": "Delivering feedback only in formal performance reviews.",
+              "explanation": "This option is incorrect because meaningful feedback should be given regularly, not just during formal reviews.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "eecb4c6a-3177-46a8-9226-7bf50b3e809e",
+              "answerText": "Offering feedback based solely on personal feelings.",
+              "explanation": "This option is incorrect because feedback should be objective and behavior-focused, not based on personal biases.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "09e4670b-1efc-4e38-bb05-f4e0e35cd97c",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "What is a key benefit of consistently giving and receiving meaningful feedback in a professional environment?",
+          "answer": [
+            {
+              "answerId": "77b975c6-ce44-456a-b3e9-27c1bb5789b4",
+              "answerText": "It leads to improved communication and understanding among team members.",
+              "explanation": "This is correct because meaningful feedback helps to bridge communication gaps and fosters a better understanding among colleagues.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "e5142345-796f-4287-9bb2-e4c949cb39b1",
+              "answerText": "It reduces the need for regular team meetings.",
+              "explanation": "This is incorrect because feedback does not replace the need for regular communication in team meetings.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "b3ee3200-f7ce-451d-877b-b38ed14817ef",
+              "answerText": "It guarantees higher salaries for employees.",
+              "explanation": "This is incorrect as feedback does not directly influence salary decisions.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ff206ffa-eb82-4f4a-94f2-16e8a5c6b2a3",
+              "answerText": "It eliminates the need for written documentation.",
+              "explanation": "This is incorrect because written documentation is still necessary for clarity and record-keeping.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "87baaead-a470-4327-b704-ad42e4a99bb6",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "Which of the following actions demonstrates effectively applying the skill of providing meaningful feedback to a colleague in a routine work setting?",
+          "answer": [
+            {
+              "answerId": "2061548a-64a6-47cb-af54-36b1478eb2c1",
+              "answerText": "Consistently offering praise without specifics regardless of the situation",
+              "explanation": "This is incorrect because it lacks specificity and does not help colleagues improve.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ee700d08-20a1-4b0f-95e7-220e771b4bbf",
+              "answerText": "Providing specific, actionable feedback focusing on observable behaviors",
+              "explanation": "This is correct as it helps the colleague understand what they are doing well and what can be improved.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "9feab31a-8917-4113-b57e-cd0966cd7758",
+              "answerText": "Avoiding feedback altogether to maintain a positive work relationship",
+              "explanation": "This is incorrect because not giving feedback can prevent growth and improvement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "7e0f1697-1097-4866-8d42-ae35fd33eb73",
+              "answerText": "Giving feedback only when prompted by a manager",
+              "explanation": "This is incorrect because effective feedback should be ongoing and not just when prompted.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "b3228196-3522-4889-b55e-edd0eca794bd",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "In a routine team meeting, how can a manager effectively foster a culture of recognition among their team members?",
+          "answer": [
+            {
+              "answerId": "411854b3-bf46-4a12-aa25-8a89d3095885",
+              "answerText": "Only acknowledging achievements in private emails",
+              "explanation": "This is incorrect as it does not foster a public culture of recognition.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "6c5dec94-ff1c-466e-be88-83e3a37f3d9e",
+              "answerText": "Encouraging team members to publicly share accomplishments and positive feedback",
+              "explanation": "This is correct as it promotes a culture of openness and positive reinforcement.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "0fe7d99e-06ef-49c5-9b12-6381752ba1f1",
+              "answerText": "Waiting for annual reviews to offer recognition",
+              "explanation": "This is incorrect because recognition should be timely and frequent to be effective.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "995e3b74-9526-4c8a-be55-10e28c85ea5e",
+              "answerText": "Assuming team members know they are appreciated without explicit feedback",
+              "explanation": "This is incorrect because explicit recognition is necessary to make team members feel valued.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "2f49e2e5-dcfa-427a-8484-8a611c283b45",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Which approach best integrates feedback and recognition into an organization's culture to enhance employee performance?",
+          "answer": [
+            {
+              "answerId": "448a948d-befc-47c6-ab36-54f4c68c58b8",
+              "answerText": "Implementing a once-a-year performance review with generic recognition awards",
+              "explanation": "This approach lacks the frequency and specificity needed for meaningful feedback and recognition.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "161f4dd8-81fd-426f-bed9-9b057d5dfda2",
+              "answerText": "Establishing regular, structured feedback sessions that encourage peer-to-peer feedback and timely recognition of achievements",
+              "explanation": "Regular and structured sessions foster ongoing feedback and recognition, integrating them into the culture.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "86c6516f-fc91-45d6-b342-4eeab067169e",
+              "answerText": "Using public leaderboards to rank employees based on performance metrics",
+              "explanation": "Public rankings can create competition rather than a supportive environment for feedback and recognition.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "2a3f4631-0b99-4ea2-bde2-5aa1a074ff2f",
+              "answerText": "Offering financial bonuses exclusively based on quantitative performance measures",
+              "explanation": "Financial bonuses alone may not encourage a culture of feedback or recognition of qualitative achievements.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "b61be9ef-4411-4243-886c-391624df8e19",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "In fostering a culture of feedback and recognition among a diverse team, which approach most effectively addresses unique communication and cultural needs, allowing for strategic integration and improvement?",
+          "answer": [
+            {
+              "answerId": "08e87036-4107-4804-bf51-c1b37832484e",
+              "answerText": "Holding an annual awards ceremony to recognize high-performing employees.",
+              "explanation": "This approach is infrequent and does not foster a continuous culture of feedback tailored to diverse team needs.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "5e7b178c-51b6-426a-85bb-90e0df2a6ed0",
+              "answerText": "Encouraging managers to conduct quarterly performance reviews and provide structured feedback.",
+              "explanation": "Quarterly reviews are periodic and may not address the continuous and diverse needs of team members.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a0d52790-5ee5-447b-887c-24338e8c9e87",
+              "answerText": "Implementing real-time feedback channels that facilitate open dialogue and respect cultural differences within the team.",
+              "explanation": "This promotes ongoing and dynamic communication, respecting cultural diversity and strategic integration of feedback.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "5ad6a011-ccfe-4a61-8a83-80143d31f8cd",
+              "answerText": "Utilizing a suggestion box for anonymous feedback submission.",
+              "explanation": "While allowing for feedback, anonymity can limit personal engagement and considered adaptations to varied cultural contexts.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Leads open conversations and welcomes different perspectives.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 3,
+      "questions": [
+        {
+          "id": "9995518a-43a2-4684-8e64-62db7b403f8e",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "A manager is holding a team meeting to discuss a new project. To facilitate open conversations and ensure different perspectives are welcomed, which of the following approaches should the manager take?",
+          "answer": [
+            {
+              "answerId": "9a5b2f97-e97e-4fd5-8dae-6b919895628b",
+              "answerText": "Regularly interrupting team members to keep the meeting on track.",
+              "explanation": "This approach can hinder open conversation and discourage participation.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "435273dd-e585-4344-8287-e99aa1c6bb18",
+              "answerText": "Encouraging every team member to briefly share their thoughts on the project.",
+              "explanation": "This approach fosters inclusivity and encourages open communication from all team members.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "43e17894-d46b-426e-a5cc-0cd150c19b4c",
+              "answerText": "Presenting their own ideas as the most effective solution early in the meeting.",
+              "explanation": "Prioritizing the manager's ideas early may suppress diverse opinions and perspectives.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "6cd024b8-9afb-474a-b880-1e489a4c6afa",
+              "answerText": "Asking only the most experienced team members for input to save time.",
+              "explanation": "Limiting input to only experienced members can prevent innovative thinking and diverse perspectives.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "7b88e49f-024f-4f06-a4e7-5c8ecacd537a",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "In a team meeting, one of your colleagues seems hesitant to share their ideas. Which strategy would be most effective in leading an open conversation and welcoming different perspectives?",
+          "answer": [
+            {
+              "answerId": "af649ffb-740f-4f6e-887c-fe44b78bf26e",
+              "answerText": "Invite the colleague to share their thoughts in a one-on-one setting after the meeting.",
+              "explanation": "This can allow the colleague to express their views more comfortably, but misses the opportunity to incorporate diverse perspectives in the meeting.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "397ba498-92da-4cae-abe8-a1fafa8f1773",
+              "answerText": "Directly acknowledge the colleague's expertise related to the discussion topic, encouraging them to contribute while assuring their input is valued.",
+              "explanation": "This strategy actively invites participation while validating the colleague's perspective, fostering open conversation.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "fc4d3472-dd5d-4fa1-a67e-ba84140d1653",
+              "answerText": "Suggest the colleague submit their ideas via email after the meeting to be considered later.",
+              "explanation": "While this may encourage future input, it does not promote live participation and discussion.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "33c202a0-efa6-41ea-a4b0-3f720b93c87a",
+              "answerText": "Highlight the importance of team collaboration and ask everyone to briefly share their viewpoints on the topic.",
+              "explanation": "This promotes open dialogue but may not specifically encourage the hesitant colleague to speak up.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "e6c61986-c430-4f33-bdd1-85d72b0c75f6",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "What defines an open conversation led by a leader?",
+          "answer": [
+            {
+              "answerId": "f885301e-78ad-4119-a21d-5ff9c1e867ef",
+              "answerText": "Participants are encouraged to freely express their opinions without fear of retribution.",
+              "explanation": "Correct: Open conversations under a leader should create a safe space for all participants to share their views.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "f3146103-9697-40e4-9102-1c876302f43a",
+              "answerText": "The leader dominates the discussion to ensure direction.",
+              "explanation": "Incorrect: An open conversation implies that all voices are heard, not just the leader's.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "804d0067-e1b1-46be-a1b0-1db0fc8754c2",
+              "answerText": "The meeting follows a strict agenda with little room for discussion.",
+              "explanation": "Incorrect: Open conversations allow flexibility for participants to bring up varied perspectives.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "26b95214-f629-4086-8462-fd59bb53f065",
+              "answerText": "Decisions are made by the leader before any input is given.",
+              "explanation": "Incorrect: Open conversations involve gathering input before reaching decisions.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "089fec0b-6568-4e69-ad3c-987944ccdc8c",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "Which approach best illustrates welcoming diverse perspectives in a team?",
+          "answer": [
+            {
+              "answerId": "c803ebc9-4c5a-4719-a372-6781e98243ea",
+              "answerText": "Actively asking for input from team members.",
+              "explanation": "Correct: Encouraging team members to contribute their views demonstrates openness to diverse perspectives.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "0383a028-6a01-46df-b32f-130355e588a4",
+              "answerText": "Only valuing input that aligns with current ideas.",
+              "explanation": "Incorrect: Welcoming perspectives requires valuing all contributions, not just those that align.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "5e7050b5-b276-41be-ac14-9240efa078b8",
+              "answerText": "Limiting discussion to prevent conflict.",
+              "explanation": "Incorrect: Restricting discussion does not welcome different perspectives.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "0a370776-b43f-4a01-8163-25f999d640e8",
+              "answerText": "Assigning roles to reinforce existing hierarchies.",
+              "explanation": "Incorrect: Emphasizing hierarchy over input can suppress the sharing of diverse perspectives.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "88658e96-7f7f-40e4-8342-1c3b9b3a7209",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "A diverse team member presents a viewpoint that contradicts the majority opinion during a team meeting. As a leader who welcomes different perspectives, what is the most effective approach to ensure an open conversation?",
+          "answer": [
+            {
+              "answerId": "1e38378f-13a3-4fe8-ae4c-baae353751b3",
+              "answerText": "Encourage the team member to elaborate on their viewpoint and facilitate a discussion on its potential merits.",
+              "explanation": "This approach demonstrates open-mindedness and facilitates a comprehensive examination of different perspectives.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "3f476213-c942-43b7-bdaf-e26f9bc43ecd",
+              "answerText": "Summarize the team member's viewpoint and discuss how it compares to the majority opinion to understand differing perspectives.",
+              "explanation": "This approach ensures the team member feels heard and allows the team to consider various perspectives constructively.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "19c08a70-ffa3-487d-9e4e-16c42ddec394",
+              "answerText": "Agree with the viewpoint without discussion to quickly address diversity.",
+              "explanation": "This option superficially addresses diversity without genuinely considering the viewpoint.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "141c220c-58e0-4c1a-914a-6c17d6337f71",
+              "answerText": "Direct the team to ignore the viewpoint and focus on the traditionally successful approaches.",
+              "explanation": "This dismisses the opportunity for innovation and excludes diverse perspectives.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "f5191e82-9770-4ceb-9b23-7f0413a82c42",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As the leader of a team meeting discussing the introduction of a new company policy, how can you effectively lead the conversation to ensure all team members feel comfortable sharing their diverse perspectives, and integrate their feedback into the final decision?",
+          "answer": [
+            {
+              "answerId": "98eaa035-0ec6-438f-a8af-cd2d8bf0aa9a",
+              "answerText": "Simply invite everyone to speak and proceed with the decision already made without modifications.",
+              "explanation": "This approach does not genuinely consider diverse perspectives or integrate feedback, which is crucial for leading open conversations.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "db40b378-e501-4962-8f0a-2c79f4c1c806",
+              "answerText": "Encourage team members to provide their opinions by creating a welcoming atmosphere, actively listen to their viewpoints, and integrate their feedback into the decision-making process.",
+              "explanation": "This is the correct approach as it facilitates open dialogue and values team members' diverse perspectives, aligning with the learning objective.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "47eee378-7769-4498-b88f-91cf7f3142f8",
+              "answerText": "Present your perspective as the most informed, and suggest team members may opt not to speak if they disagree.",
+              "explanation": "This discourages open dialogue and does not welcome differing opinions, which is contrary to the learning objective.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "6680e1f1-4762-4b93-8462-e44fef46465c",
+              "answerText": "Limit the discussion to only those who have seniority, assuming their perspectives will represent the whole team's views effectively.",
+              "explanation": "This excludes diverse perspectives and does not allow for open conversation from all team members.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Breaks down complex information.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 4,
+      "questions": [
+        {
+          "id": "06ef3a20-1ae5-404d-b48d-695723eee21c",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "What is the process of breaking down complex information called?",
+          "answer": [
+            {
+              "answerId": "6707e8d5-5519-4cff-ae7e-f996571e39b5",
+              "answerText": "Simplifying information into understandable components",
+              "explanation": "Correct, because breaking down complex information requires simplification into more comprehensible parts.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "21a1a0b1-981e-432e-8d0e-a56b33719253",
+              "answerText": "Collecting vast amounts of unorganized information",
+              "explanation": "Incorrect, because breaking down involves organizing and simplifying information, not just collecting.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "8652e972-a103-4131-9c79-004c103ab92d",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "easy",
+          "questionText": "Which of the following best describes the initial step in breaking down complex information?",
+          "answer": [
+            {
+              "answerId": "7b2de120-d158-447c-a6d5-973ec9729054",
+              "answerText": "Identifying key components of the information",
+              "explanation": "Identifying key components is the initial step in analyzing complex information, which involves recognizing and summarizing the main parts.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "994ac547-81f4-46a1-b8c3-9297d53aa2c1",
+              "answerText": "Immediately concluding based on assumptions",
+              "explanation": "Concluding without analysis does not involve breaking down the information and may lead to incorrect assumptions.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "081bd175-a98e-4eff-87d8-9bf9123271a6",
+              "answerText": "Ignoring irrelevant details",
+              "explanation": "While this might be part of the process, identifying key components is necessary before determining relevancy.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "9ad75297-b697-4cf6-beeb-306a657818c4",
+              "answerText": "Listing references for future examination",
+              "explanation": "Listing references can assist in research but does not constitute breaking down information directly.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "c43dd4b4-f4e3-4726-ac4d-03fc66175a3f",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "Which strategy would you use to analyze a team's communication process in order to identify areas for improvement?",
+          "answer": [
+            {
+              "answerId": "85e7d97e-1475-4cc7-8d7e-1948ab46e9d4",
+              "answerText": "Observe and note individual communication styles within the team.",
+              "explanation": "This method involves breaking down communication into components to identify specific patterns and areas for improvement.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "4cbb4438-aed2-47b8-b49e-b335c0ddbfd6",
+              "answerText": "Summarize the team's overall communication in a single statement.",
+              "explanation": "This oversimplifies the communication process and does not break down its components.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "8c9d1a10-aad3-406a-8cdc-c1a6d9d32019",
+              "answerText": "Focus only on resolving conflicts as they arise without further analysis.",
+              "explanation": "This approach does not involve analyzing the communication process to identify underlying issues.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "019dfaa1-5c2c-441a-8174-96cfd2432f1a",
+              "answerText": "Implement a new communication tool immediately.",
+              "explanation": "This does not involve analyzing existing communication processes to identify areas for improvement.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "fb00f2c5-9822-476c-9bc4-d5337b4540d8",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "You are given a complex data set about various countries' GDP, population, and literacy rates. What would be the most appropriate strategy for independently breaking down and analyzing this complex information for a report on global economic conditions?",
+          "answer": [
+            {
+              "answerId": "a2827594-9c93-41b9-a229-e55ef41bca27",
+              "answerText": "Identify and compare key trends in GDP growth relative to literacy rates and population size.",
+              "explanation": "This approach involves analyzing relationships between multiple variables, aligning with the objective to break down and analyze complex information.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "f9077af3-ae4b-4254-aae5-dd3cda2131d6",
+              "answerText": "Calculate the total GDP across all countries.",
+              "explanation": "Calculating a total value does not aid in breaking down the complexity or analyzing relationships between the data.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "6b696fc0-91aa-4142-9d33-326f43c3a9d4",
+              "answerText": "Sort countries based on GDP size.",
+              "explanation": "Sorting is a simple task and doesn't contribute to analyzing or breaking down complex information in depth.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "18999707-4522-4044-9bf0-b7c723be070e",
+              "answerText": "Create a chart of countries with their respective literacy rates.",
+              "explanation": "Visualizing literacy rates alone does not encompass the complexity of the dataset nor does it analyze interrelations.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "c5bae3dc-8162-456c-9a09-02c5035c7cd1",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Which of the following scenarios best demonstrates breaking down complex information to improve team communication?",
+          "answer": [
+            {
+              "answerId": "9717c6a5-4e55-42ac-8770-a0435e363718",
+              "answerText": "A manager uses a meeting to present all aspects of a project without distinguishing priority areas.",
+              "explanation": "This does not break down complex information or facilitate understanding.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "baaec369-08e7-4432-93f7-864e5c6ba21e",
+              "answerText": "A project leader elaborates on key project details by separating tasks into manageable chunks and discussing each one in detail with the team.",
+              "explanation": "This answer demonstrates breaking down complex information, enhancing team communication and understanding.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "3a16c17f-70fe-4cc0-b118-0827bef62d84",
+              "answerText": "An employee summarizes the entire project document in one paragraph for upper management.",
+              "explanation": "This summarizes rather than breaks down information, which might reduce detail and clarity.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "36d48ef0-a419-42ef-93b1-13970da922ff",
+              "answerText": "A team member sends an email describing a project's objectives without outlining the steps involved.",
+              "explanation": "This does not break down the information into understandable parts.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "52a9c9bf-9820-46ee-bd0f-276156c330ae",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Based on the dataset provided, analyze and identify which age group showed the most consistent growth in consumer spending over these five years.",
+          "answer": [
+            {
+              "answerId": "c5f135dc-b303-48b6-aed8-da942fc80886",
+              "answerText": "45-54",
+              "explanation": "This age group demonstrated steady increases each year without any declines, indicating consistent growth in consumer spending.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "f0b03214-0b46-4ed1-9c99-9eafe710a7d9",
+              "answerText": "18-24",
+              "explanation": "This age group experienced fluctuations in consumer spending with some decreases, making it less consistent compared to 45-54.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "4ea09f6b-6f99-48ba-ab00-64d79e2551f6",
+              "answerText": "55-64",
+              "explanation": "This group showed a decline followed by minor fluctuations, rather than consistent growth.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "7b7d9aa4-e877-466c-8ebe-071b7b7acf20",
+              "answerText": "65+",
+              "explanation": "This age group had an overall decline in consumer spending over the years.",
               "isCorrect": false
             }
           ],
