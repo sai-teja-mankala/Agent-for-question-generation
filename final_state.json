@@ -1,38 +1,38 @@
 {
   "learningObjectives": [
     {
-      "learningObjective": "Communicates openly and actively listens to create a psychologically safe environment that fosters empathy and trust",
+      "learningObjective": "Creates and communicates a clear and compelling vision to align the team and drive results and continuous improvement.",
       "learningObjectiveUuid": null,
       "learningObjectiveOrder": 1,
       "questions": [
         {
-          "id": "7d9579e6-6783-4bd1-be30-485b7730d55b",
+          "id": "eacc99c3-0ddb-4b11-a42c-ca2cff20d269",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "Which of the following best demonstrates open communication in a team setting?",
+          "questionText": "What is the primary purpose of creating and communicating a clear vision for a team?",
           "answer": [
             {
-              "answerId": "50876c35-4da6-43df-ab3c-e4eeaa87b1a8",
-              "answerText": "A) Frequently interrupting others to share your opinions",
-              "explanation": "This demonstrates poor communication as it does not allow others to express their thoughts.",
+              "answerId": "17c4d647-2ebf-4b44-9e65-2892ea3a7751",
+              "answerText": "To improve team dynamics and make tasks more enjoyable",
+              "explanation": "This option focuses on team dynamics, but a vision is broader and focuses on alignment and results.",
               "isCorrect": false
             },
             {
-              "answerId": "962f6b81-3a04-4c7f-8250-5c0fc0055df0",
-              "answerText": "B) Actively seeking input and ensuring all voices are heard during discussions",
-              "explanation": "This demonstrates open communication by valuing everyone's input and fostering a safe environment.",
+              "answerId": "d8417bef-476d-4240-884d-09bd01f8a382",
+              "answerText": "To align the team, drive results, and support continuous improvement",
+              "explanation": "This option correctly identifies the core purpose of a team vision.",
               "isCorrect": true
             },
             {
-              "answerId": "3f9df16f-cb51-4b84-9503-7b55b1ff507c",
-              "answerText": "C) Avoiding difficult conversations to maintain harmony",
-              "explanation": "Avoiding conversations can lead to issues being unresolved and does not reflect open communication.",
+              "answerId": "5ce3515a-05bd-425d-a495-877c85f6c709",
+              "answerText": "To motivate team members solely through incentives",
+              "explanation": "Incentives are just one element and do not encompass the full purpose of a team vision.",
               "isCorrect": false
             },
             {
-              "answerId": "a896ca7a-051f-40c6-94fc-b918564884e1",
-              "answerText": "D) Dominating the conversation to ensure your viewpoints are prioritized",
-              "explanation": "Dominating conversations prevents others from contributing and does not foster open communication.",
+              "answerId": "cfdecb3b-e851-411c-be70-2fde4658ade4",
+              "answerText": "To ensure all team members have equal roles and responsibilities",
+              "explanation": "Equal roles are not necessarily related to creating a vision; the focus is on alignment towards goals.",
               "isCorrect": false
             }
           ],
@@ -40,33 +40,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "4026a4a6-c9bb-4bb9-bfa3-1512ad1fff6f",
+          "id": "30462a2d-fa86-45c1-a097-df9a8c18b1cb",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "Which of the following practices best contributes to creating a psychologically safe environment that fosters empathy and trust?",
+          "questionText": "Which of the following is a key component of creating and communicating a vision to align a team?",
           "answer": [
             {
-              "answerId": "3a63f79e-5722-4fe4-8f68-e6aedfde9641",
-              "answerText": "Sharing personal experiences in group discussions to build connections.",
-              "explanation": "This practice enhances understanding and empathy among team members by promoting open communication and shared experiences.",
+              "answerId": "14324263-8e89-4e28-a976-01e783ab9b52",
+              "answerText": "Clearly articulating the long-term goals and purpose of the team",
+              "explanation": "This option directly relates to the learning objective by highlighting the importance of vision and purpose in team alignment.",
               "isCorrect": true
             },
             {
-              "answerId": "aeab884e-7f38-4f1c-a0f3-6e4363695b3b",
-              "answerText": "Criticizing colleagues' ideas without offering constructive feedback.",
-              "explanation": "This approach can damage relationships and trust as it focuses on criticism without supporting growth or understanding.",
+              "answerId": "ba549aba-7a3a-4c4f-b253-458c812bc31e",
+              "answerText": "Detailing the technical specifications of each team member's role",
+              "explanation": "This option focuses on operational details rather than the visionary alignment required.",
               "isCorrect": false
             },
             {
-              "answerId": "ea601b6b-5870-4142-9f2e-f610eccfaaef",
-              "answerText": "Interrupting others during a meeting to express your own opinions.",
-              "explanation": "Interrupting others can prevent effective communication and hinder the building of trust and empathy by not valuing their contributions.",
+              "answerId": "aba1f857-cdb4-4735-a7d0-52af64cdb1bb",
+              "answerText": "Monitoring daily productivity reports and adjusting tasks accordingly",
+              "explanation": "This is related to management and oversight, not communicating a vision.",
               "isCorrect": false
             },
             {
-              "answerId": "edc0b5f5-a315-418f-8854-906e6018e9d4",
-              "answerText": "Avoiding eye contact during conversations to minimize pressure.",
-              "explanation": "Avoiding eye contact can be perceived as disinterest or avoidance, neither of which contributes to trust or a sense of safety.",
+              "answerId": "4017402d-b587-4f94-854d-286d4db1cce8",
+              "answerText": "Implementing stringent supervisory controls to ensure compliance",
+              "explanation": "This emphasizes control and compliance, not the visionary aspect of alignment.",
               "isCorrect": false
             }
           ],
@@ -74,33 +74,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "7d544136-ff1b-4f62-badf-189e7f77dc51",
+          "id": "0e637e3a-565b-4b62-bd51-014b2d8a8823",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "What is the best response to ensure open communication and active listening when a team member expresses concerns about a project deadline?",
+          "questionText": "Which of the following is a crucial step when creating a vision that effectively aligns and motivates a team towards continuous improvement?",
           "answer": [
             {
-              "answerId": "82eee76f-4980-40f4-8c98-62d0e878a4cd",
-              "answerText": "Immediately assure them that everything will be fine without addressing their concerns.",
-              "explanation": "This response does not demonstrate active listening as it dismisses the team member's concerns.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "f1b67da4-1b92-4747-a042-76ddc6638a0b",
-              "answerText": "Interrupt them to provide similar examples from the past to show understanding.",
-              "explanation": "This response interrupts the speaker, which is not a part of active listening.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "ad01b212-b2e9-43f8-a3ad-12f93c073e86",
-              "answerText": "Encourage them to share more details and ask clarifying questions to better understand the issue.",
-              "explanation": "This response promotes open communication and active listening by showing genuine interest in understanding the team member's concerns.",
+              "answerId": "45999397-1316-4fa4-84bc-dd3d01c715a7",
+              "answerText": "Gathering input from all team members to ensure the vision is inclusive.",
+              "explanation": "This approach promotes inclusivity and ensures that the team feels valued and committed to the shared vision.",
               "isCorrect": true
             },
             {
-              "answerId": "236b68a5-d5d1-4c62-97bb-3c7748512b53",
-              "answerText": "Agree quickly before moving on to the next topic to maintain meeting efficiency.",
-              "explanation": "This response prioritizes meeting efficiency over addressing the concern, which does not support open communication.",
+              "answerId": "ce1fe98f-cecc-426c-96f5-e3060d873dca",
+              "answerText": "Keeping the vision vague to allow room for interpretation.",
+              "explanation": "A vague vision can lead to confusion and misalignment within the team.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a3e46953-f6cd-4c17-ab4d-6c50533bb49a",
+              "answerText": "Focusing solely on short-term goals to ensure quick results.",
+              "explanation": "Short-term focus may undermine sustained improvement efforts and does not align the team with long-term vision.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "79eefc9a-cbaa-4b48-88aa-c54698523349",
+              "answerText": "Emphasizing individual successes over team achievements.",
+              "explanation": "Prioritizing individual achievements can hinder team collaboration and alignment with the overall vision.",
               "isCorrect": false
             }
           ],
@@ -108,33 +108,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "4176b2f9-aef8-4f57-8642-abe7f749f65a",
+          "id": "c8d7115c-04a5-4d56-9ab9-960cf999e7c6",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "You are working in a team meeting where a sensitive topic is being discussed. How can you apply active listening skills to help create a psychologically safe environment that fosters empathy and trust?",
+          "questionText": "When communicating a vision to drive team alignment and continuous improvement, which approach is most effective?",
           "answer": [
             {
-              "answerId": "f1f9e6be-4133-4400-91bc-3d4a56128ffb",
-              "answerText": "Nod your head occasionally, make eye contact, and summarize what the speaker has said to confirm your understanding.",
-              "explanation": "This option describes active listening techniques that show the speaker you are engaged and understanding, essential for fostering empathy and trust.",
+              "answerId": "b8f62961-6431-419a-852d-173db89265cc",
+              "answerText": "Delivering the vision in detail during a long one-time meeting.",
+              "explanation": "A long one-time meeting can overwhelm team members and may not effectively reinforce the vision.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "caf5a057-703f-4162-950a-9ab81ed01032",
+              "answerText": "Sharing the vision only with senior team leaders.",
+              "explanation": "Limiting the communication to senior leaders can result in a lack of buy-in from the wider team.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "8785e743-44cc-41c7-8291-f23b0d3e97e1",
+              "answerText": "Regularly discussing the vision in team meetings and connecting it to daily work.",
+              "explanation": "This approach ensures continuous engagement and helps team members understand how their work contributes to the vision.",
               "isCorrect": true
             },
             {
-              "answerId": "0fe2d599-20c8-4893-aaf5-5339b9c4df4d",
-              "answerText": "Focus solely on preparing your response while the speaker is talking to ensure you have a strong rebuttal.",
-              "explanation": "This option distracts from actively listening and can prevent genuine understanding, which is necessary for creating a psychologically safe environment.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "79bb8bcc-d0a5-4fcb-b821-6ac03ca135ab",
-              "answerText": "Interject with your own experiences frequently to show that you have faced similar situations.",
-              "explanation": "While sharing experiences can be supportive, frequent interjections shift the focus away from the speaker and can hinder the creation of a safe environment.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "c65648c8-9629-4112-a9a1-d445dd0db7a4",
-              "answerText": "Avoid asking questions to prevent disrupting the flow of the conversation.",
-              "explanation": "Avoiding questions can inhibit the validation and understanding process, which are crucial for psychological safety.",
+              "answerId": "3bcc66db-e7d3-45b0-b314-9785e0f4d1e5",
+              "answerText": "Sending the vision exclusively via email to avoid disruptions.",
+              "explanation": "Emails may be overlooked, and this method lacks the interactive and engaging communication needed for effective vision alignment.",
               "isCorrect": false
             }
           ],
@@ -142,33 +142,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "aec12548-1cb7-43de-8401-5df0c6485c50",
+          "id": "3df13632-43aa-45d4-955c-bd24502fd869",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Advanced",
-          "questionText": "Which of the following strategies is most effective for analyzing and adapting communication to promote psychological safety and trust within a diverse team?",
+          "questionText": "Which of the following strategies best demonstrates the creation and communication of a clear and compelling vision that aligns a team towards achieving continuous improvement in an operational setting?",
           "answer": [
             {
-              "answerId": "2ad35f8b-7128-4fc0-b1b8-cc2483166de6",
-              "answerText": "Using a standard checklist of communication techniques for all situations",
-              "explanation": "This approach does not account for individual differences and can fail to address specific needs of team members.",
+              "answerId": "38e8f61f-0e98-42ee-b71a-f7f2b7405ad7",
+              "answerText": "Continuously updating the production targets without team consultation to maintain a competitive edge.",
+              "explanation": "This approach lacks the involvement and alignment of the team, crucial for creating a compelling vision.",
               "isCorrect": false
             },
             {
-              "answerId": "dbfab655-5079-4adb-9a5b-e95caee3bcfe",
-              "answerText": "Adapting communication styles to address the unique cultural and personal backgrounds of team members",
-              "explanation": "This method considers individual differences and is key for fostering empathy and trust in a diverse team.",
+              "answerId": "a087adb2-46ab-491d-afb9-0023652134a2",
+              "answerText": "Clearly defining a long-term goal for operational excellence, engaging the team's input, and regularly communicating progress and adjustments as necessary.",
+              "explanation": "This strategy involves a comprehensive process of defining a clear vision, engaging the team, and ensuring ongoing communication, which aligns with the learning objective.",
               "isCorrect": true
             },
             {
-              "answerId": "aaca7fb3-b34c-43a1-8698-9b9e368834ed",
-              "answerText": "Focusing exclusively on verbal communication to ensure messages are clear",
-              "explanation": "Relying solely on verbal communication may overlook important non-verbal cues and cultural differences.",
+              "answerId": "c2f9df5d-a5f1-41a0-9b7d-955c3c550891",
+              "answerText": "Increasing team productivity through the enforcement of strict policies on task completion without further explanation of goals.",
+              "explanation": "Enforcing strict policies without clear goals does not create a compelling vision for the team.",
               "isCorrect": false
             },
             {
-              "answerId": "ff204fb1-b1c8-4cec-b7da-407e23614ef6",
-              "answerText": "Encouraging team members to keep personal experiences out of professional discussions",
-              "explanation": "This can hinder openness and willingness to share, which are crucial for psychological safety and trust.",
+              "answerId": "b7711100-5f39-42e5-84e8-d600c6f74a52",
+              "answerText": "Delegating tasks based solely on team members' current competencies without considering future growth opportunities.",
+              "explanation": "This option focuses on current abilities alone, not aligning with a future-oriented vision for continuous improvement.",
               "isCorrect": false
             }
           ],
@@ -176,33 +176,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "a7be6cfa-b940-4021-9dde-c964a8a6e252",
+          "id": "730e7eae-9717-4db7-99a8-1c253e091903",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Advanced",
-          "questionText": "An organization seeks to innovate its team communication strategies to foster empathy and trust. What is the best practice for evaluating current communication methods to effectively create a psychologically safe environment?",
+          "questionText": "As a Band H Leader responsible for operational excellence, which action would be best suited for evaluating the effectiveness of a crafted vision in improving team performance?",
           "answer": [
             {
-              "answerId": "f3bd626a-6c70-46f1-847f-764f853ffecc",
-              "answerText": "Applying a uniform communication training program across every department",
-              "explanation": "A uniform approach may not address specific needs and challenges unique to each department.",
+              "answerId": "9ba88323-ff8d-4394-b7b9-af3305ec3b38",
+              "answerText": "Setting vague performance benchmarks and periodically praising the team for effort over results.",
+              "explanation": "Vague benchmarks do not effectively measure the vision's impact on performance.",
               "isCorrect": false
             },
             {
-              "answerId": "ca46b572-89b8-43a7-ab7d-2f671799fb3f",
-              "answerText": "Conducting regular feedback sessions to assess how communication impacts team dynamics",
-              "explanation": "Regular feedback allows for ongoing assessment and adaptation of communication strategies to meet team needs.",
+              "answerId": "d48ecec0-f72a-4db0-920f-76fe76e13cdf",
+              "answerText": "Regularly assessing team performance against clearly defined vision objectives and integrating feedback to refine strategies.",
+              "explanation": "This approach ensures the vision is effective by measuring performance against clear objectives and adapting based on feedback.",
               "isCorrect": true
             },
             {
-              "answerId": "30630afb-06fb-4802-a79d-31438cf03138",
-              "answerText": "Relying on leadership to interpret communication challenges and suggest improvements",
-              "explanation": "Sole reliance on leadership may overlook valuable insights from team members and hinder open communication.",
+              "answerId": "251c6895-5c4b-4da0-85df-f89f3aec3b75",
+              "answerText": "Encouraging team members to follow their own individual goals instead of a collective vision.",
+              "explanation": "Individual goals may conflict with a shared vision, reducing alignment across the team.",
               "isCorrect": false
             },
             {
-              "answerId": "2936cbbd-89b3-4aa4-91ce-643f280e49ad",
-              "answerText": "Implementing a no-criticism policy during all team meetings to maintain harmony",
-              "explanation": "Such a policy might prevent honest feedback, which is necessary for improvement and building trust.",
+              "answerId": "801de253-9484-4c72-aa04-6b050357bb10",
+              "answerText": "Relying solely on historical data to guide vision adjustments without consulting the team.",
+              "explanation": "Without team consultation, reliance on historical data alone lacks the adaptability needed for effective vision evaluation.",
               "isCorrect": false
             }
           ],
@@ -212,38 +212,38 @@
       ]
     },
     {
-      "learningObjective": "Consistently gives and receives meaningful feedback and recognition and fosters a culture of feedback and recognition.",
+      "learningObjective": "Encourages cross-functional alignment on key initiatives.",
       "learningObjectiveUuid": null,
       "learningObjectiveOrder": 2,
       "questions": [
         {
-          "id": "6eb5c4f5-c711-4504-ba04-e9cd9fade7ca",
+          "id": "d9b031f8-2468-4a86-84f0-6f2860d28bc4",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "Which of the following best describes a fundamental element of giving meaningful feedback?",
+          "questionText": "Which of the following best describes \"cross-functional alignment\" in the context of organizational initiatives?",
           "answer": [
             {
-              "answerId": "41c73e2e-d95c-4536-ab43-1d654b2c0a81",
-              "answerText": "Ensuring feedback is specific and related to the individual's behaviors or outputs.",
-              "explanation": "This option is correct because effective feedback focuses on specific behaviors or outcomes, making it actionable.",
+              "answerId": "79f2f3f0-4d9a-424f-a8b0-c875fc04bb25",
+              "answerText": "A) Ensuring that all teams have separate goals to maintain independence.",
+              "explanation": "Incorrect. Cross-functional alignment focuses on working together towards common goals, not maintaining independence.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "2b6156d2-bf05-4026-b8be-5982e1c34c8a",
+              "answerText": "B) Working within the same department to achieve individual objectives.",
+              "explanation": "Incorrect. Cross-functional alignment requires collaboration across different departments, not focusing within a single department.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "564a2677-b338-4e5a-a2f3-1de238199bae",
+              "answerText": "C) Coordinating goals and efforts across different departments for a unified approach.",
+              "explanation": "Correct. This option describes cross-functional alignment, which involves collaborating across departments towards shared goals.",
               "isCorrect": true
             },
             {
-              "answerId": "576cdcaf-bf45-46a7-ae12-b7a98cde1b5b",
-              "answerText": "Making general statements that could apply to anyone.",
-              "explanation": "This option is incorrect as general feedback lacks the specificity needed for meaningful improvement.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "3710f2be-1c51-46f5-bf79-22755ff424dd",
-              "answerText": "Delivering feedback only in formal performance reviews.",
-              "explanation": "This option is incorrect because meaningful feedback should be given regularly, not just during formal reviews.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "eecb4c6a-3177-46a8-9226-7bf50b3e809e",
-              "answerText": "Offering feedback based solely on personal feelings.",
-              "explanation": "This option is incorrect because feedback should be objective and behavior-focused, not based on personal biases.",
+              "answerId": "0da8c2e9-0df2-482a-b9c0-764625fecb95",
+              "answerText": "D) Allowing each department to independently decide on key initiatives.",
+              "explanation": "Incorrect. Cross-functional alignment emphasizes joint effort and coordination, not independent decision-making.",
               "isCorrect": false
             }
           ],
@@ -251,33 +251,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "09e4670b-1efc-4e38-bb05-f4e0e35cd97c",
+          "id": "637dd308-ed4c-4184-ad46-7209035e5fa2",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "What is a key benefit of consistently giving and receiving meaningful feedback in a professional environment?",
+          "questionText": "Which of the following best describes the role of cross-functional alignment in key initiatives within an organization?",
           "answer": [
             {
-              "answerId": "77b975c6-ce44-456a-b3e9-27c1bb5789b4",
-              "answerText": "It leads to improved communication and understanding among team members.",
-              "explanation": "This is correct because meaningful feedback helps to bridge communication gaps and fosters a better understanding among colleagues.",
+              "answerId": "fe1fcfd4-77c4-421a-9cb0-6eea7dc4058d",
+              "answerText": "Ensuring that different departments work independently to achieve their own specific goals.",
+              "explanation": "Incorrect. This implies departments work without alignment, which goes against the purpose of cross-functional alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a0073764-2a0d-4801-8d9e-1aa99f0bc559",
+              "answerText": "Promoting improved communication and collaboration across different departments to achieve shared objectives.",
+              "explanation": "Correct. Cross-functional alignment is aimed at promoting collaboration and communication to support shared organizational objectives.",
               "isCorrect": true
             },
             {
-              "answerId": "e5142345-796f-4287-9bb2-e4c949cb39b1",
-              "answerText": "It reduces the need for regular team meetings.",
-              "explanation": "This is incorrect because feedback does not replace the need for regular communication in team meetings.",
+              "answerId": "bebd137f-d955-46f7-981f-8deff16e6216",
+              "answerText": "Allowing each department to set its own priorities without regard to organizational goals.",
+              "explanation": "Incorrect. This approach leads to misalignment and the potential to overlook collective organizational objectives.",
               "isCorrect": false
             },
             {
-              "answerId": "b3ee3200-f7ce-451d-877b-b38ed14817ef",
-              "answerText": "It guarantees higher salaries for employees.",
-              "explanation": "This is incorrect as feedback does not directly influence salary decisions.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "ff206ffa-eb82-4f4a-94f2-16e8a5c6b2a3",
-              "answerText": "It eliminates the need for written documentation.",
-              "explanation": "This is incorrect because written documentation is still necessary for clarity and record-keeping.",
+              "answerId": "9d92b585-c868-4a12-b341-39d76c10ead3",
+              "answerText": "Increasing competition among departments to foster creativity and innovation.",
+              "explanation": "Incorrect. While competition can drive innovation, it may not contribute to cross-functional alignment on shared initiatives.",
               "isCorrect": false
             }
           ],
@@ -285,33 +285,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "87baaead-a470-4327-b704-ad42e4a99bb6",
+          "id": "dd72be77-bb0e-4cc3-952b-0e2f08c5dc9d",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "Which of the following actions demonstrates effectively applying the skill of providing meaningful feedback to a colleague in a routine work setting?",
+          "questionText": "Which strategy would be most effective for a Band H Leader to independently implement in order to encourage cross-functional alignment on a key initiative within Ontario Power Generation?",
           "answer": [
             {
-              "answerId": "2061548a-64a6-47cb-af54-36b1478eb2c1",
-              "answerText": "Consistently offering praise without specifics regardless of the situation",
-              "explanation": "This is incorrect because it lacks specificity and does not help colleagues improve.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "ee700d08-20a1-4b0f-95e7-220e771b4bbf",
-              "answerText": "Providing specific, actionable feedback focusing on observable behaviors",
-              "explanation": "This is correct as it helps the colleague understand what they are doing well and what can be improved.",
+              "answerId": "62978f27-ddf8-47ad-9147-d4dbdc90d3ed",
+              "answerText": "Organizing regular cross-functional team meetings to discuss the initiative's progress.",
+              "explanation": "This facilitates communication and collaboration among different departments, leading to better alignment.",
               "isCorrect": true
             },
             {
-              "answerId": "9feab31a-8917-4113-b57e-cd0966cd7758",
-              "answerText": "Avoiding feedback altogether to maintain a positive work relationship",
-              "explanation": "This is incorrect because not giving feedback can prevent growth and improvement.",
+              "answerId": "cda77f53-460d-4de2-a7cd-f06c994e0280",
+              "answerText": "Setting up periodic cross-departmental check-ins to ensure ongoing alignment.",
+              "explanation": "Regular check-ins promote communication and alignment across different functions.",
               "isCorrect": false
             },
             {
-              "answerId": "7e0f1697-1097-4866-8d42-ae35fd33eb73",
-              "answerText": "Giving feedback only when prompted by a manager",
-              "explanation": "This is incorrect because effective feedback should be ongoing and not just when prompted.",
+              "answerId": "a565b314-55f3-4462-bc35-b4ef369c49d7",
+              "answerText": "Allowing each department to independently develop their own objectives without consultation.",
+              "explanation": "This would likely lead to misalignment as departments work in silos.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "c6f2e22a-91f9-425c-a95f-255539f8beb2",
+              "answerText": "Focusing solely on current departmental goals without considering other departments.",
+              "explanation": "This approach disregards the importance of cross-departmental collaboration.",
               "isCorrect": false
             }
           ],
@@ -319,33 +319,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "b3228196-3522-4889-b55e-edd0eca794bd",
+          "id": "9acb7caf-dbe5-43f0-a767-bace92c2bbed",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "In a routine team meeting, how can a manager effectively foster a culture of recognition among their team members?",
+          "questionText": "As a Band H Leader at Ontario Power Generation, you are tasked with encouraging cross-functional alignment on key initiatives. Which of the following would be the most effective approach to achieve this in a routine operational setting?",
           "answer": [
             {
-              "answerId": "411854b3-bf46-4a12-aa25-8a89d3095885",
-              "answerText": "Only acknowledging achievements in private emails",
-              "explanation": "This is incorrect as it does not foster a public culture of recognition.",
+              "answerId": "d06e9d7d-5775-475a-8c0d-94ee1f9fc251",
+              "answerText": "Develop a rewards system solely for your individual team to boost morale and productivity.",
+              "explanation": "This option focuses only on the individual team rather than cross-functional alignment.",
               "isCorrect": false
             },
             {
-              "answerId": "6c5dec94-ff1c-466e-be88-83e3a37f3d9e",
-              "answerText": "Encouraging team members to publicly share accomplishments and positive feedback",
-              "explanation": "This is correct as it promotes a culture of openness and positive reinforcement.",
+              "answerId": "abeae422-a7ff-4d53-8d47-6ec313a865e5",
+              "answerText": "Hold regular inter-departmental meetings to discuss shared challenges and goals.",
+              "explanation": "Regular inter-departmental meetings facilitate communication and alignment on shared challenges and goals across departments.",
               "isCorrect": true
             },
             {
-              "answerId": "0fe7d99e-06ef-49c5-9b12-6381752ba1f1",
-              "answerText": "Waiting for annual reviews to offer recognition",
-              "explanation": "This is incorrect because recognition should be timely and frequent to be effective.",
+              "answerId": "f834f41b-79c1-482e-ab7f-2624e6d36c33",
+              "answerText": "Focus only on optimizing processes within your department without external collaboration.",
+              "explanation": "This option lacks cross-departmental interaction, making it ineffective for cross-functional alignment.",
               "isCorrect": false
             },
             {
-              "answerId": "995e3b74-9526-4c8a-be55-10e28c85ea5e",
-              "answerText": "Assuming team members know they are appreciated without explicit feedback",
-              "explanation": "This is incorrect because explicit recognition is necessary to make team members feel valued.",
+              "answerId": "896ba6e1-455e-42bf-9dff-644a5a6474e5",
+              "answerText": "Assign tasks based on personal relationships with team members across departments.",
+              "explanation": "This strategy is based on personal biases rather than a structured approach to alignment.",
               "isCorrect": false
             }
           ],
@@ -353,33 +353,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "2f49e2e5-dcfa-427a-8484-8a611c283b45",
+          "id": "5c6246ff-93d6-4aa2-ac7a-177ac47a2b4a",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Advanced",
-          "questionText": "Which approach best integrates feedback and recognition into an organization's culture to enhance employee performance?",
+          "questionText": "Which of the following approaches could most effectively enhance cross-functional alignment on key initiatives within an organization?",
           "answer": [
             {
-              "answerId": "448a948d-befc-47c6-ab36-54f4c68c58b8",
-              "answerText": "Implementing a once-a-year performance review with generic recognition awards",
-              "explanation": "This approach lacks the frequency and specificity needed for meaningful feedback and recognition.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "161f4dd8-81fd-426f-bed9-9b057d5dfda2",
-              "answerText": "Establishing regular, structured feedback sessions that encourage peer-to-peer feedback and timely recognition of achievements",
-              "explanation": "Regular and structured sessions foster ongoing feedback and recognition, integrating them into the culture.",
+              "answerId": "61583feb-cb5e-43f4-89f5-4611d5c89eaa",
+              "answerText": "Facilitating regular cross-departmental meetings to discuss alignment and adjust objectives",
+              "explanation": "These meetings promote communication, ensure aligned objectives, and foster collaboration across functions.",
               "isCorrect": true
             },
             {
-              "answerId": "86c6516f-fc91-45d6-b342-4eeab067169e",
-              "answerText": "Using public leaderboards to rank employees based on performance metrics",
-              "explanation": "Public rankings can create competition rather than a supportive environment for feedback and recognition.",
+              "answerId": "cf2f5975-218d-438f-be9a-c13dc66e9d91",
+              "answerText": "Assigning additional resources to the most successful departments to drive quick wins",
+              "explanation": "While aiming for quick wins, this approach can create silos and does not encourage collaboration across functions.",
               "isCorrect": false
             },
             {
-              "answerId": "2a3f4631-0b99-4ea2-bde2-5aa1a074ff2f",
-              "answerText": "Offering financial bonuses exclusively based on quantitative performance measures",
-              "explanation": "Financial bonuses alone may not encourage a culture of feedback or recognition of qualitative achievements.",
+              "answerId": "cb70792e-56ac-451f-9a53-a980e597caed",
+              "answerText": "Setting individual achievement milestones for each department based on departmental goals",
+              "explanation": "Focusing solely on departmental goals can detract from the overall organizational alignment and reduce collaborative efforts.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "58d47ee5-1d56-4e4b-b88a-9d950582d6c7",
+              "answerText": "Implementing a rigid top-down decision-making hierarchy to maintain control",
+              "explanation": "Such a hierarchy can limit input from various functions, stifling cross-functional collaboration and alignment.",
               "isCorrect": false
             }
           ],
@@ -387,33 +387,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "b61be9ef-4411-4243-886c-391624df8e19",
+          "id": "756c4b16-edd2-4314-88cf-bf4947f079fb",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Advanced",
-          "questionText": "In fostering a culture of feedback and recognition among a diverse team, which approach most effectively addresses unique communication and cultural needs, allowing for strategic integration and improvement?",
+          "questionText": "Which of the following strategies most effectively encourages cross-functional alignment on key initiatives within an organization, considering the roles and responsibilities of leadership?",
           "answer": [
             {
-              "answerId": "08e87036-4107-4804-bf51-c1b37832484e",
-              "answerText": "Holding an annual awards ceremony to recognize high-performing employees.",
-              "explanation": "This approach is infrequent and does not foster a continuous culture of feedback tailored to diverse team needs.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "5e7b178c-51b6-426a-85bb-90e0df2a6ed0",
-              "answerText": "Encouraging managers to conduct quarterly performance reviews and provide structured feedback.",
-              "explanation": "Quarterly reviews are periodic and may not address the continuous and diverse needs of team members.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "a0d52790-5ee5-447b-887c-24338e8c9e87",
-              "answerText": "Implementing real-time feedback channels that facilitate open dialogue and respect cultural differences within the team.",
-              "explanation": "This promotes ongoing and dynamic communication, respecting cultural diversity and strategic integration of feedback.",
+              "answerId": "71959181-e7c6-40bb-be01-d92c2cfad51a",
+              "answerText": "Establishing regular interdepartmental meetings to discuss progress, challenges, and collaborative strategies for key initiatives.",
+              "explanation": "This option promotes cross-functional alignment by encouraging collaboration and communication between different departments, aligning with the learning objective.",
               "isCorrect": true
             },
             {
-              "answerId": "5ad6a011-ccfe-4a61-8a83-80143d31f8cd",
-              "answerText": "Utilizing a suggestion box for anonymous feedback submission.",
-              "explanation": "While allowing for feedback, anonymity can limit personal engagement and considered adaptations to varied cultural contexts.",
+              "answerId": "4a6df126-3bcd-419e-aa3b-e663fe8fb8e5",
+              "answerText": "Maintaining strict departmental independence to ensure focused expertise and specialized outcomes for each team.",
+              "explanation": "This option emphasizes departmental independence, which may hinder cross-functional collaboration and alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "8177cbe4-eb05-4cb7-aad5-7fc29ef2c184",
+              "answerText": "Centralizing decision-making processes at the executive level to streamline initiative management and reduce complexity.",
+              "explanation": "Centralizing decision-making can reduce complexity, but it does not inherently promote cross-functional alignment as it limits collaborative input from different departments.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "bd7a06bc-344e-4998-98e3-f09447618cba",
+              "answerText": "Implementing separate performance metrics for each department to drive individual excellence and accountability.",
+              "explanation": "While driving individual departmental excellence, this option does not foster collaboration and cross-functional alignment.",
               "isCorrect": false
             }
           ],
@@ -423,106 +423,38 @@
       ]
     },
     {
-      "learningObjective": "Leads open conversations and welcomes different perspectives.",
+      "learningObjective": "Tracks team progress, adjusts plans, and drives continuous improvement.",
       "learningObjectiveUuid": null,
       "learningObjectiveOrder": 3,
       "questions": [
         {
-          "id": "9995518a-43a2-4684-8e64-62db7b403f8e",
-          "questionType": "MULTIPLE_CHOICE",
-          "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "A manager is holding a team meeting to discuss a new project. To facilitate open conversations and ensure different perspectives are welcomed, which of the following approaches should the manager take?",
-          "answer": [
-            {
-              "answerId": "9a5b2f97-e97e-4fd5-8dae-6b919895628b",
-              "answerText": "Regularly interrupting team members to keep the meeting on track.",
-              "explanation": "This approach can hinder open conversation and discourage participation.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "435273dd-e585-4344-8287-e99aa1c6bb18",
-              "answerText": "Encouraging every team member to briefly share their thoughts on the project.",
-              "explanation": "This approach fosters inclusivity and encourages open communication from all team members.",
-              "isCorrect": true
-            },
-            {
-              "answerId": "43e17894-d46b-426e-a5cc-0cd150c19b4c",
-              "answerText": "Presenting their own ideas as the most effective solution early in the meeting.",
-              "explanation": "Prioritizing the manager's ideas early may suppress diverse opinions and perspectives.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "6cd024b8-9afb-474a-b880-1e489a4c6afa",
-              "answerText": "Asking only the most experienced team members for input to save time.",
-              "explanation": "Limiting input to only experienced members can prevent innovative thinking and diverse perspectives.",
-              "isCorrect": false
-            }
-          ],
-          "isUploaded": false,
-          "scenarioFocus": null
-        },
-        {
-          "id": "7b88e49f-024f-4f06-a4e7-5c8ecacd537a",
-          "questionType": "MULTIPLE_CHOICE",
-          "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "In a team meeting, one of your colleagues seems hesitant to share their ideas. Which strategy would be most effective in leading an open conversation and welcoming different perspectives?",
-          "answer": [
-            {
-              "answerId": "af649ffb-740f-4f6e-887c-fe44b78bf26e",
-              "answerText": "Invite the colleague to share their thoughts in a one-on-one setting after the meeting.",
-              "explanation": "This can allow the colleague to express their views more comfortably, but misses the opportunity to incorporate diverse perspectives in the meeting.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "397ba498-92da-4cae-abe8-a1fafa8f1773",
-              "answerText": "Directly acknowledge the colleague's expertise related to the discussion topic, encouraging them to contribute while assuring their input is valued.",
-              "explanation": "This strategy actively invites participation while validating the colleague's perspective, fostering open conversation.",
-              "isCorrect": true
-            },
-            {
-              "answerId": "fc4d3472-dd5d-4fa1-a67e-ba84140d1653",
-              "answerText": "Suggest the colleague submit their ideas via email after the meeting to be considered later.",
-              "explanation": "While this may encourage future input, it does not promote live participation and discussion.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "33c202a0-efa6-41ea-a4b0-3f720b93c87a",
-              "answerText": "Highlight the importance of team collaboration and ask everyone to briefly share their viewpoints on the topic.",
-              "explanation": "This promotes open dialogue but may not specifically encourage the hesitant colleague to speak up.",
-              "isCorrect": false
-            }
-          ],
-          "isUploaded": false,
-          "scenarioFocus": null
-        },
-        {
-          "id": "e6c61986-c430-4f33-bdd1-85d72b0c75f6",
+          "id": "84241d6a-181a-496a-bc1c-7ebc83417f36",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "What defines an open conversation led by a leader?",
+          "questionText": "What is the primary role of a leader in promoting continuous improvement in a team?",
           "answer": [
             {
-              "answerId": "f885301e-78ad-4119-a21d-5ff9c1e867ef",
-              "answerText": "Participants are encouraged to freely express their opinions without fear of retribution.",
-              "explanation": "Correct: Open conversations under a leader should create a safe space for all participants to share their views.",
+              "answerId": "3ef94930-d309-43e4-b91a-caa293eb3b8b",
+              "answerText": "To generate high-cost solutions without team involvement.",
+              "explanation": "This does not focus on continuous improvement or team progress.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "853f62fe-4501-492b-9866-cb4123e82578",
+              "answerText": "To ensure projects are completed safely and efficiently while enhancing team capabilities.",
+              "explanation": "This aligns with driving continuous improvement and adjusting plans based on team progress.",
               "isCorrect": true
             },
             {
-              "answerId": "f3146103-9697-40e4-9102-1c876302f43a",
-              "answerText": "The leader dominates the discussion to ensure direction.",
-              "explanation": "Incorrect: An open conversation implies that all voices are heard, not just the leader's.",
+              "answerId": "4a4dd407-540e-4f9a-9489-88998b914fd9",
+              "answerText": "To monitor tasks without providing feedback or adjustments to the team.",
+              "explanation": "This lacks the element of continuous improvement and adjustment based on team progress.",
               "isCorrect": false
             },
             {
-              "answerId": "804d0067-e1b1-46be-a1b0-1db0fc8754c2",
-              "answerText": "The meeting follows a strict agenda with little room for discussion.",
-              "explanation": "Incorrect: Open conversations allow flexibility for participants to bring up varied perspectives.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "26b95214-f629-4086-8462-fd59bb53f065",
-              "answerText": "Decisions are made by the leader before any input is given.",
-              "explanation": "Incorrect: Open conversations involve gathering input before reaching decisions.",
+              "answerId": "7abbdc92-1975-4a5e-8feb-83dd5a5796df",
+              "answerText": "To focus solely on team morale without consideration for process improvements.",
+              "explanation": "While important, focusing solely on morale neglects the need for process improvements.",
               "isCorrect": false
             }
           ],
@@ -530,33 +462,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "089fec0b-6568-4e69-ad3c-987944ccdc8c",
+          "id": "dadc1c82-bf23-4821-84ae-815d36e43a93",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "Which approach best illustrates welcoming diverse perspectives in a team?",
+          "questionText": "Which of the following actions best represents an understanding of how to track team progress effectively?",
           "answer": [
             {
-              "answerId": "c803ebc9-4c5a-4719-a372-6781e98243ea",
-              "answerText": "Actively asking for input from team members.",
-              "explanation": "Correct: Encouraging team members to contribute their views demonstrates openness to diverse perspectives.",
+              "answerId": "2c76d486-f41e-473d-bc17-24a6484ccf78",
+              "answerText": "Consistently asking team members if they are happy with their work.",
+              "explanation": "This option is incorrect because it focuses on team morale rather than tracking measurable progress.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "491ea31c-25c0-4f09-99db-7e097e7a4da0",
+              "answerText": "Regularly reviewing completed project milestones against planned objectives.",
+              "explanation": "This option is correct because it involves evaluating team progress by comparing completed tasks to planned goals, aligning with tracking progress.",
               "isCorrect": true
             },
             {
-              "answerId": "0383a028-6a01-46df-b32f-130355e588a4",
-              "answerText": "Only valuing input that aligns with current ideas.",
-              "explanation": "Incorrect: Welcoming perspectives requires valuing all contributions, not just those that align.",
+              "answerId": "2af9d6b4-f09e-43c8-8bbd-cf66e03beec7",
+              "answerText": "Waiting for the quarterly review to assess team performance.",
+              "explanation": "This option is incorrect as it delays progress tracking and does not provide timely insights.",
               "isCorrect": false
             },
             {
-              "answerId": "5e7050b5-b276-41be-ac14-9240efa078b8",
-              "answerText": "Limiting discussion to prevent conflict.",
-              "explanation": "Incorrect: Restricting discussion does not welcome different perspectives.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "0a370776-b43f-4a01-8163-25f999d640e8",
-              "answerText": "Assigning roles to reinforce existing hierarchies.",
-              "explanation": "Incorrect: Emphasizing hierarchy over input can suppress the sharing of diverse perspectives.",
+              "answerId": "f8c4c9a9-1b3b-4e76-896f-3b39764d0865",
+              "answerText": "Conducting weekly suggestion meetings to increase team morale.",
+              "explanation": "This option focuses on improving team morale rather than systematically tracking progress.",
               "isCorrect": false
             }
           ],
@@ -564,33 +496,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "88658e96-7f7f-40e4-8342-1c3b9b3a7209",
+          "id": "1cef537b-4a62-4d89-bbec-437359a3fbb5",
           "questionType": "MULTIPLE_CHOICE",
-          "aiGeneratedDifficulty": "Advanced",
-          "questionText": "A diverse team member presents a viewpoint that contradicts the majority opinion during a team meeting. As a leader who welcomes different perspectives, what is the most effective approach to ensure an open conversation?",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "Which of the following actions best illustrates the application of tracking team progress in a routine project?",
           "answer": [
             {
-              "answerId": "1e38378f-13a3-4fe8-ae4c-baae353751b3",
-              "answerText": "Encourage the team member to elaborate on their viewpoint and facilitate a discussion on its potential merits.",
-              "explanation": "This approach demonstrates open-mindedness and facilitates a comprehensive examination of different perspectives.",
+              "answerId": "f506857f-d111-4770-9d4d-1bd2662204fd",
+              "answerText": "Conducting weekly team meetings to review completed tasks and update the timeline.",
+              "explanation": "Regular meetings help to ensure that the project stays on track and any necessary adjustments are made promptly.",
               "isCorrect": true
             },
             {
-              "answerId": "3f476213-c942-43b7-bdaf-e26f9bc43ecd",
-              "answerText": "Summarize the team member's viewpoint and discuss how it compares to the majority opinion to understand differing perspectives.",
-              "explanation": "This approach ensures the team member feels heard and allows the team to consider various perspectives constructively.",
+              "answerId": "2cdaf00d-90a3-4162-8158-74be7e3ddaa6",
+              "answerText": "Praising team members for their participation regardless of progress.",
+              "explanation": "While recognition is important, tracking progress requires specific assessment of task completion and timelines.",
               "isCorrect": false
             },
             {
-              "answerId": "19c08a70-ffa3-487d-9e4e-16c42ddec394",
-              "answerText": "Agree with the viewpoint without discussion to quickly address diversity.",
-              "explanation": "This option superficially addresses diversity without genuinely considering the viewpoint.",
+              "answerId": "78665e42-ddd7-4470-832b-e52c1d448dd6",
+              "answerText": "Allowing the project to continue without any assessment until completion.",
+              "explanation": "Ignoring progress until the end does not allow for timely adjustments or improvements.",
               "isCorrect": false
             },
             {
-              "answerId": "141c220c-58e0-4c1a-914a-6c17d6337f71",
-              "answerText": "Direct the team to ignore the viewpoint and focus on the traditionally successful approaches.",
-              "explanation": "This dismisses the opportunity for innovation and excludes diverse perspectives.",
+              "answerId": "c0648bb2-7668-4338-b1f5-db5005b48862",
+              "answerText": "Focusing on the completion of individual tasks without regard to the overall timeline.",
+              "explanation": "This approach may lead to delays if the overall project timeline is not considered.",
               "isCorrect": false
             }
           ],
@@ -598,33 +530,101 @@
           "scenarioFocus": null
         },
         {
-          "id": "f5191e82-9770-4ceb-9b23-7f0413a82c42",
+          "id": "a4ffc6d0-fde4-46dc-a576-5aae91ff63a8",
           "questionType": "MULTIPLE_CHOICE",
-          "aiGeneratedDifficulty": "Advanced",
-          "questionText": "As the leader of a team meeting discussing the introduction of a new company policy, how can you effectively lead the conversation to ensure all team members feel comfortable sharing their diverse perspectives, and integrate their feedback into the final decision?",
+          "aiGeneratedDifficulty": "Intermediate",
+          "questionText": "In the context of driving continuous improvement, which action would a leader most likely take to apply this principle in a standard work environment?",
           "answer": [
             {
-              "answerId": "98eaa035-0ec6-438f-a8af-cd2d8bf0aa9a",
-              "answerText": "Simply invite everyone to speak and proceed with the decision already made without modifications.",
-              "explanation": "This approach does not genuinely consider diverse perspectives or integrate feedback, which is crucial for leading open conversations.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "db40b378-e501-4962-8f0a-2c79f4c1c806",
-              "answerText": "Encourage team members to provide their opinions by creating a welcoming atmosphere, actively listen to their viewpoints, and integrate their feedback into the decision-making process.",
-              "explanation": "This is the correct approach as it facilitates open dialogue and values team members' diverse perspectives, aligning with the learning objective.",
+              "answerId": "42ac5ebd-4b87-4a1b-86a1-355f4483013c",
+              "answerText": "Implementing feedback mechanisms to identify areas for enhancement in daily operations.",
+              "explanation": "Feedback mechanisms are essential for recognizing and improving upon existing processes continually.",
               "isCorrect": true
             },
             {
-              "answerId": "47eee378-7769-4498-b88f-91cf7f3142f8",
-              "answerText": "Present your perspective as the most informed, and suggest team members may opt not to speak if they disagree.",
-              "explanation": "This discourages open dialogue and does not welcome differing opinions, which is contrary to the learning objective.",
+              "answerId": "b7dca8e5-1a8b-428f-a443-52685703224e",
+              "answerText": "Waiting for upper management to dictate changes in process improvement.",
+              "explanation": "Reliance on upper management for changes limits the proactive pursuit of improvement.",
               "isCorrect": false
             },
             {
-              "answerId": "6680e1f1-4762-4b93-8462-e44fef46465c",
-              "answerText": "Limit the discussion to only those who have seniority, assuming their perspectives will represent the whole team's views effectively.",
-              "explanation": "This excludes diverse perspectives and does not allow for open conversation from all team members.",
+              "answerId": "ca348d19-fae0-4c58-a457-f1699e490a98",
+              "answerText": "Assuming existing processes are flawless and require no changes.",
+              "explanation": "Assuming no need for changes stifles improvement and ignores potential areas for growth.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "5720b776-70dc-48dd-a7f7-f921b3b65ab7",
+              "answerText": "Prioritizing cost reduction over quality improvements.",
+              "explanation": "This action might neglect long-term benefits and value that can come from quality improvements.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "aa90c4aa-2e95-491f-ac7b-74628fcca77d",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Evaluate the effectiveness of a team's progress tracking method that uses weekly status update meetings and visual management boards for monitoring and adjusting project plans in a high-pressure environment like Ontario Power Generation. Which of the following strategies would best support continuous improvement in this context?",
+          "answer": [
+            {
+              "answerId": "d6dbeaa2-7792-410f-a50e-760af74aa56f",
+              "answerText": "Implementing daily check-ins to address issues promptly.",
+              "explanation": "This option enhances responsiveness and allows for immediate adjustments, supporting continuous improvement.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "4b2a9991-7eab-4013-ae6c-9a1e372eaf2c",
+              "answerText": "Replacing status update meetings with monthly reports.",
+              "explanation": "Monthly reports reduce the frequency of updates, which may delay problem identification and hinder continuous improvement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "000e2507-e996-4d87-86e1-6946d75b5c48",
+              "answerText": "Reducing the frequency of visual board updates.",
+              "explanation": "Less frequent updates can result in outdated information, hindering accurate progress tracking and continuous improvement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "70919c2d-0071-48de-bbe4-66c39cd3de90",
+              "answerText": "Assigning progress tracking to a single team member.",
+              "explanation": "This reduces collective team input and may lead to biased tracking, limiting the potential for continuous improvement.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "15e962d2-4cf0-4bda-8387-53de9f1fc86e",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Design a feedback mechanism for a project team at Ontario Power Generation that effectively incorporates team input and data analysis to adjust project plans for continuous improvement. Given the need for reliability and operational excellence, which approach would most likely achieve this objective?",
+          "answer": [
+            {
+              "answerId": "b80e1fc2-1efb-4c42-b6ac-79540c9310ea",
+              "answerText": "Collecting feedback at the end of the project.",
+              "explanation": "End-of-project feedback delays adjustments and does not support continuous improvement throughout the project lifecycle.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "7f542aab-89b0-403c-ab9a-0f0f594d85e9",
+              "answerText": "Analyzing operational data only during major setbacks.",
+              "explanation": "Limiting data analysis to setbacks misses opportunities for proactive improvement and adaptation.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "39c9fa65-9413-4b6c-9c73-7c836dced1e4",
+              "answerText": "Implementing a real-time dashboard with team input integration.",
+              "explanation": "Real-time integrated dashboards provide ongoing insights, fostering timely adjustments and supporting continuous improvement.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "c6186a02-c9a9-4066-89c1-438d6015bc11",
+              "answerText": "Soliciting feedback exclusively from external stakeholders.",
+              "explanation": "Reliance on external feedback overlooks internal insights, limiting the comprehensive understanding necessary for continuous improvement.",
               "isCorrect": false
             }
           ],
@@ -634,60 +634,72 @@
       ]
     },
     {
-      "learningObjective": "Breaks down complex information.",
+      "learningObjective": "Ensures team action plans align with company goals and incorporate ongoing opportunities for continuous improvement.",
       "learningObjectiveUuid": null,
       "learningObjectiveOrder": 4,
       "questions": [
         {
-          "id": "06ef3a20-1ae5-404d-b48d-695723eee21c",
+          "id": "345a3fd0-7a8a-4b18-adb7-fc4bc6f3829b",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "What is the process of breaking down complex information called?",
+          "questionText": "What is the main purpose of aligning team action plans with company goals?",
           "answer": [
             {
-              "answerId": "6707e8d5-5519-4cff-ae7e-f996571e39b5",
-              "answerText": "Simplifying information into understandable components",
-              "explanation": "Correct, because breaking down complex information requires simplification into more comprehensible parts.",
-              "isCorrect": true
+              "answerId": "37e86350-edef-48b8-bb22-01a5e291f2bc",
+              "answerText": "To prepare for unpredictable events",
+              "explanation": "This is not the main purpose as aligning plans is about consistency towards goals, not unpredictability.",
+              "isCorrect": false
             },
             {
-              "answerId": "21a1a0b1-981e-432e-8d0e-a56b33719253",
-              "answerText": "Collecting vast amounts of unorganized information",
-              "explanation": "Incorrect, because breaking down involves organizing and simplifying information, not just collecting.",
+              "answerId": "5c868786-6f5d-4725-a635-a28612815e98",
+              "answerText": "To improve individual performance shows",
+              "explanation": "The focus is more on organizational alignment rather than individual performance.",
               "isCorrect": false
+            },
+            {
+              "answerId": "686e9ba2-a856-47cf-a144-f7bf2380cdf2",
+              "answerText": "To ensure consistency across different departments",
+              "explanation": "While important, it is a means to an end rather than the main purpose.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "e7f510aa-6bcb-47f7-b9d3-647675a45611",
+              "answerText": "To support operational excellence and continuous improvement",
+              "explanation": "This aligns with ensuring that team actions contribute to the overall goals of improving efficiency and effectiveness.",
+              "isCorrect": true
             }
           ],
           "isUploaded": false,
           "scenarioFocus": null
         },
         {
-          "id": "8652e972-a103-4131-9c79-004c103ab92d",
+          "id": "546981f0-6909-403a-84aa-a5d4b87e3056",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "easy",
-          "questionText": "Which of the following best describes the initial step in breaking down complex information?",
+          "questionText": "When creating action plans that align with company goals, which element is crucial for ensuring continuous improvement?",
           "answer": [
             {
-              "answerId": "7b2de120-d158-447c-a6d5-973ec9729054",
-              "answerText": "Identifying key components of the information",
-              "explanation": "Identifying key components is the initial step in analyzing complex information, which involves recognizing and summarizing the main parts.",
+              "answerId": "b08d8b7d-4a8b-497f-8026-67b1b7cd9d64",
+              "answerText": "Relying solely on past successful strategies",
+              "explanation": "Past strategies provide learning but may not foster new improvements.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "0e745c3f-47a5-4e75-b4e3-6f1fbc4d3b1b",
+              "answerText": "Incorporating ongoing feedback and improvements",
+              "explanation": "Continuous feedback loops ensure that improvements are continually being made.",
               "isCorrect": true
             },
             {
-              "answerId": "994ac547-81f4-46a1-b8c3-9297d53aa2c1",
-              "answerText": "Immediately concluding based on assumptions",
-              "explanation": "Concluding without analysis does not involve breaking down the information and may lead to incorrect assumptions.",
+              "answerId": "18184400-4664-4028-9299-d5294cc1c94d",
+              "answerText": "Delegating all decision-making to upper management",
+              "explanation": "This can hinder the adaptability and responsiveness of action plans.",
               "isCorrect": false
             },
             {
-              "answerId": "081bd175-a98e-4eff-87d8-9bf9123271a6",
-              "answerText": "Ignoring irrelevant details",
-              "explanation": "While this might be part of the process, identifying key components is necessary before determining relevancy.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "9ad75297-b697-4cf6-beeb-306a657818c4",
-              "answerText": "Listing references for future examination",
-              "explanation": "Listing references can assist in research but does not constitute breaking down information directly.",
+              "answerId": "63b84c6f-7561-4aac-9159-b9ff33cd7c44",
+              "answerText": "Focusing primarily on short-term results",
+              "explanation": "Short-term focus can overlook the continuous improvement aspect necessary for long-term success.",
               "isCorrect": false
             }
           ],
@@ -695,33 +707,33 @@
           "scenarioFocus": null
         },
         {
-          "id": "c43dd4b4-f4e3-4726-ac4d-03fc66175a3f",
+          "id": "40520471-1294-4276-8ca8-38d5b322e75f",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "Which strategy would you use to analyze a team's communication process in order to identify areas for improvement?",
+          "questionText": "Which of the following actions best demonstrates a team leader aligning an action plan with company goals at Ontario Power Generation?",
           "answer": [
             {
-              "answerId": "85e7d97e-1475-4cc7-8d7e-1948ab46e9d4",
-              "answerText": "Observe and note individual communication styles within the team.",
-              "explanation": "This method involves breaking down communication into components to identify specific patterns and areas for improvement.",
+              "answerId": "31a24cb9-7f24-4b88-a7ef-77d761ea119c",
+              "answerText": "Developing an action plan that focuses solely on increasing short-term profits.",
+              "explanation": "This focuses only on short-term profits and may not align with broader company goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "2bce6b41-c01c-46d1-9138-142e6c869249",
+              "answerText": "Creating a plan that integrates safety, reliability, and operational excellence initiatives.",
+              "explanation": "This aligns with company goals by incorporating essential elements such as safety, reliability, and operational excellence.",
               "isCorrect": true
             },
             {
-              "answerId": "4cbb4438-aed2-47b8-b49e-b335c0ddbfd6",
-              "answerText": "Summarize the team's overall communication in a single statement.",
-              "explanation": "This oversimplifies the communication process and does not break down its components.",
+              "answerId": "611448ef-2c5a-4e07-924a-9d0393c41071",
+              "answerText": "Implementing a plan that encourages team members to work longer hours to boost productivity.",
+              "explanation": "This may increase productivity, but it doesn't necessarily align with broader company goals like employee well-being.",
               "isCorrect": false
             },
             {
-              "answerId": "8c9d1a10-aad3-406a-8cdc-c1a6d9d32019",
-              "answerText": "Focus only on resolving conflicts as they arise without further analysis.",
-              "explanation": "This approach does not involve analyzing the communication process to identify underlying issues.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "019dfaa1-5c2c-441a-8174-96cfd2432f1a",
-              "answerText": "Implement a new communication tool immediately.",
-              "explanation": "This does not involve analyzing existing communication processes to identify areas for improvement.",
+              "answerId": "68a377a7-e691-415e-8fa2-b2de8c88f908",
+              "answerText": "Designing a project disregarding the established protocols due to time constraints.",
+              "explanation": "Disregarding established protocols can undermine alignment with company goals.",
               "isCorrect": false
             }
           ],
@@ -729,101 +741,67 @@
           "scenarioFocus": null
         },
         {
-          "id": "fb00f2c5-9822-476c-9bc4-d5337b4540d8",
-          "questionType": "MULTIPLE_CHOICE",
-          "aiGeneratedDifficulty": "Intermediate",
-          "questionText": "You are given a complex data set about various countries' GDP, population, and literacy rates. What would be the most appropriate strategy for independently breaking down and analyzing this complex information for a report on global economic conditions?",
-          "answer": [
-            {
-              "answerId": "a2827594-9c93-41b9-a229-e55ef41bca27",
-              "answerText": "Identify and compare key trends in GDP growth relative to literacy rates and population size.",
-              "explanation": "This approach involves analyzing relationships between multiple variables, aligning with the objective to break down and analyze complex information.",
-              "isCorrect": true
-            },
-            {
-              "answerId": "f9077af3-ae4b-4254-aae5-dd3cda2131d6",
-              "answerText": "Calculate the total GDP across all countries.",
-              "explanation": "Calculating a total value does not aid in breaking down the complexity or analyzing relationships between the data.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "6b696fc0-91aa-4142-9d33-326f43c3a9d4",
-              "answerText": "Sort countries based on GDP size.",
-              "explanation": "Sorting is a simple task and doesn't contribute to analyzing or breaking down complex information in depth.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "18999707-4522-4044-9bf0-b7c723be070e",
-              "answerText": "Create a chart of countries with their respective literacy rates.",
-              "explanation": "Visualizing literacy rates alone does not encompass the complexity of the dataset nor does it analyze interrelations.",
-              "isCorrect": false
-            }
-          ],
-          "isUploaded": false,
-          "scenarioFocus": null
-        },
-        {
-          "id": "c5bae3dc-8162-456c-9a09-02c5035c7cd1",
+          "id": "30e79d10-5a6b-4249-9951-b4a55e659abc",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Advanced",
-          "questionText": "Which of the following scenarios best demonstrates breaking down complex information to improve team communication?",
+          "questionText": "What techniques could be utilized to analyze whether team action plans are effectively aligned with company goals while incorporating opportunities for continuous improvement?",
           "answer": [
             {
-              "answerId": "9717c6a5-4e55-42ac-8770-a0435e363718",
-              "answerText": "A manager uses a meeting to present all aspects of a project without distinguishing priority areas.",
-              "explanation": "This does not break down complex information or facilitate understanding.",
+              "answerId": "ef03bad3-0889-4fd1-9031-e7f60db9791c",
+              "answerText": "Conducting routine check-ins without any retrospective analysis.",
+              "explanation": "This approach lacks depth and doesn't provide insight into alignment with company goals.",
               "isCorrect": false
             },
             {
-              "answerId": "baaec369-08e7-4432-93f7-864e5c6ba21e",
-              "answerText": "A project leader elaborates on key project details by separating tasks into manageable chunks and discussing each one in detail with the team.",
-              "explanation": "This answer demonstrates breaking down complex information, enhancing team communication and understanding.",
+              "answerId": "cb24004c-cc25-4a99-b77c-a4c770910cac",
+              "answerText": "Implementing isolated performance reviews unrelated to company objectives.",
+              "explanation": "These reviews wouldn't ensure alignment with overall company goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "30c129c3-8d60-4aa4-9e6a-fa481fbfcde0",
+              "answerText": "Performing stakeholder surveys focused solely on customer satisfaction.",
+              "explanation": "Focusing solely on customer satisfaction may neglect other strategic company goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "8a1a1383-c825-4739-af3f-a3e6bee7ec97",
+              "answerText": "Utilizing a balanced scorecard approach to integrate strategic objectives and performance metrics.",
+              "explanation": "A balanced scorecard can align team action plans with strategic objectives and track performance metrics.",
               "isCorrect": true
-            },
-            {
-              "answerId": "3a16c17f-70fe-4cc0-b118-0827bef62d84",
-              "answerText": "An employee summarizes the entire project document in one paragraph for upper management.",
-              "explanation": "This summarizes rather than breaks down information, which might reduce detail and clarity.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "36d48ef0-a419-42ef-93b1-13970da922ff",
-              "answerText": "A team member sends an email describing a project's objectives without outlining the steps involved.",
-              "explanation": "This does not break down the information into understandable parts.",
-              "isCorrect": false
             }
           ],
           "isUploaded": false,
           "scenarioFocus": null
         },
         {
-          "id": "52a9c9bf-9820-46ee-bd0f-276156c330ae",
+          "id": "e5c92c6a-efd2-4f7d-8ff7-f9566fd53715",
           "questionType": "MULTIPLE_CHOICE",
           "aiGeneratedDifficulty": "Advanced",
-          "questionText": "Based on the dataset provided, analyze and identify which age group showed the most consistent growth in consumer spending over these five years.",
+          "questionText": "Which method should a Band H Leader employ to innovate and establish a best practice that ensures team action plans at Ontario Power Generation align with strategic objectives and encourage continuous improvement?",
           "answer": [
             {
-              "answerId": "c5f135dc-b303-48b6-aed8-da942fc80886",
-              "answerText": "45-54",
-              "explanation": "This age group demonstrated steady increases each year without any declines, indicating consistent growth in consumer spending.",
+              "answerId": "29e21b9b-0fd7-4c36-a03e-3c775075f2c0",
+              "answerText": "Implementing changes based solely on current industry trends without considering company-specific contexts.",
+              "explanation": "This approach could lead to misalignment with strategic objectives specific to the company.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "8e28fa9b-5020-4b77-94ec-299f2a361c5e",
+              "answerText": "Encouraging team members to focus only on short-term targets, ignoring long-term sustainability.",
+              "explanation": "Focusing only on short-term targets may undermine long-term strategic alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "1ef696c4-92d4-4656-b580-de5b5610dfe9",
+              "answerText": "Developing a dynamic feedback loop system that assesses team performance and aligns with strategic goals.",
+              "explanation": "A dynamic feedback loop allows for continuous assessment and alignment with strategic goals.",
               "isCorrect": true
             },
             {
-              "answerId": "f0b03214-0b46-4ed1-9c99-9eafe710a7d9",
-              "answerText": "18-24",
-              "explanation": "This age group experienced fluctuations in consumer spending with some decreases, making it less consistent compared to 45-54.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "4ea09f6b-6f99-48ba-ab00-64d79e2551f6",
-              "answerText": "55-64",
-              "explanation": "This group showed a decline followed by minor fluctuations, rather than consistent growth.",
-              "isCorrect": false
-            },
-            {
-              "answerId": "7b7d9aa4-e877-466c-8ebe-071b7b7acf20",
-              "answerText": "65+",
-              "explanation": "This age group had an overall decline in consumer spending over the years.",
+              "answerId": "9040e179-5f6c-4d2a-a0d7-91ff74c34913",
+              "answerText": "Using a generic approach to team management without adapting strategies to Ontario Power Generation's unique environment.",
+              "explanation": "A generic approach may not effectively align team actions with the specific strategic goals of the company.",
               "isCorrect": false
             }
           ],

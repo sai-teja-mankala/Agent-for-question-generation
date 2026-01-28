@@ -39,7 +39,6 @@ class GraphState(TypedDict):
     prompt_payloads: List[PromptPayload]
     raw_outputs: List[Dict[str, Any]]
     improved_outputs: List[Dict[str, Any]]
-    quality: List[Dict[str, Any]]
     formatted: List[Dict[str, Any]]
     distractor_validation_passed: List[Dict[str, Any]]
     distractor_validation_failed: List[Dict[str, Any]]
@@ -48,3 +47,6 @@ class GraphState(TypedDict):
     quality_validation_failed: List[Dict[str, Any]]
     quality_correction_attempts: int
     format_fix_attempts: int
+    review_distractors_attempts: int
+    review_quality_attempts: int
+    review_format_attempts: int

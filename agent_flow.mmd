@@ -1,0 +1,30 @@
+flowchart TD
+    A[build_prompt_payloads] --> B[generate_questions]
+    B --> C[improve_distractors]
+    C --> D{Has MCQ?}
+    D -- Yes --> E[validate_distractors]
+    D -- No --> H[validate_quality]
+    E --> F{distractors failed?}
+    F -- Yes --> G[correct_distractors]
+    G --> E
+    F -- No --> R1[review_distractors]
+    R1 --> R1d{review failed?}
+    R1d -- Yes --> G
+    R1d -- No --> H
+    H --> I{quality failed?}
+    I -- Yes --> J[correct_quality]
+    J --> H
+    I -- No --> R2[review_quality]
+    R2 --> R2d{review failed?}
+    R2d -- Yes --> J
+    R2d -- No --> K[run_pipeline post-review]
+    K --> L[_fill_missing_questions]
+    L --> M[format_conversion]
+    M --> N[validate_and_fix_format]
+    N --> O{format_loop?}
+    O -- Yes --> M
+    O -- No --> P[review_items post-format]
+    P --> P1{review failed?}
+    P1 -- Yes --> M
+    P1 -- No --> Q[_build_output]
+    Q --> Z[final_state.json]

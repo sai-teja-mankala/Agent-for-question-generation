@@ -31,6 +31,12 @@ from .prompts import (
     USER_PROMPT_TEMPLATE_DISTRACTOR_QUALITY,
     USER_PROMPT_TEMPLATE_QUALITY_CHECK,
     USER_PROMPT_TEMPLATE_RELEVANCY_CHECK,
+    SYSTEM_PROMPT_TEMPLATE_REVIEWER_DIFFICULTY,
+    SYSTEM_PROMPT_TEMPLATE_REVIEWER_DISTRACTORS,
+    SYSTEM_PROMPT_TEMPLATE_REVIEWER_TESTTAKER,
+    USER_PROMPT_TEMPLATE_REVIEWER_DIFFICULTY,
+    USER_PROMPT_TEMPLATE_REVIEWER_DISTRACTORS,
+    USER_PROMPT_TEMPLATE_REVIEWER_TESTTAKER,
 )
 from .qg_types import GraphState, PipelineInput, PromptPayload, QuestionType
 
@@ -527,6 +533,185 @@ def evaluate_relevancy(
     return parsed
 
 
+def _review_with_prompt(
+    client,
+    deployment: str,
+    system_prompt: str,
+    user_prompt: str,
+) -> Dict[str, Any]:
+    response = client.chat.completions.create(
+        model=deployment,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    )
+    content = response.choices[0].message.content or ""
+    try:
+        parsed = _parse_json(content)
+    except json.JSONDecodeError:
+        parsed = {"pass": False, "issues": ["Invalid reviewer JSON"]}
+    if "pass" not in parsed:
+        parsed["pass"] = False
+    return parsed
+
+
+def review_items(state: GraphState) -> GraphState:
+    client = build_client()
+    deployment = get_deployment_name()
+    reviewed: List[Dict[str, Any]] = []
+    failed: List[Dict[str, Any]] = []
+    for item in state.get("improved_outputs", []):
+        payload = item["payload"]
+        result = item["result"]
+        reviewer_issues: List[str] = []
+        questions = None
+        if isinstance(result, dict):
+            questions = result.get("questions")
+        elif isinstance(result, list) and result and isinstance(result[0], dict):
+            questions = result[0].get("questions")
+        if not isinstance(questions, list):
+            continue
+        for question in questions:
+            if not isinstance(question, dict):
+                continue
+            diff_prompt = USER_PROMPT_TEMPLATE_REVIEWER_DIFFICULTY.replace(
+                "{difficulty_level}", str(payload.get("difficultyLevel"))
+            ).replace("{learning_objective}", payload.get("learningObjective", "")).replace(
+                "{question_json}", json.dumps(question)
+            ).replace("{bloom_alignment}", BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()).replace(
+                "{rubric}", DEFAULT_QUALITY_RUBRIC.strip()
+            )
+            diff_system = SYSTEM_PROMPT_TEMPLATE_REVIEWER_DIFFICULTY.replace(
+                "{bloom_alignment}", BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+            ).replace("{rubric}", DEFAULT_QUALITY_RUBRIC.strip())
+            diff_review = _review_with_prompt(client, deployment, diff_system, diff_prompt)
+            reviewer_issues.extend(diff_review.get("issues") or [])
+
+            options = question.get("answers") or question.get("answer") or []
+            correct_answers = [
+                a.get("answer") or a.get("answerText")
+                for a in options
+                if a.get("correct") is True or a.get("isCorrect") is True
+            ]
+            dist_prompt = USER_PROMPT_TEMPLATE_REVIEWER_DISTRACTORS.replace(
+                "{question}", question.get("question") or question.get("questionText") or ""
+            ).replace("{options}", json.dumps(options)).replace(
+                "{correct_answer}", json.dumps(correct_answers)
+            ).replace("{bloom_alignment}", BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()).replace(
+                "{rubric}", DEFAULT_QUALITY_RUBRIC.strip()
+            )
+            dist_system = SYSTEM_PROMPT_TEMPLATE_REVIEWER_DISTRACTORS.replace(
+                "{bloom_alignment}", BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+            ).replace("{rubric}", DEFAULT_QUALITY_RUBRIC.strip())
+            dist_review = _review_with_prompt(client, deployment, dist_system, dist_prompt)
+            reviewer_issues.extend(dist_review.get("issues") or [])
+
+            tt_prompt = USER_PROMPT_TEMPLATE_REVIEWER_TESTTAKER.replace(
+                "{question_json}", json.dumps(question)
+            ).replace("{learning_objective}", payload.get("learningObjective", "")).replace(
+                "{bloom_alignment}", BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+            ).replace("{rubric}", DEFAULT_QUALITY_RUBRIC.strip())
+            tt_system = SYSTEM_PROMPT_TEMPLATE_REVIEWER_TESTTAKER.replace(
+                "{bloom_alignment}", BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
+            ).replace("{rubric}", DEFAULT_QUALITY_RUBRIC.strip())
+            tt_review = _review_with_prompt(client, deployment, tt_system, tt_prompt)
+            reviewer_issues.extend(tt_review.get("issues") or [])
+
+        entry = {
+            "payload": payload,
+            "result": result,
+            "issues": reviewer_issues,
+        }
+        reviewed.append(entry)
+        if reviewer_issues:
+            failed.append(entry)
+
+    state["reviewed_outputs"] = reviewed
+    state["review_failed"] = failed
+    return state
+
+
+def review_after_distractors(state: GraphState) -> GraphState:
+    state = review_items(state)
+    state["review_distractors_attempts"] = state.get("review_distractors_attempts", 0) + 1
+    failed_entries = []
+    for entry in state.get("review_failed", []):
+        payload = entry.get("payload")
+        result = entry.get("result")
+        issues = entry.get("issues") or []
+        questions = None
+        if isinstance(result, dict):
+            questions = result.get("questions")
+        elif isinstance(result, list) and result and isinstance(result[0], dict):
+            questions = result[0].get("questions")
+        failed_questions = []
+        if isinstance(questions, list):
+            for idx, question in enumerate(questions):
+                if not isinstance(question, dict):
+                    continue
+                failed_questions.append(
+                    {
+                        "index": idx,
+                        "question": question,
+                        "failure_reasons": issues or ["Reviewer flagged distractors."],
+                    }
+                )
+        if payload and result and failed_questions:
+            failed_entries.append(
+                {
+                    "payload": payload,
+                    "result": result,
+                    "passed_questions": [],
+                    "failed_questions": failed_questions,
+                    "question_count": len(failed_questions),
+                }
+            )
+    if failed_entries:
+        state["distractor_validation_failed"] = failed_entries
+    return state
+
+
+def review_after_quality(state: GraphState) -> GraphState:
+    state = review_items(state)
+    state["review_quality_attempts"] = state.get("review_quality_attempts", 0) + 1
+    failed_entries = []
+    for entry in state.get("review_failed", []):
+        payload = entry.get("payload")
+        result = entry.get("result")
+        issues = entry.get("issues") or []
+        if payload and result:
+            failed_entries.append(
+                {
+                    "payload": payload,
+                    "result": result,
+                    "quality": {"pass": False, "issues": issues},
+                    "relevancy": {"pass": True, "issues": []},
+                }
+            )
+    if failed_entries:
+        state["quality_validation_failed"] = failed_entries
+    return state
+
+
+def _route_from_review_distractors(state: GraphState) -> str:
+    failed = state.get("review_failed", [])
+    max_attempts = state["input"].get("maxReviewAttempts", 1)
+    attempts = state.get("review_distractors_attempts", 0)
+    if failed and attempts < max_attempts:
+        return "correct_distractors"
+    return "validate_quality"
+
+
+def _route_from_review_quality(state: GraphState) -> str:
+    failed = state.get("review_failed", [])
+    max_attempts = state["input"].get("maxReviewAttempts", 1)
+    attempts = state.get("review_quality_attempts", 0)
+    if failed and attempts < max_attempts:
+        return "correct_quality"
+    return "end"
+
+
 def evaluate_distractor_quality(
     client, deployment: str, question: Dict[str, Any], learning_objective: str
 ) -> Dict[str, Any]:
@@ -777,10 +962,6 @@ def validate_quality(state: GraphState) -> GraphState:
 
     state["quality_validation_passed"] = passed
     state["quality_validation_failed"] = failed
-    state["quality"] = [
-        {"payload": entry["payload"], "quality": entry["quality"], "relevancy": entry["relevancy"]}
-        for entry in passed + failed
-    ]
     logger.info(
         "Quality validation complete: %s passed, %s failed", len(passed), len(failed)
     )
@@ -935,8 +1116,10 @@ def build_graph():
     graph.add_node("improve", improve_distractors)
     graph.add_node("validate_distractors", validate_distractors)
     graph.add_node("correct_distractors", correct_distractors)
+    graph.add_node("review_distractors", review_after_distractors)
     graph.add_node("validate_quality", validate_quality)
     graph.add_node("correct_quality", correct_quality)
+    graph.add_node("review_quality", review_after_quality)
     graph.set_entry_point("build_prompts")
     graph.add_edge("build_prompts", "generate")
     graph.add_edge("generate", "improve")
@@ -950,16 +1133,26 @@ def build_graph():
         _route_from_validate_distractors,
         {
             "correct_distractors": "correct_distractors",
-            "validate_quality": "validate_quality",
+            "validate_quality": "review_distractors",
         },
     )
     graph.add_edge("correct_distractors", "validate_distractors")
     graph.add_conditional_edges(
+        "review_distractors",
+        _route_from_review_distractors,
+        {"correct_distractors": "correct_distractors", "validate_quality": "validate_quality"},
+    )
+    graph.add_conditional_edges(
         "validate_quality",
         _route_from_validate_quality,
-        {"correct_quality": "correct_quality", "end": END},
+        {"correct_quality": "correct_quality", "end": "review_quality"},
     )
     graph.add_edge("correct_quality", "validate_quality")
+    graph.add_conditional_edges(
+        "review_quality",
+        _route_from_review_quality,
+        {"correct_quality": "correct_quality", "end": END},
+    )
     return graph.compile()
 
 
@@ -999,7 +1192,6 @@ def _fill_missing_questions(
                 "prompt_payloads": [],
                 "raw_outputs": [],
                 "improved_outputs": [],
-                "quality": [],
                 "formatted": [],
             }
         )
@@ -1131,11 +1323,41 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
             "prompt_payloads": [],
             "raw_outputs": [],
             "improved_outputs": [],
-            "quality": [],
             "formatted": [],
         }
     )
+    max_review_attempts = payload.get("maxReviewAttempts", 1)
+    final_state = review_items(final_state)
+    final_state["review_quality_attempts"] = final_state.get("review_quality_attempts", 0) + 1
+    if (
+        final_state.get("review_failed")
+        and final_state.get("review_quality_attempts", 0) <= max_review_attempts
+    ):
+        final_state["quality_validation_failed"] = [
+            {
+                "payload": entry["payload"],
+                "result": entry["result"],
+                "quality": {"pass": False, "issues": entry.get("issues") or []},
+                "relevancy": {"pass": True, "issues": []},
+            }
+            for entry in final_state.get("review_failed", [])
+        ]
+        final_state = correct_quality(final_state)
+        final_state = validate_quality(final_state)
     final_state = _fill_missing_questions(app, payload, final_state)
+    # Reviewer agents after format validation step (single capped retry).
+    max_review_attempts = payload.get("maxReviewAttempts", 1)
+    final_state = format_conversion(final_state)
+    final_state = validate_and_fix_format(final_state)
+    final_state = review_items(final_state)
+    final_state["review_format_attempts"] = final_state.get("review_format_attempts", 0) + 1
+    if (
+        final_state.get("review_failed")
+        and final_state.get("review_format_attempts", 0) <= max_review_attempts
+    ):
+        final_state = format_conversion(final_state)
+        final_state = validate_and_fix_format(final_state)
+    # End format validation flow
     final_state = format_conversion(final_state)
     final_state = validate_and_fix_format(final_state)
     if final_state.get("format_loop"):
