@@ -10,21 +10,20 @@ from .llm import build_client, get_deployment_name
 from .prompts import (
     BLOOM_ALIGNMENT_GENERATION_GUIDANCE,
     DEFAULT_QUALITY_RUBRIC,
-    INTERMEDIATE_FORMAT_MATCHING,
     INTERMEDIATE_FORMAT_MCQ,
+    OPTIONS_CORRECTION_PROMPT,
+    OPTIONS_GENERATION_PROMPT,
+    QUESTION_GENERATION_PROMPT,
     RES_FORMAT,
-    RES_FORMAT_MATCH_COLUMNS,
     RES_FORMAT_MULTI_SELECT,
-    SYSTEM_PROMPT_TEMPLATE,
+    SCENARIO_GENERATION_PROMPT,
+    SYSTEM_CONTRACT,
     SYSTEM_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
     SYSTEM_PROMPT_TEMPLATE_QUALITY_CHECK,
     SYSTEM_PROMPT_TEMPLATE_RELEVANCY_CHECK,
     SYSTEM_PROMPT_TEMPLATE_FIX_FORMAT,
-    SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS,
     SYSTEM_PROMPT_TEMPLATE_DISTRACTOR_QUALITY,
     USER_PROMPT_TEMPLATE_FIX_FORMAT,
-    USER_PROMPT_TEMPLATE_MATCH_COLUMNS,
-    USER_PROMPT_TEMPLATE,
     USER_PROMPT_TEMPLATE_CHECK_AND_IMPROVE_DISTRACTORS,
     USER_PROMPT_TEMPLATE_CORRECTION,
     USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION,
@@ -48,6 +47,29 @@ if not logger.handlers:
 _STATE_LOG_PATH = Path(__file__).resolve().parents[1] / "state_log.jsonl"
 _RESULT_QUESTIONS_PATH = Path(__file__).resolve().parents[1] / "result_questions.txt"
 _FINAL_STATE_PATH = Path(__file__).resolve().parents[1] / "final_state.json"
+_STEP_OUTPUT_LOG_PATH = Path(__file__).resolve().parents[1] / "step_outputs_log.jsonl"
+
+
+def _log_step_output(step_name: str, output_summary: Dict[str, Any], full_data: Any = None):
+    """Log the output of each pipeline step to a JSONL file for debugging."""
+    from datetime import datetime
+    
+    try:
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "step": step_name,
+            "summary": output_summary,
+        }
+        
+        # Optionally include full data if provided (be careful with size)
+        if full_data is not None:
+            log_entry["full_data"] = full_data
+        
+        # Append to JSONL file (one JSON object per line)
+        with _STEP_OUTPUT_LOG_PATH.open("a") as f:
+            f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+    except Exception as e:
+        logger.warning("Failed to log step output for %s: %s", step_name, e)
 
 
 def _append_json_line(record: Dict[str, Any], path: Path = _STATE_LOG_PATH) -> None:
@@ -163,14 +185,21 @@ def _learning_objective_descriptions(payload: PipelineInput) -> List[str]:
     return [entry["description"] for entry in _normalize_learning_objectives(payload) if entry.get("description")]
 
 
-
-
 def build_prompt_payloads(state: GraphState) -> GraphState:
     data = state["input"]
     logger.info("Building prompt payloads")
     locale = data.get("locale", "en")
     source_text = data.get("sourceText", "")
     number_of_questions = data.get("numberOfQuestions", 3)
+    
+    # NEW: Support generating multiple sets per configuration
+    # questionsPerSet: how many questions to generate in each payload (default: numberOfQuestions)
+    # If numberOfQuestions=9 and questionsPerSet=3, creates 3 payloads of 3 questions each
+    questions_per_set = data.get("questionsPerSet", number_of_questions)
+    
+    # Calculate how many payloads needed per configuration
+    sets_per_config = max(1, (number_of_questions + questions_per_set - 1) // questions_per_set)
+    
     rubric = data.get("qualityRubric") or DEFAULT_QUALITY_RUBRIC.strip()
     bloom_alignment = BLOOM_ALIGNMENT_GENERATION_GUIDANCE.strip()
     question_types = data.get("questionTypes", ["MULTIPLE_CHOICE"])
@@ -184,181 +213,270 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
     for lo in _learning_objective_descriptions(data):
         for qtype in question_types:
             for level in difficulties:
-                if qtype == "MATCHING":
-                    correct_count = num_correct
-                    incorrect_count = num_incorrect
-                    system_prompt = SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS.replace(
-                        "{locale}", locale
-                    ).replace("{rubric}", rubric).replace("{bloom_alignment}", bloom_alignment)
-                    user_prompt = (
-                        USER_PROMPT_TEMPLATE_MATCH_COLUMNS.replace(
-                            "{difficulty_level}", level
-                        )
-                        .replace("{source_text}", source_text)
-                        .replace("{learning_obj}", lo)
-                        .replace("{number_of_questions}", str(number_of_questions))
-                        .replace("{num_correct_options}", str(correct_count))
-                        .replace("{num_incorrect_options}", str(incorrect_count))
-                        .replace("{intermediate_format}", INTERMEDIATE_FORMAT_MATCHING)
-                    )
-                    response_format = RES_FORMAT_MATCH_COLUMNS
-                    intermediate_format = INTERMEDIATE_FORMAT_MATCHING
+                if qtype == "MULTIPLE_CHOICE_MULTI_SELECT":
+                    correct_count = max(1, min(num_correct, 3))
+                    intermediate_format = RES_FORMAT_MULTI_SELECT.strip()
+                    response_format = RES_FORMAT_MULTI_SELECT.strip()
                 else:
-                    if qtype == "MULTIPLE_CHOICE_MULTI_SELECT":
-                        correct_count = max(1, min(num_correct, 3))
-                    else:
-                        correct_count = num_correct
-                    incorrect_count = num_incorrect
-                    response_format = (
-                        RES_FORMAT_MULTI_SELECT
-                        if qtype == "MULTIPLE_CHOICE_MULTI_SELECT"
-                        else RES_FORMAT
+                    correct_count = num_correct
+                    intermediate_format = INTERMEDIATE_FORMAT_MCQ.strip()
+                    response_format = RES_FORMAT.strip()
+                incorrect_count = num_incorrect
+                
+                # Create multiple payloads for this configuration
+                for set_idx in range(sets_per_config):
+                    # Calculate questions for this specific set
+                    remaining_questions = number_of_questions - (set_idx * questions_per_set)
+                    questions_this_set = min(questions_per_set, remaining_questions)
+                    
+                    if questions_this_set <= 0:
+                        continue
+                    
+                    payloads.append(
+                        {
+                            "learningObjective": lo,
+                            "difficultyLevel": level,
+                            "questionType": qtype,
+                            "sourceText": source_text,
+                            "numCorrectOptions": correct_count,
+                            "numIncorrectOptions": incorrect_count,
+                            "numberOfQuestions": questions_this_set,
+                            "intermediateFormat": intermediate_format,
+                            "responseFormat": response_format,
+                            "systemPrompt": SYSTEM_CONTRACT.strip(),
+                            "userPrompt": "",
+                            "baseUserPrompt": "",
+                        }
                     )
-                    system_prompt = SYSTEM_PROMPT_TEMPLATE.replace(
-                        "{locale}", locale
-                    ).replace("{num_correct_options}", str(correct_count)).replace(
-                        "{num_incorrect_options}", str(incorrect_count)
-                    ).replace("{rubric}", rubric).replace("{bloom_alignment}", bloom_alignment)
-                    user_prompt = (
-                        USER_PROMPT_TEMPLATE.replace(
-                            "{difficulty_level}", level
-                        )
-                        .replace("{source_text}", source_text)
-                        .replace("{learning_obj}", lo)
-                        .replace("{number_of_questions}", str(number_of_questions))
-                        .replace("{num_correct_options}", str(correct_count))
-                        .replace("{num_incorrect_options}", str(incorrect_count))
-                        .replace("{intermediate_format}", INTERMEDIATE_FORMAT_MCQ)
-                    )
-                    if qtype == "MULTIPLE_CHOICE_MULTI_SELECT":
-                        system_prompt = system_prompt.replace(
-                            "Ensure exactly the requested number of correct and incorrect options.",
-                            "For multi-select, ensure between 1 and 3 correct options and the requested number of incorrect options.",
-                        )
-                        user_prompt = user_prompt.replace(
-                            "Generate exactly {num_correct_options} correct options.",
-                            "Generate between 1 and 3 correct options.",
-                        )
-                    intermediate_format = INTERMEDIATE_FORMAT_MCQ
-                payloads.append(
-                    {
-                        "systemPrompt": system_prompt,
-                        "userPrompt": user_prompt,
-                        "baseUserPrompt": user_prompt,
-                        "responseFormat": response_format,
-                        "intermediateFormat": intermediate_format,
-                        "learningObjective": lo,
-                        "difficultyLevel": level,
-                        "questionType": qtype,
-                    }
-                )
 
     state["prompt_payloads"] = payloads
     logger.info("Built %s prompt payloads", len(payloads))
+    
+    # Log payloads to file for debugging
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    
+    try:
+        payloads_log = {
+            "timestamp": datetime.now().isoformat(),
+            "total_payloads": len(payloads),
+            "payloads": [
+                {
+                    "learningObjective": p["learningObjective"][:100],
+                    "difficultyLevel": p["difficultyLevel"],
+                    "questionType": p["questionType"],
+                    "numberOfQuestions": p["numberOfQuestions"],
+                }
+                for p in payloads
+            ]
+        }
+        log_file = Path("build_prompts_log.json")
+        with log_file.open("w") as f:
+            json.dump(payloads_log, f, indent=2)
+    except Exception as e:
+        logger.warning("Failed to write build prompts log: %s", e)
+    
+    # Log step output
+    _log_step_output(
+        "build_prompt_payloads",
+        {
+            "total_payloads": len(payloads),
+            "configurations": [
+                f"{p['questionType']} | {p['difficultyLevel']} | Q:{p['numberOfQuestions']}"
+                for p in payloads
+            ]
+        }
+    )
+    
     _log_state_summary(state, "build_prompt_payloads")
     return state
 
 
-def generate_questions(state: GraphState) -> GraphState:
-    logger.info("Generating questions with Azure OpenAI")
+def _run_decomposed_node(
+    client: Any, deployment: str, node_prompt: str, payload_dict: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Helper to run a single decomposed generation node with SYSTEM_CONTRACT."""
+    user_message_parts = []
+    for key, value in payload_dict.items():
+        if value:
+            user_message_parts.append(f"{key}: {value}")
+    user_message = "\n".join(user_message_parts)
+    
+    response = client.chat.completions.create(
+        model=deployment,
+        messages=[
+            {"role": "system", "content": SYSTEM_CONTRACT + "\n\n" + node_prompt},
+            {"role": "user", "content": user_message},
+        ],
+    )
+    content = response.choices[0].message.content or ""
+    try:
+        parsed = _parse_json(content)
+    except json.JSONDecodeError as exc:
+        logger.warning("Invalid JSON from model: %s", exc)
+        return {"error": "Invalid JSON", "raw": content}
+    if not isinstance(parsed, dict):
+        return {"error": "Non-object JSON from model", "raw": content}
+    return parsed
+
+
+def build_scenario(state: GraphState) -> GraphState:
+    """Node 1: Generate scenario with decision point (for Intermediate/Advanced)."""
+    logger.info("Building scenarios for decomposed generation")
     client = build_client()
     deployment = get_deployment_name()
-    number_of_questions = state["input"].get("numberOfQuestions", 3)
-    rubric = state["input"].get("qualityRubric") or DEFAULT_QUALITY_RUBRIC.strip()
-    threshold = state["input"].get("qualityThreshold", 85)
-    relevancy_threshold = state["input"].get("relevancyThreshold", 85)
-    max_attempts = state["input"].get("maxAttempts", 2)
-    learning_objectives = _learning_objective_descriptions(state["input"])
-
-    outputs: List[Dict[str, Any]] = []
+    
+    scenarios: List[Dict[str, Any]] = []
     for payload in state["prompt_payloads"]:
-        attempt = 0
-        last_result: Dict[str, Any] = {"error": "No attempts"}
-        current_prompt = payload.get("baseUserPrompt") or payload["userPrompt"]
-        while attempt < max_attempts:
-            attempt += 1
-            logger.info(
-                "Generating (%s/%s) for %s/%s",
-                attempt,
-                max_attempts,
-                payload["questionType"],
-                payload["difficultyLevel"],
-            )
-            response = client.chat.completions.create(
-                model=deployment,
-                messages=[
-                    {"role": "system", "content": payload["systemPrompt"]},
-                    {"role": "user", "content": current_prompt},
-                ],
-            )
-            content = response.choices[0].message.content or ""
-            try:
-                parsed = _parse_json(content)
-            except json.JSONDecodeError:
-                parsed = {"error": "Invalid JSON from model", "raw": content}
-
-            last_result = parsed
-            question_count = _count_questions(parsed)
-            if question_count != number_of_questions:
-                logger.info(
-                    "Generated %s questions, expected %s. Regenerating.",
-                    question_count,
-                    number_of_questions,
-                )
-                continue
-            quality = evaluate_quality(client, deployment, parsed, rubric, threshold)
-            relevancy = evaluate_relevancy(
-                client, deployment, parsed, learning_objectives, relevancy_threshold
-            )
-            if quality.get("pass") and relevancy.get("pass"):
-                outputs.append(
-                    {
-                        "payload": payload,
-                        "result": parsed,
-                        "quality": quality,
-                        "relevancy": relevancy,
-                    }
-                )
-                break
-
-            logger.info(
-                "Quality or relevancy failed (q=%s, r=%s). Regenerating.",
-                quality.get("score"),
-                relevancy.get("score"),
-            )
-            failure_reasons: List[str] = []
-            if not quality.get("pass"):
-                issues = quality.get("issues") or []
-                failure_reasons.append("Quality issues: " + "; ".join(issues))
-            if not relevancy.get("pass"):
-                issues = relevancy.get("issues") or []
-                failure_reasons.append("Relevancy issues: " + "; ".join(issues))
-            failure_reason_text = "\n".join(failure_reasons) or "Failed evaluation."
-            current_prompt = USER_PROMPT_TEMPLATE_CORRECTION.replace(
-                "{learning_obj}", payload["learningObjective"]
-            ).replace("{difficulty_level}", payload["difficultyLevel"]).replace(
-                "{question_type}", payload["questionType"]
-            ).replace(
-                "{failure_reasons}", failure_reason_text
-            ).replace(
-                "{question_json}", json.dumps(parsed)
-            ).replace(
-                "{response_format}", payload["intermediateFormat"]
-            )
-
-        else:
-            outputs.append(
+        scenario_payload = {
+            "learning_objective": payload["learningObjective"],
+            "difficulty": payload["difficultyLevel"],
+            "source_context": payload.get("sourceText", ""),
+        }
+        scenario_result = _run_decomposed_node(
+            client, deployment, SCENARIO_GENERATION_PROMPT, scenario_payload
+        )
+        scenarios.append(
+            {
+                "payload": payload,
+                "scenario": scenario_result.get("scenario", ""),
+                "decisionPoint": scenario_result.get("decisionPoint", ""),
+            }
+        )
+    
+    state["scenarios"] = scenarios
+    logger.info("Built %s scenarios", len(scenarios))
+    
+    # Log step output
+    _log_step_output(
+        "build_scenario",
+        {
+            "total_scenarios": len(scenarios),
+            "scenarios_preview": [
                 {
-                    "payload": payload,
-                    "result": last_result,
-                    "quality": {"score": 0, "issues": ["Max attempts exceeded"], "pass": False},
-                    "relevancy": {"score": 0, "issues": ["Max attempts exceeded"], "pass": False},
+                    "difficulty": s["payload"]["difficultyLevel"],
+                    "scenario_length": len(s.get("scenario", "")),
+                    "has_decision_point": bool(s.get("decisionPoint"))
                 }
-            )
+                for s in scenarios[:5]  # First 5 only
+            ]
+        }
+    )
+    
+    _log_state_summary(state, "build_scenario")
+    return state
 
+
+def build_question(state: GraphState) -> GraphState:
+    """Node 2: Generate question text based on scenario."""
+    logger.info("Building questions for decomposed generation")
+    client = build_client()
+    deployment = get_deployment_name()
+    
+    questions: List[Dict[str, Any]] = []
+    for scenario_data in state["scenarios"]:
+        payload = scenario_data["payload"]
+        question_payload = {
+            "learning_objective": payload["learningObjective"],
+            "difficulty": payload["difficultyLevel"],
+            "scenario": scenario_data.get("scenario", ""),
+            "decision_point": scenario_data.get("decisionPoint", ""),
+        }
+        question_result = _run_decomposed_node(
+            client, deployment, QUESTION_GENERATION_PROMPT, question_payload
+        )
+        questions.append(
+            {
+                **scenario_data,
+                "questionText": question_result.get("questionText", ""),
+            }
+        )
+    
+    state["questions"] = questions
+    logger.info("Built %s questions", len(questions))
+    
+    # Log step output
+    _log_step_output(
+        "build_question",
+        {
+            "total_questions": len(questions),
+            "questions_preview": [
+                {
+                    "difficulty": q["payload"]["difficultyLevel"],
+                    "question_length": len(q.get("questionText", "")),
+                    "has_scenario": bool(q.get("scenario"))
+                }
+                for q in questions[:5]  # First 5 only
+            ]
+        }
+    )
+    
+    _log_state_summary(state, "build_question")
+    return state
+
+
+def build_options(state: GraphState) -> GraphState:
+    """Node 3: Generate answer options for each question."""
+    logger.info("Building options for decomposed generation")
+    client = build_client()
+    deployment = get_deployment_name()
+    
+    outputs: List[Dict[str, Any]] = []
+    for question_data in state["questions"]:
+        payload = question_data["payload"]
+        options_payload = {
+            "question_text": question_data.get("questionText", ""),
+            "scenario": question_data.get("scenario", ""),
+            "num_correct": payload["numCorrectOptions"],
+            "num_incorrect": payload["numIncorrectOptions"],
+        }
+        options_result = _run_decomposed_node(
+            client, deployment, OPTIONS_GENERATION_PROMPT, options_payload
+        )
+        
+        # Format as v1 expects
+        formatted_result = {
+            "LearningObjective": payload["learningObjective"],
+            "questions": [
+                {
+                    "questionText": question_data.get("questionText", ""),
+                    "answer": options_result.get("answers", []),
+                    "scenarioFocus": question_data.get("scenario", ""),
+                }
+            ]
+        }
+        
+        outputs.append(
+            {
+                "payload": payload,
+                "result": formatted_result,
+                "quality": {"score": 100, "issues": [], "pass": True},  # Will be validated later
+                "relevancy": {"score": 100, "issues": [], "pass": True},
+            }
+        )
+    
     state["raw_outputs"] = outputs
-    logger.info("Generated %s raw outputs", len(outputs))
-    _log_state_summary(state, "generate_questions")
+    logger.info("Built %s complete question packages", len(outputs))
+    
+    # Log step output with sample questions
+    _log_step_output(
+        "build_options",
+        {
+            "total_outputs": len(outputs),
+            "outputs_preview": [
+                {
+                    "question_type": o["payload"]["questionType"],
+                    "difficulty": o["payload"]["difficultyLevel"],
+                    "num_answers": len(o["result"].get("questions", [{}])[0].get("answer", [])),
+                    "question_text": o["result"].get("questions", [{}])[0].get("questionText", "")[:100]
+                }
+                for o in outputs[:3]  # First 3 only
+            ]
+        }
+    )
+    
+    _log_state_summary(state, "build_options")
     return state
 
 
@@ -373,13 +491,27 @@ def improve_distractors(state: GraphState) -> GraphState:
         if "error" in result:
             improved.append(item)
             continue
-        if payload["questionType"] == "MATCHING":
-            improved.append({"payload": payload, "result": result})
-            continue
         improved.append(_improve_single_output(client, deployment, payload, result))
 
     state["improved_outputs"] = improved
     logger.info("Improved %s outputs", len(improved))
+    
+    # Log step output
+    _log_step_output(
+        "improve_distractors",
+        {
+            "total_improved": len(improved),
+            "improvements_summary": [
+                {
+                    "question_type": i["payload"]["questionType"],
+                    "difficulty": i["payload"]["difficultyLevel"],
+                    "has_error": "error" in i["result"]
+                }
+                for i in improved[:3]  # First 3 only
+            ]
+        }
+    )
+    
     _log_state_summary(state, "improve_distractors")
     return state
 
@@ -397,22 +529,16 @@ def _is_valid_format(result: Any, question_type: str) -> bool:
             return False
         if "question" not in question and "questionText" not in question:
             return False
-        if question_type == "MATCHING":
-            if "column_a_answers" not in question or "column_b_answers" not in question:
+        answers = question.get("answers") or question.get("answer")
+        if not isinstance(answers, list) or not answers:
+            return False
+        for ans in answers:
+            if not isinstance(ans, dict):
                 return False
-            if "answers" not in question and "answer" not in question:
+            has_answer = "answer" in ans or "answerText" in ans
+            has_correct = "correct" in ans or "isCorrect" in ans
+            if not has_answer or "explanation" not in ans or not has_correct:
                 return False
-        else:
-            answers = question.get("answers") or question.get("answer")
-            if not isinstance(answers, list) or not answers:
-                return False
-            for ans in answers:
-                if not isinstance(ans, dict):
-                    return False
-                has_answer = "answer" in ans or "answerText" in ans
-                has_correct = "correct" in ans or "isCorrect" in ans
-                if not has_answer or "explanation" not in ans or not has_correct:
-                    return False
     return True
 
 
@@ -474,8 +600,6 @@ def _improve_single_output(
     except json.JSONDecodeError:
         parsed = {"error": "Invalid JSON from model", "raw": content}
     return {"payload": payload, "result": parsed}
-
-
 
 
 def evaluate_quality(
@@ -632,84 +756,12 @@ def review_items(state: GraphState) -> GraphState:
     return state
 
 
-def review_after_distractors(state: GraphState) -> GraphState:
-    state = review_items(state)
-    state["review_distractors_attempts"] = state.get("review_distractors_attempts", 0) + 1
-    failed_entries = []
-    for entry in state.get("review_failed", []):
-        payload = entry.get("payload")
-        result = entry.get("result")
-        issues = entry.get("issues") or []
-        questions = None
-        if isinstance(result, dict):
-            questions = result.get("questions")
-        elif isinstance(result, list) and result and isinstance(result[0], dict):
-            questions = result[0].get("questions")
-        failed_questions = []
-        if isinstance(questions, list):
-            for idx, question in enumerate(questions):
-                if not isinstance(question, dict):
-                    continue
-                failed_questions.append(
-                    {
-                        "index": idx,
-                        "question": question,
-                        "failure_reasons": issues or ["Reviewer flagged distractors."],
-                    }
-                )
-        if payload and result and failed_questions:
-            failed_entries.append(
-                {
-                    "payload": payload,
-                    "result": result,
-                    "passed_questions": [],
-                    "failed_questions": failed_questions,
-                    "question_count": len(failed_questions),
-                }
-            )
-    if failed_entries:
-        state["distractor_validation_failed"] = failed_entries
-    return state
+# REMOVED: review_after_distractors - redundant with strict distractor validation
+# Distractor validation with 80% threshold is sufficient; no need for additional review step
 
 
-def review_after_quality(state: GraphState) -> GraphState:
-    state = review_items(state)
-    state["review_quality_attempts"] = state.get("review_quality_attempts", 0) + 1
-    failed_entries = []
-    for entry in state.get("review_failed", []):
-        payload = entry.get("payload")
-        result = entry.get("result")
-        issues = entry.get("issues") or []
-        if payload and result:
-            failed_entries.append(
-                {
-                    "payload": payload,
-                    "result": result,
-                    "quality": {"pass": False, "issues": issues},
-                    "relevancy": {"pass": True, "issues": []},
-                }
-            )
-    if failed_entries:
-        state["quality_validation_failed"] = failed_entries
-    return state
-
-
-def _route_from_review_distractors(state: GraphState) -> str:
-    failed = state.get("review_failed", [])
-    max_attempts = state["input"].get("maxReviewAttempts", 1)
-    attempts = state.get("review_distractors_attempts", 0)
-    if failed and attempts < max_attempts:
-        return "correct_distractors"
-    return "validate_quality"
-
-
-def _route_from_review_quality(state: GraphState) -> str:
-    failed = state.get("review_failed", [])
-    max_attempts = state["input"].get("maxReviewAttempts", 1)
-    attempts = state.get("review_quality_attempts", 0)
-    if failed and attempts < max_attempts:
-        return "correct_quality"
-    return "end"
+# REMOVED: review_after_quality - redundant with strict quality validation
+# Quality validation with rubric evaluation and relevancy checks is sufficient
 
 
 def evaluate_distractor_quality(
@@ -737,8 +789,17 @@ def evaluate_distractor_quality(
     content = response.choices[0].message.content or ""
     try:
         parsed = _parse_json(content)
+        # Log detailed validation results for debugging
+        verdict = parsed.get("verdict", "UNKNOWN")
+        notes = parsed.get("overallNotes", "No notes")
+        logger.info(
+            "Distractor evaluation: verdict=%s, notes=%s",
+            verdict,
+            notes[:100] if notes else "None"
+        )
     except json.JSONDecodeError:
         parsed = {"verdict": "FAIL", "overallNotes": "Invalid distractor quality JSON"}
+        logger.warning("Failed to parse distractor quality evaluation response")
     return parsed
 
 
@@ -746,17 +807,40 @@ def validate_distractors(state: GraphState) -> GraphState:
     logger.info("Validating distractor quality")
     client = build_client()
     deployment = get_deployment_name()
+    
+    # Track which payloads have already been validated and passed
+    validated_set = state.get("_distractor_validated_payloads", set())
+    
     passed: List[Dict[str, Any]] = []
     failed: List[Dict[str, Any]] = []
+    
     for item in state["improved_outputs"]:
         payload = item["payload"]
         result = item["result"]
-        if "error" in result or payload["questionType"] == "MATCHING":
+        
+        # Create unique key for this payload
+        payload_key = (
+            payload["learningObjective"],
+            payload["difficultyLevel"],
+            payload["questionType"],
+            str(payload.get("numCorrectOptions", "")),
+            str(payload.get("numIncorrectOptions", ""))
+        )
+        
+        # Skip re-validation if this payload already passed
+        if payload_key in validated_set:
+            logger.info("Skipping re-validation of already passed payload: %s", payload_key)
             passed.append(item)
+            continue
+        
+        if "error" in result:
+            passed.append(item)
+            validated_set.add(payload_key)
             continue
         questions = result.get("questions")
         if not isinstance(questions, list):
             passed.append(item)
+            validated_set.add(payload_key)
             continue
         passed_questions: List[Dict[str, Any]] = []
         failed_questions: List[Dict[str, Any]] = []
@@ -767,14 +851,40 @@ def validate_distractors(state: GraphState) -> GraphState:
             evaluation = evaluate_distractor_quality(
                 client, deployment, question, payload["learningObjective"]
             )
-            if evaluation.get("verdict") == "PASS":
+            
+            # Apply 80% threshold logic
+            verdict = evaluation.get("verdict", "FAIL")
+            distractors_data = evaluation.get("distractors", [])
+            
+            # Check if at least 80% of distractors pass
+            total_distractors = len(distractors_data)
+            passed_distractors = sum(1 for d in distractors_data if d.get("pass", False))
+            
+            # Calculate 80% threshold (round up)
+            required_pass_count = max(1, int(0.8 * total_distractors + 0.99))
+            
+            # Override verdict if 80% threshold is met
+            if passed_distractors >= required_pass_count and total_distractors > 0:
+                meets_threshold = True
+            else:
+                meets_threshold = False
+            
+            # Pass if: original verdict is PASS OR meets 80% threshold
+            if verdict == "PASS" or meets_threshold:
                 passed_questions.append({"index": idx, "question": question})
+                logger.info("Question %s PASSED distractor validation", idx)
                 continue
+                
             failure_reasons = [evaluation.get("overallNotes") or "Distractor quality failed."]
             for entry in evaluation.get("distractors", []):
                 reason = entry.get("failReason")
                 if reason:
                     failure_reasons.append(reason)
+            logger.info(
+                "Question %s FAILED distractor validation: %s",
+                idx,
+                "; ".join(failure_reasons)[:200]
+            )
             failed_questions.append(
                 {
                     "index": idx,
@@ -794,15 +904,48 @@ def validate_distractors(state: GraphState) -> GraphState:
             )
         else:
             passed.append(item)
-
-    state["distractor_validation_passed"] = passed
+            validated_set.add(payload_key)  # Mark as validated and passed
+    
+    # Update state with validated payloads tracker
+    state["_distractor_validated_payloads"] = validated_set
+    
+    # Store passed and failed separately
+    previously_passed = state.get("_distractor_already_passed", [])
+    state["_distractor_already_passed"] = previously_passed + passed
+    
+    state["distractor_validation_passed"] = previously_passed + passed
     state["distractor_validation_failed"] = failed
-    state["improved_outputs"] = passed + [
+    
+    # For next stage: include ALL passed (accumulated) + failed items
+    all_passed = previously_passed + passed
+    state["improved_outputs"] = all_passed + [
         {"payload": item["payload"], "result": item["result"]} for item in failed
     ]
+    
     logger.info(
-        "Distractor validation complete: %s passed, %s failed", len(passed), len(failed)
+        "Distractor validation: %s newly passed, %s total passed, %s failed", 
+        len(passed), len(all_passed), len(failed)
     )
+    
+    # Log step output
+    _log_step_output(
+        "validate_distractors",
+        {
+            "newly_passed": len(passed),
+            "total_passed": len(all_passed),
+            "failed": len(failed),
+            "validation_details": [
+                {
+                    "difficulty": f["payload"]["difficultyLevel"],
+                    "question_type": f["payload"]["questionType"],
+                    "passed_count": len(f.get("passed_questions", [])),
+                    "failed_count": len(f.get("failed_questions", []))
+                }
+                for f in failed[:3]  # First 3 failures
+            ]
+        }
+    )
+    
     _log_state_summary(state, "validate_distractors")
     return state
 
@@ -826,6 +969,11 @@ def correct_distractors(state: GraphState) -> GraphState:
             )
             if not isinstance(question, dict):
                 continue
+            logger.info(
+                "Correcting distractor for question at index %s due to: %s",
+                failed_entry.get("index", "?"),
+                failure_text[:150]
+            )
             correction_prompt = USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION.replace(
                 "{failure_reasons}", failure_text
             ).replace(
@@ -868,7 +1016,8 @@ def correct_distractors(state: GraphState) -> GraphState:
         corrected_failed.append({"payload": payload, "result": result})
 
     passed_outputs = state.get("distractor_validation_passed", [])
-    state["improved_outputs"] = passed_outputs + corrected_failed
+    # Only send corrected items back for re-validation
+    state["improved_outputs"] = corrected_failed
     state["distractor_validation_failed"] = []
     state["distractor_correction_attempts"] = state.get(
         "distractor_correction_attempts", 0
@@ -940,11 +1089,42 @@ def validate_quality(state: GraphState) -> GraphState:
     relevancy_threshold = state["input"].get("relevancyThreshold", 85)
     learning_objectives = _learning_objective_descriptions(state["input"])
 
+    # Track which payloads have already been quality-validated and passed
+    validated_set = state.get("_quality_validated_payloads", set())
+    
     passed: List[Dict[str, Any]] = []
     failed: List[Dict[str, Any]] = []
+    
     for item in state["improved_outputs"]:
         payload = item["payload"]
         result = item["result"]
+        
+        # Create unique key for this payload
+        payload_key = (
+            payload["learningObjective"],
+            payload["difficultyLevel"],
+            payload["questionType"],
+            str(payload.get("numCorrectOptions", "")),
+            str(payload.get("numIncorrectOptions", ""))
+        )
+        
+        # Skip re-validation if this payload already passed quality check
+        if payload_key in validated_set:
+            logger.info("Skipping re-validation of already quality-passed payload")
+            # Already validated, just retrieve from previously passed
+            for prev_passed in state.get("_quality_already_passed", []):
+                prev_key = (
+                    prev_passed["payload"]["learningObjective"],
+                    prev_passed["payload"]["difficultyLevel"],
+                    prev_passed["payload"]["questionType"],
+                    str(prev_passed["payload"].get("numCorrectOptions", "")),
+                    str(prev_passed["payload"].get("numIncorrectOptions", ""))
+                )
+                if prev_key == payload_key:
+                    passed.append(prev_passed)
+                    break
+            continue
+        
         quality = evaluate_quality(client, deployment, result, rubric, threshold)
         relevancy = evaluate_relevancy(
             client, deployment, result, learning_objectives, relevancy_threshold
@@ -957,18 +1137,55 @@ def validate_quality(state: GraphState) -> GraphState:
         }
         if quality.get("pass") and relevancy.get("pass"):
             passed.append(entry)
+            validated_set.add(payload_key)  # Mark as validated and passed
         else:
             failed.append(entry)
-
-    state["quality_validation_passed"] = passed
+    
+    # Update state with validated payloads tracker
+    state["_quality_validated_payloads"] = validated_set
+    
+    # Accumulate passed items
+    previously_passed = state.get("_quality_already_passed", [])
+    state["_quality_already_passed"] = previously_passed + passed
+    
+    all_passed = previously_passed + passed
+    state["quality_validation_passed"] = all_passed
     state["quality_validation_failed"] = failed
+    
+    # IMPORTANT: improved_outputs is used by format_conversion, so include ALL passed items
+    state["improved_outputs"] = [
+        {"payload": entry["payload"], "result": entry["result"]}
+        for entry in all_passed
+    ]
+    
     logger.info(
-        "Quality validation complete: %s passed, %s failed", len(passed), len(failed)
+        "Quality validation: %s newly passed, %s total passed, %s failed",
+        len(passed), len(all_passed), len(failed)
     )
+    
+    # Log step output
+    _log_step_output(
+        "validate_quality",
+        {
+            "newly_passed": len(passed),
+            "total_passed": len(all_passed),
+            "failed": len(failed),
+            "quality_details": [
+                {
+                    "difficulty": f["payload"]["difficultyLevel"],
+                    "question_type": f["payload"]["questionType"],
+                    "quality_pass": f["quality"].get("pass", False),
+                    "quality_score": f["quality"].get("score", 0),
+                    "relevancy_pass": f["relevancy"].get("pass", False),
+                    "relevancy_score": f["relevancy"].get("score", 0)
+                }
+                for f in failed[:3]  # First 3 failures
+            ]
+        }
+    )
+    
     _log_state_summary(state, "validate_quality")
     return state
-
-
 
 
 def correct_quality(state: GraphState) -> GraphState:
@@ -1021,6 +1238,10 @@ def correct_quality(state: GraphState) -> GraphState:
             corrected = {"error": "Invalid JSON from model", "raw": content}
         corrected_failed.append({"payload": payload, "result": corrected})
 
+    # Include BOTH corrected items AND previously passed items in improved_outputs
+    # This ensures:
+    # 1. validate_quality can skip re-validating passed items
+    # 2. format_conversion gets ALL items at the end
     passed_outputs = [
         {"payload": entry["payload"], "result": entry["result"]}
         for entry in state.get("quality_validation_passed", [])
@@ -1072,57 +1293,81 @@ def format_conversion(state: GraphState) -> GraphState:
 
 
 def _route_from_improve(state: GraphState) -> str:
-    has_mcq = any(
-        item.get("payload", {}).get("questionType") != "MATCHING"
-        for item in state.get("improved_outputs", [])
-    )
-    return "validate_distractors" if has_mcq else "validate_quality"
+    return "validate_distractors"
 
 
 def _route_from_validate_distractors(state: GraphState) -> str:
     failed = state.get("distractor_validation_failed", [])
     max_attempts = state["input"].get(
-        "maxDistractorFixAttempts", state["input"].get("maxAttempts", 2)
+        "maxDistractorFixAttempts", state["input"].get("maxAttempts", 6)
     )
     attempts = state.get("distractor_correction_attempts", 0)
     if failed and attempts < max_attempts:
         return "correct_distractors"
+    
+    # Max attempts reached - include failed items (they've been improved over multiple attempts)
+    if failed:
+        logger.info(
+            "Max distractor correction attempts (%s) reached. Including %s failed items for quality validation.",
+            max_attempts, len(failed)
+        )
+        # Merge failed items into improved_outputs so they proceed to quality validation
+        passed_outputs = state.get("distractor_validation_passed", [])
+        failed_outputs = [{"payload": item["payload"], "result": item["result"]} for item in failed]
+        state["improved_outputs"] = passed_outputs + failed_outputs
+        state["distractor_validation_failed"] = []  # Clear failed list
+    
+    # Directly go to quality validation
     return "validate_quality"
 
 
 def _route_from_validate_quality(state: GraphState) -> str:
     failed = state.get("quality_validation_failed", [])
     max_attempts = state["input"].get(
-        "maxQualityFixAttempts", state["input"].get("maxAttempts", 2)
+        "maxQualityFixAttempts", state["input"].get("maxAttempts", 6)
     )
     attempts = state.get("quality_correction_attempts", 0)
     if failed and attempts < max_attempts:
         return "correct_quality"
+    
+    # Max attempts reached - include failed items (they've been improved over multiple attempts)
+    if failed:
+        logger.info(
+            "Max quality correction attempts (%s) reached. Including %s failed items in final output.",
+            max_attempts, len(failed)
+        )
+        # Merge failed items into improved_outputs so they proceed to format conversion
+        passed_outputs = state.get("quality_validation_passed", [])
+        failed_outputs = [{"payload": item["payload"], "result": item["result"]} for item in failed]
+        # IMPORTANT: improved_outputs is used by format_conversion
+        state["improved_outputs"] = [
+            {"payload": entry["payload"], "result": entry["result"]}
+            for entry in passed_outputs
+        ] + failed_outputs
+        state["quality_validation_failed"] = []  # Clear failed list
+    
+    # Directly go to END - no review step needed
     return "end"
-
-
-def _route_from_format(state: GraphState) -> str:
-    format_loop = state.get("format_loop")
-    if format_loop is None:
-        # Safety guard: if the flag was never set, do not loop endlessly.
-        return "end"
-    return "validate" if format_loop else "end"
 
 
 def build_graph():
     graph = StateGraph[GraphState, None, GraphState, GraphState](GraphState)
     graph.add_node("build_prompts", build_prompt_payloads)
-    graph.add_node("generate", generate_questions)
+    graph.add_node("build_scenario", build_scenario)
+    graph.add_node("build_question", build_question)
+    graph.add_node("build_options", build_options)
     graph.add_node("improve", improve_distractors)
     graph.add_node("validate_distractors", validate_distractors)
     graph.add_node("correct_distractors", correct_distractors)
-    graph.add_node("review_distractors", review_after_distractors)
     graph.add_node("validate_quality", validate_quality)
     graph.add_node("correct_quality", correct_quality)
-    graph.add_node("review_quality", review_after_quality)
+    
     graph.set_entry_point("build_prompts")
-    graph.add_edge("build_prompts", "generate")
-    graph.add_edge("generate", "improve")
+    
+    graph.add_edge("build_prompts", "build_scenario")
+    graph.add_edge("build_scenario", "build_question")
+    graph.add_edge("build_question", "build_options")
+    graph.add_edge("build_options", "improve")
     graph.add_conditional_edges(
         "improve",
         _route_from_improve,
@@ -1133,26 +1378,16 @@ def build_graph():
         _route_from_validate_distractors,
         {
             "correct_distractors": "correct_distractors",
-            "validate_quality": "review_distractors",
+            "validate_quality": "validate_quality",
         },
     )
     graph.add_edge("correct_distractors", "validate_distractors")
     graph.add_conditional_edges(
-        "review_distractors",
-        _route_from_review_distractors,
-        {"correct_distractors": "correct_distractors", "validate_quality": "validate_quality"},
-    )
-    graph.add_conditional_edges(
         "validate_quality",
         _route_from_validate_quality,
-        {"correct_quality": "correct_quality", "end": "review_quality"},
-    )
-    graph.add_edge("correct_quality", "validate_quality")
-    graph.add_conditional_edges(
-        "review_quality",
-        _route_from_review_quality,
         {"correct_quality": "correct_quality", "end": END},
     )
+    graph.add_edge("correct_quality", "validate_quality")
     return graph.compile()
 
 
@@ -1316,53 +1551,60 @@ def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[s
 
 def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
     _reset_run_files()
+    
+    # Clear step output log at the start of each run
+    if _STEP_OUTPUT_LOG_PATH.exists():
+        _STEP_OUTPUT_LOG_PATH.unlink()
+    
     app = build_graph()
     final_state = app.invoke(
         {
             "input": payload,
             "prompt_payloads": [],
+            "scenarios": [],
+            "questions": [],
             "raw_outputs": [],
             "improved_outputs": [],
             "formatted": [],
         }
     )
-    max_review_attempts = payload.get("maxReviewAttempts", 1)
-    final_state = review_items(final_state)
-    final_state["review_quality_attempts"] = final_state.get("review_quality_attempts", 0) + 1
-    if (
-        final_state.get("review_failed")
-        and final_state.get("review_quality_attempts", 0) <= max_review_attempts
-    ):
-        final_state["quality_validation_failed"] = [
-            {
-                "payload": entry["payload"],
-                "result": entry["result"],
-                "quality": {"pass": False, "issues": entry.get("issues") or []},
-                "relevancy": {"pass": True, "issues": []},
-            }
-            for entry in final_state.get("review_failed", [])
-        ]
-        final_state = correct_quality(final_state)
-        final_state = validate_quality(final_state)
+    
+    # Post-graph processing: format conversion and validation
     final_state = _fill_missing_questions(app, payload, final_state)
-    # Reviewer agents after format validation step (single capped retry).
-    max_review_attempts = payload.get("maxReviewAttempts", 1)
     final_state = format_conversion(final_state)
     final_state = validate_and_fix_format(final_state)
-    final_state = review_items(final_state)
-    final_state["review_format_attempts"] = final_state.get("review_format_attempts", 0) + 1
-    if (
-        final_state.get("review_failed")
-        and final_state.get("review_format_attempts", 0) <= max_review_attempts
-    ):
-        final_state = format_conversion(final_state)
-        final_state = validate_and_fix_format(final_state)
-    # End format validation flow
-    final_state = format_conversion(final_state)
-    final_state = validate_and_fix_format(final_state)
+    
+    # Retry format fix if needed
     if final_state.get("format_loop"):
         final_state = format_conversion(final_state)
         final_state = validate_and_fix_format(final_state)
     output = _build_output(payload, final_state.get("improved_outputs", []))
+    
+    # Log final output summary
+    total_questions = sum(
+        len(lo.get("questions", [])) 
+        for lo in output.get("learningObjectives", [])
+    )
+    _log_step_output(
+        "FINAL_OUTPUT",
+        {
+            "status": output.get("questionGenerationStatus"),
+            "total_learning_objectives": len(output.get("learningObjectives", [])),
+            "total_questions_generated": total_questions,
+            "questions_by_lo": [
+                {
+                    "lo": lo.get("learningObjective", "")[:80],
+                    "question_count": len(lo.get("questions", [])),
+                    "question_types": list(set(
+                        q.get("questionType", "") 
+                        for q in lo.get("questions", [])
+                    ))
+                }
+                for lo in output.get("learningObjectives", [])
+            ]
+        },
+        full_data=output  # Include full output for complete record
+    )
+    
     _write_final_state(output)
     return output

@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Literal, TypedDict
 
-QuestionType = Literal["MULTIPLE_CHOICE", "MULTIPLE_CHOICE_MULTI_SELECT", "MATCHING"]
+QuestionType = Literal["MULTIPLE_CHOICE", "MULTIPLE_CHOICE_MULTI_SELECT"]
 
 
 class PipelineInput(TypedDict, total=False):
@@ -37,6 +37,8 @@ class PromptPayload(TypedDict):
 class GraphState(TypedDict):
     input: PipelineInput
     prompt_payloads: List[PromptPayload]
+    scenarios: List[Dict[str, Any]]
+    questions: List[Dict[str, Any]]
     raw_outputs: List[Dict[str, Any]]
     improved_outputs: List[Dict[str, Any]]
     formatted: List[Dict[str, Any]]

@@ -39,6 +39,10 @@ def health():
 
 @app.post("/pipeline/run")
 def run(request: PipelineRequest):
+    import json
+    from datetime import datetime
+    from pathlib import Path
+    
     payload = request.model_dump(exclude_none=True)
     if "learningObjectives" not in payload and "learningObjective" in payload:
         payload["learningObjectives"] = payload.pop("learningObjective")
@@ -57,4 +61,15 @@ def run(request: PipelineRequest):
         raise ValueError("questionTypes is required and must be a non-empty array")
     if not payload.get("difficultyLevels"):
         raise ValueError("difficultyLevels is required and must be a non-empty array")
-    return run_pipeline(payload)
+    
+    result = run_pipeline(payload)
+    
+    # Save formatted result to file
+    try:
+        result_file = Path(f"result_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+        with result_file.open("w") as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Warning: Failed to save result file: {e}")
+    
+    return result

@@ -1,3 +1,230 @@
+# ==========================================
+# DECOMPOSED GENERATION PROMPTS (v1 Enhanced)
+# ==========================================
+
+SYSTEM_CONTRACT = """
+You are an expert assessment designer specialized in creating high-quality, discriminating assessment items.
+
+CRITICAL QUALITY STANDARDS:
+1. ALIGNMENT: Every question must directly test the learning objective - no tangential concepts.
+2. COGNITIVE DEMAND: Match Bloom's level precisely (see mapping below).
+3. PLAUSIBILITY: All distractors must be tempting to someone with partial knowledge.
+4. DISTINCTIVENESS: Each distractor represents a DIFFERENT misconception or error pattern.
+5. NO TRIVIAL REJECTIONS: Avoid obviously wrong, extreme, or "straw man" options.
+6. REALISTIC CONTEXT: Use workplace scenarios that professionals actually face.
+7. PRECISION: Be specific, avoid vague or generic wording.
+
+FORBIDDEN PATTERNS (will cause immediate failure):
+- "All of the above" or "None of the above"
+- Extreme behaviors: "ignore all feedback", "never listen", "always criticize"
+- Obviously wrong facts that can be eliminated without understanding
+- Generic advice disconnected from the specific learning objective
+- Distractors that are near-duplicates of each other
+- Questions that test general knowledge instead of the specific skill
+
+DIFFICULTY MAPPING (STRICT):
+- Easy: Recognize, recall, define, or explain core concepts. Direct questions. No application or decision-making.
+  Example: "What is X?" "Which describes Y?" "What are the key elements of Z?"
+- Intermediate: Apply the skill in routine professional situations. Choose among standard approaches.
+  Example: "How should a manager apply X when Y?" "What step should be taken to Z?"
+- Advanced: Analyze competing priorities, evaluate trade-offs, design strategies under constraints.
+  Example: "How should a leader evaluate X given constraints Y and Z?" "What factors must be balanced when..."
+
+OUTPUT: Return ONLY valid JSON. No markdown blocks. No explanatory text.
+"""
+
+SCENARIO_GENERATION_PROMPT = """
+Generate a set of of 10 may be important points that user can have assessment so that we can generate hight quality questions around that specifi topic of the LO
+
+REQUIREMENTS:
+- Generic Level Definitions (to adapt):
+Level 1: Recognizes the concept, recalls basic facts, but cannot apply. (Bloom: Remembering)
+Level 2: Understands fundamentals, applies in simple contexts. (Bloom: Understanding)
+Level 3: Applies skill independently in standard situations. (Bloom: Applying)
+Level 4: Analyzes, adapts, and integrates skill across contexts. (Bloom: Analyzing)
+Level 5: Mastery; evaluates, innovates, and sets best practices. (Bloom: Evaluating & Creating)
+
+Generic Level Definitions (to Adapt):
+Level 1
+Skill Complexity: Very basic; recognizes the concept but cannot perform it.
+Skill Knowledge: Possesses surface-level familiarity; can recall facts, terms, or definitions.
+Bloom's Taxonomy Alignment: Remembering (recognize, list, recall).
+Definition: Individuals know that the skill exists, understand its basic purpose, and can identify when it is relevant, but they do not yet apply it.
+
+Level 2
+Skill Complexity: Simple, structured tasks with predictable outcomes.
+Skill Knowledge: Understands basic principles and simple processes; limited breadth.
+Bloom's Taxonomy Alignment: Understanding (explain, summarize, classify).
+Definition: Individuals can describe the fundamentals of the skill and apply it in straightforward, guided situations but lack adaptability in unfamiliar contexts.
+
+Level 3
+Skill Complexity: Moderate; applies the skill to standard problems and varying contexts.
+Skill Knowledge: Demonstrates working knowledge of methods, tools, and practices.
+Bloom's Taxonomy Alignment: Applying (execute, implement, use).
+Definition: Individuals apply the skill independently in routine tasks, make appropriate choices among standard methods, and achieve consistent results.
+
+Level 4
+Skill Complexity: Advanced; handles complexity and interdependencies within the skill.
+Skill Knowledge: Strong understanding of concepts, techniques, and multiple approaches.
+Bloom's Taxonomy Alignment: Analyzing (differentiate, compare, organize).
+Definition: Individuals can analyze situations, adapt the skill to diverse scenarios, and integrate it with other knowledge areas to solve complex problems.
+
+Level 5
+Skill Complexity: Expert-level; applies the skill to novel, complex, and strategic contexts.
+Skill Knowledge: Deep mastery, including principles, cross-domain integration, and innovation.
+Bloom's Taxonomy Alignment: Evaluating & Creating (design, innovate, justify, set standards).
+Definition: Individuals demonstrate mastery by critically evaluating, designing, and innovating within the skill area. They extend its application to new domains and establish best practices.
+
+Canonical Mapping (authoritative):
+- Easy: Level 1, Level 2
+- Intermediate: Level 3, level 4
+- Advanced: Level 4, Level 5
+
+Return JSON: {"scenario": "...", "decisionPoint": "..."}
+"""
+
+QUESTION_GENERATION_PROMPT = """
+Write ONE question that directly tests the learning objective at the specified difficulty level.
+
+DIFFICULTY-SPECIFIC REQUIREMENTS:
+
+Easy (Recall/Recognition):
+- Ask for definitions, key elements, or identification
+- Use clear, direct language: "What is...", "Which describes...", "What are the key elements of..."
+- Focus on foundational knowledge required before application
+- Question should be answerable with basic understanding
+
+Intermediate (Application):
+- Present a routine professional situation
+- Ask how to apply the skill in standard contexts
+- Use: "How should X apply...", "What step should Y take...", "Which approach..."
+- Require choosing among established practices
+- If scenario provided, reference it directly
+
+Advanced (Analysis/Evaluation):
+- Use the scenario's complexity (constraints, competing priorities)
+- Ask for strategic judgment: "How should X evaluate...", "What factors must Y balance..."
+- Require analysis of trade-offs, not just selecting "best practice"
+- The question stem should acknowledge the complexity
+
+QUALITY STANDARDS:
+✓ Grammatically perfect and professionally worded
+✓ Directly tied to the learning objective
+✓ Clear, unambiguous phrasing
+✓ Appropriate length (not overly verbose or terse)
+✗ Vague language: "properly", "effectively" without context
+✗ Leading questions that telegraph the answer
+
+If failure_reasons provided: Completely rewrite to avoid those specific issues. Do not reuse similar wording.
+
+Return JSON: {"questionText": "..."}
+"""
+
+OPTIONS_GENERATION_PROMPT = """
+Create answer options that discriminate between learners who truly understand the skill and those with partial or flawed knowledge.
+
+CORRECT OPTION(S):
+✓ Clearly best answer given the context
+✓ Specific and actionable (not generic advice)
+✓ Directly addresses the question's core requirement
+✓ Concise: 10-20 words (similar length to distractors)
+✓ Professional tone
+✗ Overly comprehensive "golden answer" that's obviously longest
+✗ Using words from the question stem verbatim
+✗ So perfect it sounds unrealistic
+
+INCORRECT OPTIONS (DISTRACTORS) - CRITICAL TAXONOMY:
+
+MANDATORY: Each of your 3 distractors MUST come from a DIFFERENT category below.
+Do NOT create two distractors from the same category.
+
+**CATEGORY 1: SCOPE/BOUNDARY ERROR**
+- Addresses wrong aspect of the skill (e.g., focuses on communication when question is about planning)
+- Confuses the skill with a related but different skill
+- Applies the skill in wrong domain/context
+Example: Question about "creating vision" → Distractor focuses on "implementing tactics"
+
+**CATEGORY 2: TIMING/SEQUENCE ERROR**  
+- Wrong order of steps
+- Acts too early or too late in the process
+- Skips necessary prerequisites
+- Prioritizes incorrectly (short-term vs long-term)
+Example: Question about "strategic planning" → Distractor focuses on "immediate execution"
+
+**CATEGORY 3: STAKEHOLDER/FOCUS ERROR**
+- Focuses on wrong stakeholder group (individual vs team vs organization)
+- Misidentifies whose needs to prioritize
+- Wrong level of analysis (micro vs macro)
+Example: Question about "team vision" → Distractor focuses on "individual goals"
+
+**CATEGORY 4: METHOD/APPROACH ERROR**
+- Correct goal but wrong method to achieve it
+- Uses outdated/inappropriate technique
+- Over-relies on one tool when integration needed
+- Correct in other contexts but wrong here
+Example: Question about "communicating vision" → Distractor relies only on "written documents"
+
+**CATEGORY 5: COMPLETENESS ERROR**
+- Partially correct but missing critical element
+- Addresses one dimension while ignoring others
+- Correct understanding but incomplete application
+Example: Question about "vision alignment" → Distractor only addresses "clarity" but not "buy-in"
+
+**CATEGORY 6: CONSTRAINT/TRADE-OFF ERROR** (Advanced questions only)
+- Ignores stated constraints (budget, time, resources)
+- Fails to balance competing priorities
+- Optimizes one factor at expense of critical others
+Example: Question with safety + efficiency constraints → Distractor sacrifices safety for efficiency
+
+CREATION PROCESS:
+1. Read the question and identify the CORE SKILL being tested
+2. Select 3 DIFFERENT categories from above (for 3 distractors)
+3. For EACH category, create ONE distractor that represents that specific error type
+4. Ensure each distractor is plausible to someone with 60-70% understanding
+5. Make all options similar in length (±3 words) and professional tone
+
+QUALITY REQUIREMENTS:
+✓ Each distractor from DIFFERENT category above
+✓ PLAUSIBLE to someone with partial knowledge
+✓ Each sounds reasonable on first read
+✓ Similar length (±3 words from correct option)
+✓ Similar grammatical structure
+✓ Specific and concrete (not vague generalities)
+✗ Obviously wrong, extreme, or absurd: "never listen", "ignore all", "always criticize"
+✗ Factually incorrect in any context (easy to eliminate)
+✗ Generic advice unrelated to the specific skill
+✗ Two distractors from the same category above
+✗ Implausible behaviors professionals would never consider
+
+EXPLANATIONS (15-25 words each):
+- For correct: Why this is best in this context
+- For incorrect: What misconception it represents (cite the category)
+
+SELF-CHECK before submitting:
+1. Did I use 3 DIFFERENT categories from the taxonomy?
+2. Is each distractor plausible to someone with partial knowledge?
+3. Are all options similar in length and structure?
+4. Would a professional with 60-70% understanding find them all reasonable?
+
+Return JSON: {"answers":[{"answerText":"...","isCorrect":true/false,"explanation":"..."}]}
+"""
+
+OPTIONS_CORRECTION_PROMPT = """
+Rewrite ONLY the incorrect options to address the failure reasons below.
+Keep the question and correct option unchanged.
+Each rewritten distractor must:
+- Address the specific failure reason
+- Be plausible and represent a distinct misconception
+- Match the correct option in length and tone
+- Not be obviously wrong or extreme
+
+Return JSON in the same format: {"answers":[{"answerText":"...","isCorrect":true/false,"explanation":"..."}]}.
+"""
+
+# ==========================================
+# ORIGINAL v1 FORMATS
+# ==========================================
+
 RES_FORMAT = """
 [
   {
@@ -37,37 +264,41 @@ RES_FORMAT_MULTI_SELECT = """
 ]
 """
 
-RES_FORMAT_MATCH_COLUMNS = """
-[
-  {
-    "LearningObjective": "Learning objective 1",
-    "questions": [
-      {
-        "questionText": "Match each term to its definition.",
-        "column_a_answers": [
-          {"Option-A": "Project"},
-          {"Option-B": "Program"},
-          {"Option-C": "Portfolio"},
-          {"Option-D": "Some Option"}
-        ],
-        "column_b_answers": [
-          {"Option-1": "A temporary endeavor to create a unique product or result"},
-          {"Option-2": "A group of related projects managed in a coordinated way"},
-          {"Option-3": "A collection of projects and programs managed together for strategic objectives"},
-          {"Option-4": "Enhancing overall customer service"}
-        ],
-        "answers": [
-          {
-            "column_b_answers": "A temporary endeavor to create a unique product or result",
-            "column_a_answers": "Program",
-            "explanation": "This is definition of Program"
-          }
-        ]
-      }
-    ]
-  }
-]
-"""
+# ==========================================
+# UNUSED - MATCHING QUESTION TYPE (REMOVED)
+# ==========================================
+
+# RES_FORMAT_MATCH_COLUMNS = """
+# [
+#   {
+#     "LearningObjective": "Learning objective 1",
+#     "questions": [
+#       {
+#         "questionText": "Match each term to its definition.",
+#         "column_a_answers": [
+#           {"Option-A": "Project"},
+#           {"Option-B": "Program"},
+#           {"Option-C": "Portfolio"},
+#           {"Option-D": "Some Option"}
+#         ],
+#         "column_b_answers": [
+#           {"Option-1": "A temporary endeavor to create a unique product or result"},
+#           {"Option-2": "A group of related projects managed in a coordinated way"},
+#           {"Option-3": "A collection of projects and programs managed together for strategic objectives"},
+#           {"Option-4": "Enhancing overall customer service"}
+#         ],
+#         "answers": [
+#           {
+#             "column_b_answers": "A temporary endeavor to create a unique product or result",
+#             "column_a_answers": "Program",
+#             "explanation": "This is definition of Program"
+#           }
+#         ]
+#       }
+#     ]
+#   }
+# ]
+# """
 
 DEFAULT_QUALITY_RUBRIC = """
 Quality Rubric for MCQ/Matching Items (0–100)
@@ -197,113 +428,118 @@ Canonical Mapping (authoritative):
 - Advanced: Level 4, Level 5
 """
 
-SYSTEM_PROMPT_TEMPLATE = """
-You are an expert assessment designer and psychometrician.
+# ==========================================
+# UNUSED - OLD MONOLITHIC GENERATION PROMPTS
+# (Replaced by decomposed prompts above)
+# ==========================================
 
-Your task is to generate high-quality quiz questions that accurately measure whether the given Learning Objective has been achieved.
+# SYSTEM_PROMPT_TEMPLATE = """
+# You are an expert assessment designer and psychometrician.
 
-STRICT RULES:
-- The declared difficulty level MUST strictly match the Bloom level defined below.
-- Do NOT generate questions below or above the allowed Bloom level.
-- Do NOT mix Bloom levels within a single question.
-- NEVER generate opinion-based or generic questions.
-- NEVER ask trivial or overly broad questions.
+# Your task is to generate high-quality quiz questions that accurately measure whether the given Learning Objective has been achieved.
 
-**DIFFICULTY ↔ BLOOM MAPPING (MANDATORY):**
-{bloom_alignment}
+# STRICT RULES:
+# - The declared difficulty level MUST strictly match the Bloom level defined below.
+# - Do NOT generate questions below or above the allowed Bloom level.
+# - Do NOT mix Bloom levels within a single question.
+# - NEVER generate opinion-based or generic questions.
+# - NEVER ask trivial or overly broad questions.
 
-**IMPORTANT: Difficulty-to-Cognition Mapping (MANDATORY):**
+# **DIFFICULTY ↔ BLOOM MAPPING (MANDATORY):**
+# {bloom_alignment}
 
-Easy questions MUST align ONLY with:
-- Level 1 (Recognizes, recalls, identifies concepts; no application)
-- Level 2 (Explains, summarizes, classifies; applies only in simple, guided contexts)
+# **IMPORTANT: Difficulty-to-Cognition Mapping (MANDATORY):**
 
-Intermediate questions MUST align ONLY with:
-- Level 3 (Applies the skill independently in standard, routine situations)
+# Easy questions MUST align ONLY with:
+# - Level 1 (Recognizes, recalls, identifies concepts; no application)
+# - Level 2 (Explains, summarizes, classifies; applies only in simple, guided contexts)
 
-Advanced questions MUST align ONLY with:
-- Level 4 (Analyzes, adapts, integrates across contexts)
-- Level 5 (Evaluates, designs, innovates, sets best practices)
+# Intermediate questions MUST align ONLY with:
+# - Level 3 (Applies the skill independently in standard, routine situations)
 
-Hard constraints:
-- Do NOT generate application, analysis, evaluation, or judgment questions for Easy.
-- Do NOT generate recall-only or definition-only questions for Intermediate.
-- Do NOT generate opinion-only or generic explanation questions for Advanced.
+# Advanced questions MUST align ONLY with:
+# - Level 4 (Analyzes, adapts, integrates across contexts)
+# - Level 5 (Evaluates, designs, innovates, sets best practices)
 
-Difficulty-to-Cognition Mapping (MANDATORY):
+# Hard constraints:
+# - Do NOT generate application, analysis, evaluation, or judgment questions for Easy.
+# - Do NOT generate recall-only or definition-only questions for Intermediate.
+# - Do NOT generate opinion-only or generic explanation questions for Advanced.
 
-Easy questions MUST align ONLY with:
-- Level 1 (Recognizes, recalls, identifies concepts; no application)
-- Level 2 (Explains, summarizes, classifies; applies only in simple, guided contexts)
+# Difficulty-to-Cognition Mapping (MANDATORY):
 
-Intermediate questions MUST align ONLY with:
-- Level 3 (Applies the skill independently in standard, routine situations)
+# Easy questions MUST align ONLY with:
+# - Level 1 (Recognizes, recalls, identifies concepts; no application)
+# - Level 2 (Explains, summarizes, classifies; applies only in simple, guided contexts)
 
-Advanced questions MUST align ONLY with:
-- Level 4 (Analyzes, adapts, integrates across contexts)
-- Level 5 (Evaluates, designs, innovates, sets best practices)
+# Intermediate questions MUST align ONLY with:
+# - Level 3 (Applies the skill independently in standard, routine situations)
 
-Hard constraints:
-- Do NOT generate application, analysis, evaluation, or judgment questions for Easy.
-- Do NOT generate recall-only or definition-only questions for Intermediate.
-- Do NOT generate opinion-only or generic explanation questions for Advanced.
+# Advanced questions MUST align ONLY with:
+# - Level 4 (Analyzes, adapts, integrates across contexts)
+# - Level 5 (Evaluates, designs, innovates, sets best practices)
 
-CONTENT RULES:
-- Use clear, professional English.
-- Avoid vague wording and subjective phrasing.
-- Avoid “all of the above / none of the above”.
-- Ensure distractors are plausible and aligned to the same construct.
-- Ensure options are parallel in structure and similar in length/tone.
-- Avoid giveaway options that are obviously wrong or easy to eliminate.
-- Ensure exactly the requested number of correct and incorrect options.
-- Do NOT introduce information not present in the provided transcript (if any).
+# Hard constraints:
+# - Do NOT generate application, analysis, evaluation, or judgment questions for Easy.
+# - Do NOT generate recall-only or definition-only questions for Intermediate.
+# - Do NOT generate opinion-only or generic explanation questions for Advanced.
 
-STRUCTURAL CONSTRAINTS (HIGH LEVEL ONLY):
-- MCQ: 4 options, exactly 1 correct
-- MCQ Multi-select: 4 options, 1–3 correct
-- Matching: 4 items per column, 4 correct mappings
+# CONTENT RULES:
+# - Use clear, professional English.
+# - Avoid vague wording and subjective phrasing.
+# - Avoid “all of the above / none of the above”.
+# - Ensure distractors are plausible and aligned to the same construct.
+# - Ensure options are parallel in structure and similar in length/tone.
+# - Avoid giveaway options that are obviously wrong or easy to eliminate.
+# - Ensure exactly the requested number of correct and incorrect options.
+# - Do NOT introduce information not present in the provided transcript (if any).
 
-QUALITY BAR:
-- Questions must be realistic, educative, and discriminating.
-- A learner who does not understand the concept should plausibly choose a distractor.
-- If quality cues are not explicit, choose options that would be defensible to a partially competent learner and are not obvious eliminations.
-- For Advanced, include at least one Level 5 (Evaluate/Create) question per learning objective when multiple questions are requested.
+# STRUCTURAL CONSTRAINTS (HIGH LEVEL ONLY):
+# - MCQ: 4 options, exactly 1 correct
+# - MCQ Multi-select: 4 options, 1–3 correct
+# - Matching: 4 items per column, 4 correct mappings
 
-Quality Rubric (use this as strict measurement during generation):
-{rubric}
+# QUALITY BAR:
+# - Questions must be realistic, educative, and discriminating.
+# - A learner who does not understand the concept should plausibly choose a distractor.
+# - If quality cues are not explicit, choose options that would be defensible to a partially competent learner and are not obvious eliminations.
+# - For Advanced, include at least one Level 5 (Evaluate/Create) question per learning objective when multiple questions are requested.
 
-Output requirements:
-- Do NOT worry about final JSON formatting but it should be valid JSON.
-- A later system will convert your output into the required schema.
-- Focus ONLY on cognitive quality, Bloom alignment, and learning objective alignment.
-- Before returning, validate that all rules are satisfied and revise if any rule is violated.
-"""
+# Quality Rubric (use this as strict measurement during generation):
+# {rubric}
 
-USER_PROMPT_TEMPLATE = """
-Generate assessment questions following the system rules.
+# Output requirements:
+# - Do NOT worry about final JSON formatting but it should be valid JSON.
+# - A later system will convert your output into the required schema.
+# - Focus ONLY on cognitive quality, Bloom alignment, and learning objective alignment.
+# - Before returning, validate that all rules are satisfied and revise if any rule is violated.
+# """
 
-Learning Objective:
-{learning_obj}
-
-Difficulty Level:
-{difficulty_level}
-
-Transcript (use only if provided):
-{source_text}
-
-Requirements:
-- Generate exactly {number_of_questions} questions.
-- Each question must strictly match the declared difficulty.
-- Generate exactly {num_correct_options} correct options.
-- Generate exactly {num_incorrect_options} incorrect but plausible distractors.
-
-Do NOT worry about final JSON formatting.
-A later system will convert your output into the required schema.
-Focus ONLY on:
-- cognitive quality
-- Bloom alignment
-- learning objective alignment
-"""
+# USER_PROMPT_TEMPLATE = """
+# Generate assessment questions following the system rules.
+#
+# Learning Objective:
+# {learning_obj}
+#
+# Difficulty Level:
+# {difficulty_level}
+#
+# Transcript (use only if provided):
+# {source_text}
+#
+# Requirements:
+# - Generate exactly {number_of_questions} questions.
+# - Each question must strictly match the declared difficulty.
+# - Generate exactly {num_correct_options} correct options.
+# - Generate exactly {num_incorrect_options} incorrect but plausible distractors.
+#
+# Do NOT worry about final JSON formatting.
+# A later system will convert your output into the required schema.
+# Focus ONLY on:
+# - cognitive quality
+# - Bloom alignment
+# - learning objective alignment
+# """
 
 USER_PROMPT_TEMPLATE_CORRECTION = """
 You are correcting a single failed question based on evaluation feedback.
@@ -319,78 +555,6 @@ Original Question JSON: {question_json}
 Required Response Format: {response_format}
 """
 
-SYSTEM_PROMPT_TEMPLATE_MATCH_COLUMNS = """
-You are an expert assessment designer and psychometrician.
-
-Your task is to generate high-quality quiz questions that accurately measure whether the given Learning Objective has been achieved.
-
-STRICT RULES:
-- The declared difficulty level MUST strictly match the Bloom level defined below.
-- Do NOT generate questions below or above the allowed Bloom level.
-- Do NOT mix Bloom levels within a single question.
-- If the difficulty is EASY, questions MUST be simple and foundational.
-- If the difficulty is INTERMEDIATE or ADVANCED, questions MUST include a clear context or scenario.
-- NEVER generate opinion-based or generic questions.
-- NEVER ask trivial or overly broad questions.
-
-DIFFICULTY ↔ BLOOM MAPPING (MANDATORY):
-{bloom_alignment}
-
-CONTENT RULES:
-- Use clear, professional English.
-- Avoid vague wording and subjective phrasing.
-- Avoid “all of the above / none of the above”.
-- Ensure distractors are plausible and aligned to the same construct.
-- Ensure options are parallel in structure and similar in length/tone.
-- Avoid giveaway options that are obviously wrong or easy to eliminate.
-- Do NOT introduce information not present in the provided transcript (if any).
-- Generate Match the following or Match the columns type questions.
-- Match the following or Match the columns should have 4 options.
-- Add explanation for the correct answers.
-
-STRUCTURAL CONSTRAINTS (HIGH LEVEL ONLY):
-- MCQ: 4 options, exactly 1 correct
-- MCQ Multi-select: 4 options, 1–3 correct
-- Matching: 4 items per column, 4 correct mappings
-
-QUALITY BAR:
-- Questions must be realistic, educative, and discriminating.
-- A learner who does not understand the concept should plausibly choose a distractor.
-- If quality cues are not explicit, choose options that would be defensible to a partially competent learner and are not obvious eliminations.
-- For Advanced, include at least one Level 5 (Evaluate/Create) question per learning objective when multiple questions are requested.
-
-Quality Rubric (use this as strict measurement during generation):
-{rubric}
-
-Output requirements:
-- Do NOT worry about final JSON formatting but it should be valid JSON.
-- A later system will convert your output into the required schema.
-- Focus ONLY on cognitive quality, Bloom alignment, and learning objective alignment.
-- Before returning, validate that all rules are satisfied and revise if any rule is violated.
-"""
-
-USER_PROMPT_TEMPLATE_MATCH_COLUMNS = """
-Generate assessment questions following the system rules.
-
-Learning Objective:
-{learning_obj}
-
-Difficulty Level:
-{difficulty_level}
-
-Transcript (use only if provided):
-{source_text}
-
-Requirements:
-- Generate exactly {number_of_questions} questions.
-
-Do NOT worry about final JSON formatting.
-A later system will convert your output into the required schema.
-Focus ONLY on:
-- cognitive quality
-- Bloom alignment
-- learning objective alignment
-"""
 
 USER_PROMPT_TEMPLATE_DISTRACTOR_CORRECTION = """
 You are correcting distractors only.
@@ -531,14 +695,21 @@ OUTPUT FORMAT (STRICT JSON ONLY)
     }
   ],
   "thresholds": {
-    "minAverageScore": 4.5,
-    "minPerMetricScore": 4.5
+    "minAverageScore": 4.0,
+    "minPerMetricScore": 3.5
   }
 }
 
-PASS/FAIL LOGIC
-- A distractor passes if ALL metrics >= minPerMetricScore AND average >= minAverageScore.
-- Overall verdict is PASS only if ALL distractors pass.
+PASS/FAIL LOGIC (80% THRESHOLD)
+- A distractor passes if:
+  * Average score across all 7 metrics >= 4.0 (80% of max 5)
+  * At least 6 out of 7 metrics score >= 3.5
+  * No single metric scores below 3.0
+  * Distinctiveness requirement: Each distractor must map to a different misconception bucket
+- Overall verdict is PASS if:
+  * At least 80% of distractors pass (e.g., for 3 distractors, at least 3 pass; for 4 distractors, at least 4 pass)
+  * ALL distractors meet the distinctiveness requirement (no shared misconception buckets)
+- If any distractors share misconception buckets, mark those specific distractors as FAIL with reason.
 Do NOT rewrite distractors. Do NOT suggest improvements.
 """
 
@@ -650,22 +821,22 @@ Return ONLY the improved question in this format:
 {res_format_multi_select_single_difficulty}
 """
 
-SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
-You are an expert assessment designer. Improve match-the-columns questions by adding or refining distractor options.
-Rules:
-- Keep the original question intent and correct matches.
-- Ensure exactly 4 options in column A and 4 options in column B.
-- Add plausible distractors if options are missing or too obvious.
-- Do not change the meaning of correct answers.
-- Return ONLY valid JSON in the exact response format.
-"""
+# SYSTEM_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
+# You are an expert assessment designer. Improve match-the-columns questions by adding or refining distractor options.
+# Rules:
+# - Keep the original question intent and correct matches.
+# - Ensure exactly 4 options in column A and 4 options in column B.
+# - Add plausible distractors if options are missing or too obvious.
+# - Do not change the meaning of correct answers.
+# - Return ONLY valid JSON in the exact response format.
+# """
 
-USER_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
-Improve the following matching question. Add or refine distractor options if needed.
-
-Question: {question}
-Response format: {res_format_match_columns}
-"""
+# USER_PROMPT_TEMPLATE_IMPROVE_MATCHING = """
+# Improve the following matching question. Add or refine distractor options if needed.
+#
+# Question: {question}
+# Response format: {res_format_match_columns}
+# """
 
 SYSTEM_PROMPT_TEMPLATE_FIX_FORMAT = """
 You are a strict JSON formatter. Convert the given content into the required response format.
