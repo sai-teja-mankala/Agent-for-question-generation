@@ -1,11 +1,5 @@
 # Question Generation Agent - Complete Flow Guide
 
-## Overview
-
-This document explains the complete flow of the question generation pipeline, showing the **input and output format at each agent step** with real examples.
-
----
-
 ## Pipeline Architecture
 
 ```
@@ -119,6 +113,7 @@ For each LO:
 - Generates realistic scenarios for Intermediate/Advanced questions
 - Creates decision points for higher-order thinking
 - Uses SCENARIO_GENERATION_PROMPT
+- **IMPORTANT: Carries forward the entire `payload` object with LO and all metadata**
 
 **Input (state from previous step):**
 ```python
@@ -147,6 +142,13 @@ For each config in question_configs:
       "scenario": "A product manager at a tech company...",
       "decisionPoint": "How should the product manager evaluate..."
     }
+  
+  Store WITH payload:
+    {
+      "payload": config,  # ← FULL config preserved!
+      "scenario": "...",
+      "decisionPoint": "..."
+    }
 ```
 
 **Output (state):**
@@ -155,11 +157,20 @@ For each config in question_configs:
   "question_configs": [10 configs],
   "scenarios": [
     {
-      "payload": {config_1},
+      "payload": {
+        # FULL config object with ALL metadata
+        "learningObjective": "Encourages cross-functional alignment...",
+        "difficultyLevel": "Advanced",
+        "questionType": "MULTIPLE_CHOICE",
+        "sourceText": "...",
+        "numCorrectOptions": 1,
+        "numIncorrectOptions": 3,
+        # ... all other config fields
+      },
       "scenario": "A product manager at a tech company is leading a new initiative to launch a mobile application. The marketing team wants to prioritize features that highlight brand visibility, while the engineering team is focused on technical feasibility...",
       "decisionPoint": "How should the product manager evaluate these competing priorities to encourage cross-functional alignment?"
     },
-    // ... 9 more scenarios
+    // ... 9 more scenarios (each with full payload)
   ],
   "questions": [],
   ...
@@ -198,21 +209,28 @@ For each config in question_configs:
 
 **Internal Process:**
 ```
-For each scenario in scenarios:
-  Extract: scenario, decisionPoint, LO, difficulty
+For each scenario_data in scenarios:
+  # Extract payload (has LO and all metadata)
+  payload = scenario_data["payload"]
   
   Call LLM:
     Prompt: QUESTION_GENERATION_PROMPT
     Input: {
-      "learning_objective": "Encourages cross-functional alignment...",
-      "difficulty": "Advanced",
-      "scenario": "A product manager at a tech company...",
-      "decision_point": "How should the product manager evaluate..."
+      "learning_objective": payload["learningObjective"],  # ← From payload!
+      "difficulty": payload["difficultyLevel"],             # ← From payload!
+      "scenario": scenario_data["scenario"],
+      "decision_point": scenario_data["decisionPoint"]
     }
   
   Parse response:
     {
       "questionText": "A product manager at a tech company is leading..."
+    }
+  
+  Store WITH all previous data:
+    {
+      ...scenario_data,  # ← Includes payload, scenario, decisionPoint
+      "questionText": "..."
     }
 ```
 
@@ -223,12 +241,18 @@ For each scenario in scenarios:
   "scenarios": [10 scenarios],
   "questions": [
     {
-      "payload": {config_1},
+      "payload": {
+        # FULL config still here!
+        "learningObjective": "Encourages cross-functional alignment...",
+        "difficultyLevel": "Advanced",
+        "questionType": "MULTIPLE_CHOICE",
+        # ... all fields
+      },
       "scenario": "A product manager...",
       "decisionPoint": "How should...",
       "questionText": "A product manager at a tech company is leading a new initiative to launch a mobile application. The marketing team wants to prioritize features that highlight brand visibility, while the engineering team is focused on the technical feasibility and minimal viable product. How should the product manager evaluate these competing priorities to encourage cross-functional alignment on the initiative?"
     },
-    // ... 9 more questions
+    // ... 9 more questions (each with full payload)
   ],
   "raw_outputs": [],
   ...
