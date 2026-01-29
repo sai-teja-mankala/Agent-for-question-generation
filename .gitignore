@@ -20,14 +20,6 @@ env/
 *.swo
 *~
 
-# Auto-generated log files (will be recreated on each run)
-build_prompts_log.json
-final_state.json
-result_*.json
-result_questions.txt
-state_log.jsonl
-step_outputs_log.jsonl
-
 # OS
 .DS_Store
 .DS_Store?

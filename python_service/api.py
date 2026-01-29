@@ -20,6 +20,7 @@ class PipelineRequest(BaseModel):
     learningObjective: list[str] | None = None
     learningObjectiveUuid: str | list[str] | None = None
     numberOfQuestions: int | None = None
+    questionsPerSet: int | None = None
     questionTypes: list[str] | None = None
     questionType: list[str] | None = None
     difficultyLevels: list[str] | None = None
@@ -30,6 +31,9 @@ class PipelineRequest(BaseModel):
     qualityThreshold: int | None = None
     relevancyThreshold: int | None = None
     maxAttempts: int | None = None
+    maxDistractorFixAttempts: int | None = None
+    maxQualityFixAttempts: int | None = None
+    maxFormatFixAttempts: int | None = None
 
 
 @app.get("/health")

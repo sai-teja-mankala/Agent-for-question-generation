@@ -44,85 +44,6 @@ if not logger.handlers:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 
-_STATE_LOG_PATH = Path(__file__).resolve().parents[1] / "state_log.jsonl"
-_RESULT_QUESTIONS_PATH = Path(__file__).resolve().parents[1] / "result_questions.txt"
-_FINAL_STATE_PATH = Path(__file__).resolve().parents[1] / "final_state.json"
-_STEP_OUTPUT_LOG_PATH = Path(__file__).resolve().parents[1] / "step_outputs_log.jsonl"
-
-
-def _log_step_output(step_name: str, output_summary: Dict[str, Any], full_data: Any = None):
-    """Log the output of each pipeline step to a JSONL file for debugging."""
-    from datetime import datetime
-    
-    try:
-        log_entry = {
-            "timestamp": datetime.now().isoformat(),
-            "step": step_name,
-            "summary": output_summary,
-        }
-        
-        # Optionally include full data if provided (be careful with size)
-        if full_data is not None:
-            log_entry["full_data"] = full_data
-        
-        # Append to JSONL file (one JSON object per line)
-        with _STEP_OUTPUT_LOG_PATH.open("a") as f:
-            f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
-    except Exception as e:
-        logger.warning("Failed to log step output for %s: %s", step_name, e)
-
-
-def _append_json_line(record: Dict[str, Any], path: Path = _STATE_LOG_PATH) -> None:
-    try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(record, ensure_ascii=True) + "\n")
-    except OSError as exc:
-        logger.warning("Failed to write state log: %s", exc)
-
-
-def _log_state_summary(state: GraphState, stage: str) -> None:
-    def _safe_len(value: Any) -> int:
-        return len(value) if isinstance(value, list) else 0
-
-    summary = {
-        "stage": stage,
-        "prompt_payloads": _safe_len(state.get("prompt_payloads")),
-        "raw_outputs": _safe_len(state.get("raw_outputs")),
-        "improved_outputs": _safe_len(state.get("improved_outputs")),
-        "distractor_validation_passed": _safe_len(state.get("distractor_validation_passed")),
-        "distractor_validation_failed": _safe_len(state.get("distractor_validation_failed")),
-        "distractor_correction_attempts": state.get("distractor_correction_attempts", 0),
-        "quality_validation_passed": _safe_len(state.get("quality_validation_passed")),
-        "quality_validation_failed": _safe_len(state.get("quality_validation_failed")),
-        "quality_correction_attempts": state.get("quality_correction_attempts", 0),
-        "format_fix_attempts": state.get("format_fix_attempts", 0),
-        "formatted": _safe_len(state.get("formatted")),
-    }
-    _append_json_line({"type": "state_summary", **summary})
-
-
-def _log_formatted_output(state: GraphState) -> None:
-    formatted = state.get("formatted", [])
-    results = [item.get("result") for item in formatted if isinstance(item, dict)]
-    _append_json_line(
-        {
-            "type": "questions_output",
-            "results": results,
-        },
-        path=_RESULT_QUESTIONS_PATH,
-    )
-
-
-def _reset_run_files() -> None:
-    try:
-        _STATE_LOG_PATH.write_text("", encoding="utf-8")
-        _RESULT_QUESTIONS_PATH.write_text("", encoding="utf-8")
-        _FINAL_STATE_PATH.write_text("", encoding="utf-8")
-    except OSError as exc:
-        logger.warning("Failed to reset run files: %s", exc)
-
-
 def _extract_json_text(content: str) -> str:
     stripped = content.strip()
     if stripped.startswith("```"):
@@ -193,9 +114,10 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
     number_of_questions = data.get("numberOfQuestions", 3)
     
     # NEW: Support generating multiple sets per configuration
-    # questionsPerSet: how many questions to generate in each payload (default: numberOfQuestions)
+    # questionsPerSet: how many questions to generate in each payload (default: 1)
     # If numberOfQuestions=9 and questionsPerSet=3, creates 3 payloads of 3 questions each
-    questions_per_set = data.get("questionsPerSet", number_of_questions)
+    # DEFAULT: questionsPerSet=1 generates separate payloads for each question (more diversity)
+    questions_per_set = data.get("questionsPerSet", 1)
     
     # Calculate how many payloads needed per configuration
     sets_per_config = max(1, (number_of_questions + questions_per_set - 1) // questions_per_set)
@@ -252,44 +174,7 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
     state["prompt_payloads"] = payloads
     logger.info("Built %s prompt payloads", len(payloads))
     
-    # Log payloads to file for debugging
-    import json
-    from pathlib import Path
-    from datetime import datetime
-    
-    try:
-        payloads_log = {
-            "timestamp": datetime.now().isoformat(),
-            "total_payloads": len(payloads),
-            "payloads": [
-                {
-                    "learningObjective": p["learningObjective"][:100],
-                    "difficultyLevel": p["difficultyLevel"],
-                    "questionType": p["questionType"],
-                    "numberOfQuestions": p["numberOfQuestions"],
-                }
-                for p in payloads
-            ]
-        }
-        log_file = Path("build_prompts_log.json")
-        with log_file.open("w") as f:
-            json.dump(payloads_log, f, indent=2)
-    except Exception as e:
-        logger.warning("Failed to write build prompts log: %s", e)
-    
-    # Log step output
-    _log_step_output(
-        "build_prompt_payloads",
-        {
-            "total_payloads": len(payloads),
-            "configurations": [
-                f"{p['questionType']} | {p['difficultyLevel']} | Q:{p['numberOfQuestions']}"
-                for p in payloads
-            ]
-        }
-    )
-    
-    _log_state_summary(state, "build_prompt_payloads")
+    state["prompt_payloads"] = payloads
     return state
 
 
@@ -348,23 +233,8 @@ def build_scenario(state: GraphState) -> GraphState:
     state["scenarios"] = scenarios
     logger.info("Built %s scenarios", len(scenarios))
     
-    # Log step output
-    _log_step_output(
-        "build_scenario",
-        {
-            "total_scenarios": len(scenarios),
-            "scenarios_preview": [
-                {
-                    "difficulty": s["payload"]["difficultyLevel"],
-                    "scenario_length": len(s.get("scenario", "")),
-                    "has_decision_point": bool(s.get("decisionPoint"))
-                }
-                for s in scenarios[:5]  # First 5 only
-            ]
-        }
-    )
-    
-    _log_state_summary(state, "build_scenario")
+    state["scenarios"] = scenarios
+    logger.info("Built %s scenarios", len(scenarios))
     return state
 
 
@@ -397,22 +267,8 @@ def build_question(state: GraphState) -> GraphState:
     logger.info("Built %s questions", len(questions))
     
     # Log step output
-    _log_step_output(
-        "build_question",
-        {
-            "total_questions": len(questions),
-            "questions_preview": [
-                {
-                    "difficulty": q["payload"]["difficultyLevel"],
-                    "question_length": len(q.get("questionText", "")),
-                    "has_scenario": bool(q.get("scenario"))
-                }
-                for q in questions[:5]  # First 5 only
-            ]
-        }
-    )
-    
-    _log_state_summary(state, "build_question")
+    state["questions"] = questions
+    logger.info("Built %s questions", len(questions))
     return state
 
 
@@ -459,24 +315,9 @@ def build_options(state: GraphState) -> GraphState:
     state["raw_outputs"] = outputs
     logger.info("Built %s complete question packages", len(outputs))
     
-    # Log step output with sample questions
-    _log_step_output(
-        "build_options",
-        {
-            "total_outputs": len(outputs),
-            "outputs_preview": [
-                {
-                    "question_type": o["payload"]["questionType"],
-                    "difficulty": o["payload"]["difficultyLevel"],
-                    "num_answers": len(o["result"].get("questions", [{}])[0].get("answer", [])),
-                    "question_text": o["result"].get("questions", [{}])[0].get("questionText", "")[:100]
-                }
-                for o in outputs[:3]  # First 3 only
-            ]
-        }
-    )
     
-    _log_state_summary(state, "build_options")
+    state["raw_outputs"] = outputs
+    logger.info("Built %s full question outputs", len(outputs))
     return state
 
 
@@ -496,23 +337,9 @@ def improve_distractors(state: GraphState) -> GraphState:
     state["improved_outputs"] = improved
     logger.info("Improved %s outputs", len(improved))
     
-    # Log step output
-    _log_step_output(
-        "improve_distractors",
-        {
-            "total_improved": len(improved),
-            "improvements_summary": [
-                {
-                    "question_type": i["payload"]["questionType"],
-                    "difficulty": i["payload"]["difficultyLevel"],
-                    "has_error": "error" in i["result"]
-                }
-                for i in improved[:3]  # First 3 only
-            ]
-        }
-    )
     
-    _log_state_summary(state, "improve_distractors")
+    state["improved_outputs"] = improved
+    logger.info("Improved %s outputs", len(improved))
     return state
 
 
@@ -808,39 +635,25 @@ def validate_distractors(state: GraphState) -> GraphState:
     client = build_client()
     deployment = get_deployment_name()
     
-    # Track which payloads have already been validated and passed
-    validated_set = state.get("_distractor_validated_payloads", set())
+    # Get already passed items (accumulated across correction loops)
+    already_passed = state.get("distractor_validation_passed", [])
+    
+    # Items to validate: everything in improved_outputs (only failed items from corrections)
+    items_to_validate = state["improved_outputs"]
     
     passed: List[Dict[str, Any]] = []
     failed: List[Dict[str, Any]] = []
     
-    for item in state["improved_outputs"]:
+    for item in items_to_validate:
         payload = item["payload"]
         result = item["result"]
         
-        # Create unique key for this payload
-        payload_key = (
-            payload["learningObjective"],
-            payload["difficultyLevel"],
-            payload["questionType"],
-            str(payload.get("numCorrectOptions", "")),
-            str(payload.get("numIncorrectOptions", ""))
-        )
-        
-        # Skip re-validation if this payload already passed
-        if payload_key in validated_set:
-            logger.info("Skipping re-validation of already passed payload: %s", payload_key)
-            passed.append(item)
-            continue
-        
         if "error" in result:
             passed.append(item)
-            validated_set.add(payload_key)
             continue
         questions = result.get("questions")
         if not isinstance(questions, list):
             passed.append(item)
-            validated_set.add(payload_key)
             continue
         passed_questions: List[Dict[str, Any]] = []
         failed_questions: List[Dict[str, Any]] = []
@@ -904,49 +717,30 @@ def validate_distractors(state: GraphState) -> GraphState:
             )
         else:
             passed.append(item)
-            validated_set.add(payload_key)  # Mark as validated and passed
     
-    # Update state with validated payloads tracker
-    state["_distractor_validated_payloads"] = validated_set
+    # Accumulate passed items (keep growing across correction loops)
+    all_passed = already_passed + passed
     
-    # Store passed and failed separately
-    previously_passed = state.get("_distractor_already_passed", [])
-    state["_distractor_already_passed"] = previously_passed + passed
-    
-    state["distractor_validation_passed"] = previously_passed + passed
+    # Update state
+    state["distractor_validation_passed"] = all_passed
     state["distractor_validation_failed"] = failed
     
-    # For next stage: include ALL passed (accumulated) + failed items
-    all_passed = previously_passed + passed
-    state["improved_outputs"] = all_passed + [
-        {"payload": item["payload"], "result": item["result"]} for item in failed
-    ]
+    # During correction loops: improved_outputs contains ONLY passed items
+    # Failed items will be added at the END by routing function
+    state["improved_outputs"] = all_passed
     
     logger.info(
         "Distractor validation: %s newly passed, %s total passed, %s failed", 
         len(passed), len(all_passed), len(failed)
     )
     
-    # Log step output
-    _log_step_output(
-        "validate_distractors",
-        {
-            "newly_passed": len(passed),
-            "total_passed": len(all_passed),
-            "failed": len(failed),
-            "validation_details": [
-                {
-                    "difficulty": f["payload"]["difficultyLevel"],
-                    "question_type": f["payload"]["questionType"],
-                    "passed_count": len(f.get("passed_questions", [])),
-                    "failed_count": len(f.get("failed_questions", []))
-                }
-                for f in failed[:3]  # First 3 failures
-            ]
-        }
+    state["distractor_validation_passed"] = all_passed
+    state["distractor_validation_failed"] = failed
+    state["improved_outputs"] = all_passed
+    logger.info(
+        "Distractor validation: %s passed (newly: %s), %s failed",
+        len(all_passed), len(passed), len(failed)
     )
-    
-    _log_state_summary(state, "validate_distractors")
     return state
 
 
@@ -1015,14 +809,14 @@ def correct_distractors(state: GraphState) -> GraphState:
         result["questions"] = rebuilt
         corrected_failed.append({"payload": payload, "result": result})
 
-    passed_outputs = state.get("distractor_validation_passed", [])
-    # Only send corrected items back for re-validation
+    # Send ONLY corrected items back for re-validation
+    # Previously passed items don't need re-validation
     state["improved_outputs"] = corrected_failed
     state["distractor_validation_failed"] = []
     state["distractor_correction_attempts"] = state.get(
         "distractor_correction_attempts", 0
     ) + 1
-    _log_state_summary(state, "correct_distractors")
+    logger.info("Corrected %s failed outputs", len(corrected_failed))
     return state
 
 
@@ -1076,7 +870,6 @@ def validate_and_fix_format(state: GraphState) -> GraphState:
     state["format_fix_attempts"] = state.get("format_fix_attempts", 0) + 1
     max_attempts = state["input"].get("maxFormatFixAttempts", 2)
     state["format_loop"] = (not all_valid) and state["format_fix_attempts"] < max_attempts
-    _log_state_summary(state, "validate_and_fix_format")
     return state
 
 
@@ -1089,41 +882,18 @@ def validate_quality(state: GraphState) -> GraphState:
     relevancy_threshold = state["input"].get("relevancyThreshold", 85)
     learning_objectives = _learning_objective_descriptions(state["input"])
 
-    # Track which payloads have already been quality-validated and passed
-    validated_set = state.get("_quality_validated_payloads", set())
+    # Get already passed items (accumulated across correction loops)
+    already_passed = state.get("quality_validation_passed", [])
+    
+    # Items to validate: everything in improved_outputs (only failed items from corrections)
+    items_to_validate = state["improved_outputs"]
     
     passed: List[Dict[str, Any]] = []
     failed: List[Dict[str, Any]] = []
     
-    for item in state["improved_outputs"]:
+    for item in items_to_validate:
         payload = item["payload"]
         result = item["result"]
-        
-        # Create unique key for this payload
-        payload_key = (
-            payload["learningObjective"],
-            payload["difficultyLevel"],
-            payload["questionType"],
-            str(payload.get("numCorrectOptions", "")),
-            str(payload.get("numIncorrectOptions", ""))
-        )
-        
-        # Skip re-validation if this payload already passed quality check
-        if payload_key in validated_set:
-            logger.info("Skipping re-validation of already quality-passed payload")
-            # Already validated, just retrieve from previously passed
-            for prev_passed in state.get("_quality_already_passed", []):
-                prev_key = (
-                    prev_passed["payload"]["learningObjective"],
-                    prev_passed["payload"]["difficultyLevel"],
-                    prev_passed["payload"]["questionType"],
-                    str(prev_passed["payload"].get("numCorrectOptions", "")),
-                    str(prev_passed["payload"].get("numIncorrectOptions", ""))
-                )
-                if prev_key == payload_key:
-                    passed.append(prev_passed)
-                    break
-            continue
         
         quality = evaluate_quality(client, deployment, result, rubric, threshold)
         relevancy = evaluate_relevancy(
@@ -1137,22 +907,18 @@ def validate_quality(state: GraphState) -> GraphState:
         }
         if quality.get("pass") and relevancy.get("pass"):
             passed.append(entry)
-            validated_set.add(payload_key)  # Mark as validated and passed
         else:
             failed.append(entry)
     
-    # Update state with validated payloads tracker
-    state["_quality_validated_payloads"] = validated_set
+    # Accumulate passed items (keep growing across correction loops)
+    all_passed = already_passed + passed
     
-    # Accumulate passed items
-    previously_passed = state.get("_quality_already_passed", [])
-    state["_quality_already_passed"] = previously_passed + passed
-    
-    all_passed = previously_passed + passed
+    # Update state
     state["quality_validation_passed"] = all_passed
     state["quality_validation_failed"] = failed
     
-    # IMPORTANT: improved_outputs is used by format_conversion, so include ALL passed items
+    # During correction loops: improved_outputs contains ONLY passed items
+    # Failed items will be added at the END by routing function
     state["improved_outputs"] = [
         {"payload": entry["payload"], "result": entry["result"]}
         for entry in all_passed
@@ -1163,28 +929,13 @@ def validate_quality(state: GraphState) -> GraphState:
         len(passed), len(all_passed), len(failed)
     )
     
-    # Log step output
-    _log_step_output(
-        "validate_quality",
-        {
-            "newly_passed": len(passed),
-            "total_passed": len(all_passed),
-            "failed": len(failed),
-            "quality_details": [
-                {
-                    "difficulty": f["payload"]["difficultyLevel"],
-                    "question_type": f["payload"]["questionType"],
-                    "quality_pass": f["quality"].get("pass", False),
-                    "quality_score": f["quality"].get("score", 0),
-                    "relevancy_pass": f["relevancy"].get("pass", False),
-                    "relevancy_score": f["relevancy"].get("score", 0)
-                }
-                for f in failed[:3]  # First 3 failures
-            ]
-        }
+    state["quality_validation_passed"] = all_passed
+    state["quality_validation_failed"] = failed
+    state["improved_outputs"] = all_passed
+    logger.info(
+        "Quality validation: %s passed (newly: %s), %s failed",
+        len(all_passed), len(passed), len(failed)
     )
-    
-    _log_state_summary(state, "validate_quality")
     return state
 
 
@@ -1238,18 +989,12 @@ def correct_quality(state: GraphState) -> GraphState:
             corrected = {"error": "Invalid JSON from model", "raw": content}
         corrected_failed.append({"payload": payload, "result": corrected})
 
-    # Include BOTH corrected items AND previously passed items in improved_outputs
-    # This ensures:
-    # 1. validate_quality can skip re-validating passed items
-    # 2. format_conversion gets ALL items at the end
-    passed_outputs = [
-        {"payload": entry["payload"], "result": entry["result"]}
-        for entry in state.get("quality_validation_passed", [])
-    ]
-    state["improved_outputs"] = passed_outputs + corrected_failed
+    # Send ONLY corrected items back for re-validation
+    # Previously passed items don't need re-validation
+    state["improved_outputs"] = corrected_failed
     state["quality_validation_failed"] = []
     state["quality_correction_attempts"] = state.get("quality_correction_attempts", 0) + 1
-    _log_state_summary(state, "correct_quality")
+    logger.info("Corrected %s failed quality outputs", len(corrected_failed))
     return state
 
 
@@ -1287,8 +1032,6 @@ def format_conversion(state: GraphState) -> GraphState:
         )
     state["formatted"] = formatted
     logger.info("Formatted %s outputs", len(formatted))
-    _log_state_summary(state, "format_conversion")
-    _log_formatted_output(state)
     return state
 
 
@@ -1302,22 +1045,23 @@ def _route_from_validate_distractors(state: GraphState) -> str:
         "maxDistractorFixAttempts", state["input"].get("maxAttempts", 6)
     )
     attempts = state.get("distractor_correction_attempts", 0)
+    
+    # If there are failures and we haven't hit max attempts, go to correction
     if failed and attempts < max_attempts:
         return "correct_distractors"
     
-    # Max attempts reached - include failed items (they've been improved over multiple attempts)
+    # Max attempts reached or no failures
+    # NOW add failed items to improved_outputs (they've been improved through multiple attempts)
     if failed:
         logger.info(
             "Max distractor correction attempts (%s) reached. Including %s failed items for quality validation.",
             max_attempts, len(failed)
         )
-        # Merge failed items into improved_outputs so they proceed to quality validation
         passed_outputs = state.get("distractor_validation_passed", [])
         failed_outputs = [{"payload": item["payload"], "result": item["result"]} for item in failed]
         state["improved_outputs"] = passed_outputs + failed_outputs
-        state["distractor_validation_failed"] = []  # Clear failed list
     
-    # Directly go to quality validation
+    # Proceed to quality validation with all items (passed + failed)
     return "validate_quality"
 
 
@@ -1327,26 +1071,26 @@ def _route_from_validate_quality(state: GraphState) -> str:
         "maxQualityFixAttempts", state["input"].get("maxAttempts", 6)
     )
     attempts = state.get("quality_correction_attempts", 0)
+    
+    # If there are failures and we haven't hit max attempts, go to correction
     if failed and attempts < max_attempts:
         return "correct_quality"
     
-    # Max attempts reached - include failed items (they've been improved over multiple attempts)
+    # Max attempts reached or no failures
+    # NOW add failed items to improved_outputs (they've been improved through multiple attempts)
     if failed:
         logger.info(
             "Max quality correction attempts (%s) reached. Including %s failed items in final output.",
             max_attempts, len(failed)
         )
-        # Merge failed items into improved_outputs so they proceed to format conversion
-        passed_outputs = state.get("quality_validation_passed", [])
-        failed_outputs = [{"payload": item["payload"], "result": item["result"]} for item in failed]
-        # IMPORTANT: improved_outputs is used by format_conversion
-        state["improved_outputs"] = [
+        passed_outputs = [
             {"payload": entry["payload"], "result": entry["result"]}
-            for entry in passed_outputs
-        ] + failed_outputs
-        state["quality_validation_failed"] = []  # Clear failed list
+            for entry in state.get("quality_validation_passed", [])
+        ]
+        failed_outputs = [{"payload": entry["payload"], "result": entry["result"]} for entry in failed]
+        state["improved_outputs"] = passed_outputs + failed_outputs
     
-    # Directly go to END - no review step needed
+    # Proceed to end with all items (passed + failed)
     return "end"
 
 
@@ -1455,15 +1199,6 @@ def _fill_missing_questions(
     return final_state
 
 
-def _write_final_state(final_state: Dict[str, Any]) -> None:
-    try:
-        _FINAL_STATE_PATH.write_text(
-            json.dumps(final_state, ensure_ascii=True, indent=2), encoding="utf-8"
-        )
-    except OSError as exc:
-        logger.warning("Failed to write final state: %s", exc)
-
-
 def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[str, Any]:
     normalized_los = _normalize_learning_objectives(payload)
     lo_index = {entry["description"]: entry for entry in normalized_los}
@@ -1550,12 +1285,6 @@ def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[s
 
 
 def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
-    _reset_run_files()
-    
-    # Clear step output log at the start of each run
-    if _STEP_OUTPUT_LOG_PATH.exists():
-        _STEP_OUTPUT_LOG_PATH.unlink()
-    
     app = build_graph()
     final_state = app.invoke(
         {
@@ -1570,7 +1299,7 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
     )
     
     # Post-graph processing: format conversion and validation
-    final_state = _fill_missing_questions(app, payload, final_state)
+    # REMOVED: _fill_missing_questions - causing infinite loops with per-question payloads
     final_state = format_conversion(final_state)
     final_state = validate_and_fix_format(final_state)
     
@@ -1580,31 +1309,6 @@ def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
         final_state = validate_and_fix_format(final_state)
     output = _build_output(payload, final_state.get("improved_outputs", []))
     
-    # Log final output summary
-    total_questions = sum(
-        len(lo.get("questions", [])) 
-        for lo in output.get("learningObjectives", [])
-    )
-    _log_step_output(
-        "FINAL_OUTPUT",
-        {
-            "status": output.get("questionGenerationStatus"),
-            "total_learning_objectives": len(output.get("learningObjectives", [])),
-            "total_questions_generated": total_questions,
-            "questions_by_lo": [
-                {
-                    "lo": lo.get("learningObjective", "")[:80],
-                    "question_count": len(lo.get("questions", [])),
-                    "question_types": list(set(
-                        q.get("questionType", "") 
-                        for q in lo.get("questions", [])
-                    ))
-                }
-                for lo in output.get("learningObjectives", [])
-            ]
-        },
-        full_data=output  # Include full output for complete record
-    )
-    
-    _write_final_state(output)
+    logger.info("Pipeline complete: generated questions for %s LOs", 
+                len(output.get("learningObjectives", [])))
     return output

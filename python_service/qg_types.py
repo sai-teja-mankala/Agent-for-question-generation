@@ -8,6 +8,7 @@ class PipelineInput(TypedDict, total=False):
     sourceText: str
     learningObjectives: List[Any]
     numberOfQuestions: int
+    questionsPerSet: int
     questionTypes: List[QuestionType]
     difficultyLevels: List[str]
     numCorrectOptions: int
@@ -16,11 +17,13 @@ class PipelineInput(TypedDict, total=False):
     qualityThreshold: int
     relevancyThreshold: int
     maxAttempts: int
+    maxDistractorFixAttempts: int
+    maxQualityFixAttempts: int
+    maxFormatFixAttempts: int
     assessmentContainerId: str
     internalAssessmentId: str
     learningObjectiveUuid: str
     maxFillAttempts: int
-    maxFormatFixAttempts: int
 
 
 class PromptPayload(TypedDict):

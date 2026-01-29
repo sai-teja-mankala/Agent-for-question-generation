@@ -1,0 +1,359 @@
+{
+  "learningObjectives": [
+    {
+      "learningObjective": "Encourages cross-functional alignment on key initiatives.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "4c681e43-979b-4cac-9299-7c00f43c0b2b",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Given your role at Ontario Power Generation, how should you evaluate and align the goals of the human resources and engineering departments to implement a new safety protocol effectively, considering their focus on employee training and technical implementation, respectively, while ensuring operational efficiency?",
+          "answer": [
+            {
+              "answerId": "41fccee2-8245-4538-8014-aa57739bda13",
+              "answerText": "Conduct joint meetings to create a coordinated plan addressing both training and technical requirements.",
+              "explanation": "This ensures collaboration and the integration of both departments' expertise to align their goals with the new safety protocol.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "bcc31b61-25b0-4cb2-80df-afd323284601",
+              "answerText": "Begin with a pilot program focused on technical readiness and adjust training needs based on initial outcomes.",
+              "explanation": "This could delay necessary employee preparation, which can lead to inefficient implementation.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "76385666-a4a3-4873-98c5-b6bbcfe58e28",
+              "answerText": "Ensure both departments independently provide feedback on the plan's feasibility before top management review.",
+              "explanation": "This can miss the opportunity for integrated alignment before higher-level decision-making.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "9791aeea-6e1a-4c2c-99f2-d49a87a30584",
+              "answerText": "Develop separate plans for both departments and synchronize them through periodic updates.",
+              "explanation": "This risks misalignment due to lack of initial comprehensive coordination.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "b802338d-8160-4e51-9e50-b6927846b70b",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, you are managing a new initiative to integrate sustainable practices across nuclear and hydroelectric stations. This initiative necessitates collaboration between various departments with distinct priorities including operations, engineering, finance, and human resources. Given the potential for conflicting approaches, how should you evaluate and align these cross-functional priorities to ensure the initiative's success, while maintaining safety and reliability standards? Consider factors such as departmental objectives, resource allocation, and regulatory compliance in your evaluation process. What strategic approach should be taken to facilitate effective alignment?",
+          "answer": [
+            {
+              "answerId": "e66d848f-dd7d-4de9-ad03-e03a86d92fa7",
+              "answerText": "Facilitate workshops to collaboratively prioritize objectives aligning with strategic goals and compliance needs.",
+              "explanation": "This approach ensures all departments align on common goals, considering safety and compliance, fostering cohesive collaboration.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "8b8fb2f5-7ab0-47ab-aa5c-d1c94b4b7ceb",
+              "answerText": "Centralize decision-making by establishing a core leadership team including representatives from each department.",
+              "explanation": "This emphasizes central leadership but risks overlooking the autonomy needed for cross-functional integration.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "5dc33a18-09bb-496a-b6b2-7ab575ab1480",
+              "answerText": "Establish a continuous feedback loop to regularly adjust strategic goals based on departmental input.",
+              "explanation": "While feedback is valuable, this approach might delay alignment by continuously shifting priorities.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "bf2d727e-c783-4df8-b594-ad71971c407d",
+              "answerText": "Emphasize safe operations and engineering efficiency to set foundational standards for other departments to follow.",
+              "explanation": "Prioritizing operations and engineering over others such as finance and HR can lead to imbalances in cross-functional priorities.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "725e3779-57b7-4c99-8973-f856bcd93f7a",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, you need to improve cross-departmental processes for better cross-functional alignment between the nuclear and hydroelectric divisions. Considering safety standards and limited resource allocation, how should you evaluate the current alignment's effectiveness and design strategies that enhance collaboration?",
+          "answer": [
+            {
+              "answerId": "d9036cf4-f216-4c86-b5e6-fc94b65f3325",
+              "answerText": "Conduct separate workshops for each division to independently evaluate their process perspectives before collaboratively discussing findings and improvements, focusing on alignment.",
+              "explanation": "This initially isolates perspectives but progresses towards collaborative discourse. However, it still may not fully leverage direct collaboration between divisions, as required.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "664c86fb-1dd9-4aa3-a9c2-485c34a0e1a8",
+              "answerText": "Implement a cross-functional task force that includes members from both divisions to identify and prioritize alignment issues collaboratively, focusing initially on non-regulatory processes to ensure quick wins.",
+              "explanation": "This involves both divisions in collaborative identification, prioritization and ensures safety and resource constraints are respected.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "88e5b0eb-8180-4b59-97ea-638583e4ce0b",
+              "answerText": "Introduce a balanced approach where executive leadership provides guidance but decisions are made by inter-divisional teams, ensuring alignment with corporate goals and safety standards.",
+              "explanation": "While allowing for leadership guidance, this option doesn't fully engage divisions in grassroots-level collaboration, potentially diluting tailored strategic input.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "72b9c85f-94a7-4eb2-b49c-4d67dc26f0aa",
+              "answerText": "Facilitate targeted workshops bringing together key representatives from both divisions focused on resolving specific alignment issues within established safety frameworks.",
+              "explanation": "This option provides collaborative engagement but potentially lacks ongoing, structured evaluation, making it less sustainable for continual alignment.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "80ac0734-e0a9-4fb2-a604-7d3c2ca8c0d2",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "In launching the cross-functional initiative for enhancing safety and reliability involving diverse teams from nuclear and hydroelectric stations, how should the Band H Leader evaluate and implement alignment strategies to manage differing operational cultures and priorities, while building trust among stakeholders and ensuring the initiative's success?",
+          "answer": [
+            {
+              "answerId": "378a1141-947b-46ef-b548-818ec2ad6e05",
+              "answerText": "Conduct an initial workshop to openly discuss and map out each team's objectives and concerns, followed by setting mutual goals that address common interests and foster interdepartmental trust.",
+              "explanation": "This strategy directly addresses analysis and evaluation required for deep cross-functional alignment by setting shared goals and building trust across disparate cultures.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "866f4c3f-a69a-4606-bd1d-36c16b35d4d6",
+              "answerText": "Integrate team-building activities and joint problem-solving sessions regularly to foster understanding and collaboration over time, ensuring alignment evolves naturally through continuous engagement.",
+              "explanation": "Combines strategic judgment through continuous team-building with joint problem-solving to break down cultural barriers incrementally.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a7832d0f-07d9-4b40-856d-798b0def1088",
+              "answerText": "Establish clear communication channels where feedback and insights from both nuclear and hydroelectric teams are regularly integrated, ensuring a shared understanding while allowing a central vision to guide adaptations.",
+              "explanation": "While improving communication is crucial, it lacks the strategic initiation and cultural synthesis necessary for foundational alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "c59557b9-3c58-4372-b7df-761d1d4ef89b",
+              "answerText": "Develop a mentoring program where experienced leaders from each station guide collaborative initiatives, aiming to blend cultures through guided practice and shared experiences.",
+              "explanation": "Mentorship can enhance collaboration but does not substitute the foundational strategies needed for initial cultural alignment and strategic planning.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "f1a30840-c3ea-4161-ab9e-ef52f4bf383e",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "In a cross-functional project at your company, there's a conflict between the marketing and development teams regarding the prioritization of features in a new product launch. The marketing team wants features that enhance user experience, while the development team is focused on technical feasibility and adherence to timelines. How should you develop a strategy to encourage cross-functional alignment on this key initiative, considering trade-offs between user experience and technical constraints?",
+          "answer": [
+            {
+              "answerId": "0053a8e0-0c42-46f1-b201-5ac8d71b7e72",
+              "answerText": "Facilitate a series of structured discussions to collaboratively evaluate and integrate both teams' insights, prioritizing features that balance enhancing user experience with critical technical feasibility.",
+              "explanation": "This option involves developing a strategy through collaborative evaluation and synthesis of insights, aligning with the advanced cognition level required for cross-functional alignment.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "48621b3e-5eb2-4850-a72e-b69810f0f318",
+              "answerText": "Mandate a strict project timeline adherence policy, requiring both teams to adjust their priorities accordingly.",
+              "explanation": "This rigid approach may expedite project delivery but at the cost of potentially ignoring user experience enhancements, thus not aligning with cross-functional goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a258eaec-175b-4e69-ad52-684ff2b5fdda",
+              "answerText": "Create a feature prioritization framework that transparently showcases the impact of each feature on both user experience and technical feasibility, and facilitate joint decision-making.",
+              "explanation": "Promotes a strategic approach by transparently evaluating trade-offs and engaging both teams in joint decision-making, fostering alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "3d97356e-b7ab-4465-8261-ea3fe88269c2",
+              "answerText": "Allow each team to independently prioritize features relevant to their expertise, then consolidate prioritizations in a final review meeting.",
+              "explanation": "This might lead to further misalignment as independent prioritizations may not address cross-functional conflicts effectively.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Tracks team progress, adjusts plans, and drives continuous improvement.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 2,
+      "questions": [
+        {
+          "id": "ca6df417-966b-456d-9406-11699f6454c0",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Given the scenario at Ontario Power Generation, how should the Band H leader prioritize addressing the unexpected equipment failures, adjust the project strategy to stay on track with the efficiency goals, and implement measures to drive continuous improvement? Consider balancing resource allocation, team morale, and project deadlines in your analysis.",
+          "answer": [
+            {
+              "answerId": "00c44f3e-9195-40e1-90d9-8146252793f3",
+              "answerText": "Reallocate resources focusing on critical repairs while engaging the team to maintain morale.",
+              "explanation": "Prioritizes immediate repair needs, supports team morale, and aims to maintain progress towards goals.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "a7c891a5-73a8-4c4b-8b29-2d5bb9098b7e",
+              "answerText": "Conduct a risk assessment to identify potential equipment vulnerabilities and reallocate non-critical resources accordingly.",
+              "explanation": "Emphasizes future risk management rather than addressing current repair needs urgently.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "43da6680-7961-4c2d-956f-c3851572dfc2",
+              "answerText": "Focus on maintaining team motivation by reinforcing project goals and postpone non-essential tasks temporarily.",
+              "explanation": "Places more emphasis on team motivation and postpones urgent repairs.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ba08b85d-a40e-4d55-be7f-98c578781c6e",
+              "answerText": "Engage stakeholders to redefine project timelines and focus on optimizing future resource management strategies.",
+              "explanation": "Centers on adjusting timelines and future planning instead of resolving current critical repairs.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "044ffd25-f4dc-432a-938b-e73694972b36",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "A project manager in a tech company is overseeing a software development project with multiple teams. During a mid-project review, they notice that two teams are falling behind schedule due to overlapping resource dependencies and unforeseen technical challenges. How should the project manager evaluate and adjust their plans to ensure the project aligns with the original timeline while still driving continuous improvement?",
+          "answer": [
+            {
+              "answerId": "badaa491-1e3c-4ddb-ba0a-b834053230a4",
+              "answerText": "Assess the critical dependencies and reallocate resources to address bottlenecks.",
+              "explanation": "This approach directly tackles resource dependencies and aims to optimize workflow efficiency.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "fc90b97e-8c72-4d01-a29a-551bf2d32324",
+              "answerText": "Set explicit deadlines for each team to encourage faster completion of tasks.",
+              "explanation": "Emphasizes speed over strategic adjustments, risking oversight of cross-team dependencies.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "5b968a6c-03e7-46b4-8e27-0eef4fe9b67d",
+              "answerText": "Encourage the teams to independently identify and resolve their own bottlenecks.",
+              "explanation": "Places responsibility solely on the teams without adjusting broader project constraints.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "7f2fb3f1-a882-472f-92dd-e4832edd5f8a",
+              "answerText": "Implement adaptive incentives to motivate timely completion without compromising quality.",
+              "explanation": "Promotes motivation but does not directly resolve immediate resource or scheduling conflicts.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "9bbfa8a4-273f-4730-becb-96e2b60d6880",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, you notice that new safety protocols are slowing operational efficiency, and there is a directive to reduce costs. How should you track team progress and adjust plans to drive continuous improvement, ensuring safety, efficiency, and cost targets are met across functions?",
+          "answer": [
+            {
+              "answerId": "1de88f35-cc7f-4b26-a3be-318f253311b7",
+              "answerText": "Establish cross-functional teams to regularly monitor and report on the impact of safety protocols on operations, and identify strategic adjustments for continuous improvement.",
+              "explanation": "This approach aligns with tracking progress and driving improvements while ensuring safety standards are met.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "da0b5a96-d101-442b-bbd1-bf7c976b4170",
+              "answerText": "Focus solely on cost-cutting measures while enforcing compliance with safety standards.",
+              "explanation": "Addresses cost but neglects continuous improvement and cross-functional alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "3c4506bf-2c34-4c5c-a432-bfcb4873c1a7",
+              "answerText": "Implement efficiency protocols independently within departments to quickly address cost and efficiency issues.",
+              "explanation": "Misses out on the benefits of cross-functional alignment and doesn't focus on tracking team progress.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "e5125a16-5f89-416b-8edc-6c27a12d8036",
+              "answerText": "Initiate a temporary freeze on all operational changes until a comprehensive review of safety impacts is completed.",
+              "explanation": "Stalls progress and improvement efforts, missing the need for dynamic adjustment and tracking.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "6cc35628-3d3d-433c-aac9-c33efbd1dada",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation facing unexpected delays in your project to upgrade safety systems due to supplier issues and fluctuating workforce availability, how should you strategically evaluate and adjust your team's plans to account for these constraints while ensuring continuous improvement in safety and reliability? Choose the approach that best integrates cross-functional alignment with strategic adaptation and ongoing enhancements.",
+          "answer": [
+            {
+              "answerId": "f40bad25-4c98-4c20-b339-62c66c282592",
+              "answerText": "Prioritize a cross-functional task force to assess and reallocate resources immediately towards the most critical safety upgrades.",
+              "explanation": "This approach ensures strategic adaptation by directly addressing resource allocation and encourages cross-functional collaboration to prioritize urgent safety tasks.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "2978a58e-5a4d-4592-b1e0-7c1f8aff36d3",
+              "answerText": "Engage in continuous dialogue with suppliers to co-develop adaptive safety solutions after evaluating project bottlenecks.",
+              "explanation": "Although collaborative, this option doesn't address immediate resource reallocation and lacks proactive internal adjustments.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "30383173-9253-4576-82a7-bfbe6b3eddcd",
+              "answerText": "Focus on developing contingency plans for workforce variability to maintain project flow and then address safety enhancements.",
+              "explanation": "While it addresses workforce issues, it postpones critical safety assessments and lacks cross-functional involvement for immediate safety priorities.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "7087f206-9cc2-4d25-8524-607213e81481",
+              "answerText": "Conduct a comprehensive departmental performance review to identify efficiency gains that could indirectly support safety improvements.",
+              "explanation": "While comprehensive, this approach delays immediate, strategic safety upgrades and misses prompt resource realignment.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "5c90d9ea-d52c-4c54-a52b-538c6802f25a",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As the Band H Leader at Ontario Power Generation, confronted with constraints such as equipment failures and varying team member capabilities, how can you strategically adjust plans to improve overall performance, ensure continuous improvement, and maintain cross-functional alignment?",
+          "answer": [
+            {
+              "answerId": "4fadea8a-1da8-44c6-bb14-2f9263759330",
+              "answerText": "Develop a flexible strategic plan aligning team objectives with corporate goals and leveraging adaptive metrics while integrating feedback from senior management and cross-functional teams.",
+              "explanation": "This option demonstrates strategic planning and adaptability, integrates broad input to maintain alignment, and drives improvements by tying metrics to team and corporate objectives.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "d7599d03-e7e7-41ff-bbf1-62dd01b512f4",
+              "answerText": "Reallocate resources to address immediate equipment issues, aiming to boost short-term productivity without altering strategic alignment.",
+              "explanation": "This solution addresses immediate challenges but lacks a strategic framework for ongoing improvement and does not ensure alignment across teams.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "e9b8880b-9384-4a12-bd65-aba1d8d7537c",
+              "answerText": "Organize strategic cross-functional workshops to collaboratively identify key performance bottlenecks and devise adaptive strategies that consider team capabilities and constraints.",
+              "explanation": "This option encourages strategic thinking, collaboration, and adaptation, optimizing both short-term resolution and long-term improvement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "cd7c3da4-e8f2-42e0-bbfa-b66f77ac3766",
+              "answerText": "Implement a balanced scorecard and continuously update strategies based on real-time data to anticipate and respond to challenges dynamically.",
+              "explanation": "While data-driven, this approach may lack the immediate strategic responsiveness needed for immediate cross-departmental challenges and team capability fluctuations.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}
