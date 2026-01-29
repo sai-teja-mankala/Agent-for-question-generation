@@ -1,0 +1,305 @@
+{
+  "learningObjectives": [
+    {
+      "learningObjective": "Leverages organizational expertise to promote data-driven and risk-informed decisions aligned with corporate goals and values",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "85c460b6-b747-404c-83ba-16b04a67f8e1",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation overseeing a project to improve the reliability and efficiency of a nuclear power station, how should you evaluate and leverage organizational expertise to integrate new data analytics tools, given the need to manage risks and align with OPG's corporate goals emphasizing safety and stakeholder trust? Consider the trade-offs between immediate operational gains and long-term alignment with corporate values.",
+          "answer": [
+            {
+              "answerId": "58d0425f-08c5-47a2-b53b-7136ea6a3de7",
+              "answerText": "Involve cross-functional teams to ensure balanced integration prioritizing safety and trust.",
+              "explanation": "This approach balances immediate and long-term goals by leveraging diverse expertise aligned with corporate values.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "53c09fa6-3f52-4d00-8d21-7230182971da",
+              "answerText": "Prioritize enhancing operational processes internally for initial improvements.",
+              "explanation": "While this may yield quick results, it can sideline broader strategic objectives related to safety and stakeholder engagement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "49e78fb7-d207-4f60-ac0f-454d602a42c3",
+              "answerText": "Develop strategic partnerships with other industry leaders for perspective sharing.",
+              "explanation": "Collaborations can provide valuable insights but might not focus adequately on aligning with unique corporate values and safety priorities.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "acc54efc-22f6-48d4-86e1-2dcab6634d14",
+              "answerText": "Utilize scenario planning to anticipate and mitigate potential risks.",
+              "explanation": "Scenario planning is useful for risk management but might detract from ensuring alignment with the overarching corporate goals of safety and trust.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "466f11bf-0f54-4969-9697-1a511f5b9a52",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, faced with a proposed shift in operational strategy, how should you evaluate the potential impacts to ensure decisions align with the company's objectives of safety, efficiency, and stakeholder trust? Consider elements like data analysis, risk assessment, and strategic alignment to corporate goals.",
+          "answer": [
+            {
+              "answerId": "3cc61bc3-534c-4f65-8d61-10c77b9e7a27",
+              "answerText": "Conduct a thorough risk assessment, analyze relevant data trends, and ensure alignment with corporate safety and trust objectives.",
+              "explanation": "This approach requires a detailed analysis of data and risks, ensuring decisions align with both corporate goals and external stakeholder expectations.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "1cf2dcc7-d6db-421e-8edf-c54f82d56597",
+              "answerText": "Select initiatives that rapidly improve efficiency with minimal changes to the strategic framework.",
+              "explanation": "While improving efficiency is beneficial, focusing solely on it may not account for comprehensive strategic alignment or address longer-term risks.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "fa31e222-88d0-4761-8a34-b635368d126b",
+              "answerText": "Perform a strategic analysis of data-driven insights to balance immediate goals with long-term corporate values.",
+              "explanation": "This includes evaluating both short-term benefits and long-term alignment, ensuring decisions are strategic and value-driven.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "17189e9f-ada3-455a-803d-dd37adb4037e",
+              "answerText": "Prioritize stakeholder engagements to develop strategies that reflect diverse perspectives while assessing alignment with goals.",
+              "explanation": "Although stakeholder input is important, it should be complemented with quantitative assessments to avoid misalignment with corporate priorities.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Leverages insights from multiple teams to inform decision-making",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 2,
+      "questions": [
+        {
+          "id": "be652481-5a00-44e4-b9f2-1ede46482f02",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "In your role as a Band H Leader at Ontario Power Generation, you must make a strategic decision to improve operational efficiency at a hydroelectric station while maintaining high safety standards. Given the conflicting priorities from the maintenance, operations, and safety teams, how should you evaluate their insights to balance efficiency with safety and reliability?",
+          "answer": [
+            {
+              "answerId": "14d689dd-1aaa-418a-a759-806a5f178fea",
+              "answerText": "Convene a cross-functional meeting to integrate insights and find a balanced approach.",
+              "explanation": "A collaborative meeting ensures all perspectives are integrated, balancing efficiency, safety, and reliability.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "a9d73036-c197-4781-92a4-68d7cc487dbe",
+              "answerText": "Consult with an external expert to prioritize team suggestions.",
+              "explanation": "Relies too heavily on external opinions, potentially overlooking internal dynamics and integrated solutions.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "90a73946-3258-4059-86fb-433c48331584",
+              "answerText": "Initiate a pilot project to test proposed strategies from each team sequentially.",
+              "explanation": "Delays integrated decision-making and may not address all safety and efficiency issues simultaneously.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "586aa6fe-0bba-43f4-9a7b-992166d637ba",
+              "answerText": "Facilitate workshops with each team to address their concerns individually.",
+              "explanation": "Treats team insights in isolation, risking incomplete integration of safety, maintenance, and operations concerns.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "64cc1982-d8a5-4135-980c-51d50494ceea",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Given the scenario where you have received detailed reports from operations, engineering, safety, and environmental teams regarding unplanned outages at a hydroelectric plant, how should you approach synthesizing these insights to formulate a comprehensive strategy that addresses root causes and enhances plant performance? Consider the need to balance differing priorities and constraints presented by each team.",
+          "answer": [
+            {
+              "answerId": "e80e92d7-2471-48f0-a483-47bbfbc8b0c0",
+              "answerText": "Conduct a cross-functional workshop to align priorities and develop an integrated strategy.",
+              "explanation": "This approach fosters collaboration and balances different team priorities within one coherent strategy.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "918275ab-b59b-4739-8b66-d1f9a903fe49",
+              "answerText": "Prioritize addressing immediate safety concerns before integrating other team insights.",
+              "explanation": "Ensures critical safety aspects are handled promptly but might sideline other important considerations initially.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "f46a840a-db62-4217-8fb2-b880d43d3eb7",
+              "answerText": "Begin with a risk assessment to identify and mitigate potential high-impact failures.",
+              "explanation": "Addresses risk but may overlook the importance of immediate integrated action across teams.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "b849355a-7ef2-4844-9336-32da7aa9dd99",
+              "answerText": "Start with a performance analysis of existing processes to identify inefficiencies.",
+              "explanation": "Focuses on process performance but might miss immediate unification of team insights.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Proactively identifies, assesses, and manages risks",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 3,
+      "questions": [
+        {
+          "id": "cbe17d8c-6ff9-4d74-97a8-166e23d12683",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "In the context of Ontario Power Generation's nuclear power station during an unusual weather event, how should the Band H Leader evaluate and prioritize actions to manage the threat of increased water levels, while balancing team safety, operational continuity, and regulatory compliance? Consider the trade-offs between immediate response measures, long-term resilience, and stakeholder engagement when formulating your strategy.",
+          "answer": [
+            {
+              "answerId": "1e91014f-eb5a-470f-875d-9ebfd373eaa6",
+              "answerText": "Initiate an immediate update and execution of the risk management plan, ensuring compliance and safeguarding operations while actively communicating with stakeholders.",
+              "explanation": "This option demonstrates comprehensive risk management by addressing immediate threats, ensuring regulatory compliance, and maintaining transparent communication with stakeholders.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "84e15d77-521d-4792-b27e-9987ed85d0b4",
+              "answerText": "Reallocate resources to bolster current emergency response capabilities, ensuring team safety and operational continuity without substantial long-term changes.",
+              "explanation": "This solution focuses primarily on immediate response, but may neglect necessary long-term strategy and broader stakeholder engagement, which are crucial for holistic risk management.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "f6064877-d482-413b-ac7f-c3a44b45d1d3",
+              "answerText": "Develop a collaborative risk assessment initiative with neighboring facilities, emphasizing shared resources for future events even if it requires delaying current action.",
+              "explanation": "This prioritizes future preparedness through collaboration but potentially compromises the ability to take timely action on present threats.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "0c0255c3-b48d-419b-a6ca-8a0f1acab07a",
+              "answerText": "Focus on maintaining open communication channels with regulatory bodies to negotiate compliance flexibility during the weather event, prioritizing operational adaptability.",
+              "explanation": "While communication with regulators is valuable, this approach may overlook immediate action and internal stakeholder communication needed for effective risk management.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "dc37a8f2-6b59-4828-93f3-1a3c8156f77d",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Faced with the impending storm at the nuclear power station, how should Leanne evaluate the potential impacts on operations and devise a strategy to prioritize actions that manage these risks while considering constraints such as limited resources, operational safety, and regulatory requirements?",
+          "answer": [
+            {
+              "answerId": "597be887-5c6e-444c-a14c-58dd91047268",
+              "answerText": "Formulate an adaptive risk management plan that evaluates the trade-offs between immediate operational adjustments and longer-term infrastructure improvements, ensuring compliance with regulatory standards.",
+              "explanation": "This option requires weighing the immediate risks against future resilience while considering resource constraints and compliance, aligning with advanced cognitive demand.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "6b2b3ca6-d489-4a20-b8fe-396450c11c6f",
+              "answerText": "Initiate an immediate inspection of all operational systems to address potential vulnerabilities before the storm.",
+              "explanation": "Focuses on short-term actions without considering strategic long-term implications or regulatory constraints.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "9238b97e-4982-4487-a2e9-4439dfe57ea2",
+              "answerText": "Reallocate budget to boost human resources available for emergency response tasks during the storm.",
+              "explanation": "Concentrates on resource allocation for immediate response without integrating it into a broader strategic plan.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "4b5decba-39cb-4ab9-8059-70fcafbe7f1d",
+              "answerText": "Develop a temporary shutdown plan for auxiliary systems to focus on essential operations under tight safety protocols.",
+              "explanation": "Addresses operational adjustments without incorporating a comprehensive evaluation of risk management priorities.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Backs up recommendations with data and reviews outcomes to improve future decisions",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 4,
+      "questions": [
+        {
+          "id": "cfb15cb3-eb82-4fbe-8183-19c6ff87aee8",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Given the unexpected operational outage at the nuclear station, how should a Band H Leader evaluate the outage data to make strategic recommendations for future improvements while balancing safety standards, operational reliability, and stakeholder expectations? Consider trade-offs in prioritizing safety, operational continuity, and cost-effectiveness in your approach.",
+          "answer": [
+            {
+              "answerId": "6335978c-a4bf-4389-8a19-243025c10af3",
+              "answerText": "Perform a cost-benefit analysis of potential interventions while ensuring alignment with safety regulations.",
+              "explanation": "A cost-benefit analysis evaluates strategic options, weighing costs, benefits, and safety. Aligns with advanced cognition requiring evaluation and prioritization.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "ff574a7b-5b8c-4bca-b96c-e86bd700ba76",
+              "answerText": "Immediately draft recommendations focusing solely on increasing operational efficiency.",
+              "explanation": "Focusing solely on operational efficiency neglects the necessary balance with safety and stakeholder transparency, missing the strategic trade-off evaluation.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "3588a6b6-9fce-4109-84cc-3635226460a4",
+              "answerText": "Seek stakeholder feedback first to build a consensus on perceived improvement areas before reviewing data.",
+              "explanation": "Seeking feedback can be valuable, but strategic recommendations should be based on data evaluation to ensure informed decision-making, not consensus alone.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a70724c8-e90a-4795-8105-a42680f81430",
+              "answerText": "Focus exclusively on enhancing transparency with stakeholders regardless of operational impacts.",
+              "explanation": "Prioritizing transparency without considering operational impacts fails to evaluate important trade-offs necessary for strategic decision-making.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "ebd4d4e5-7441-4807-8a08-fddafae1af7d",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, how should you evaluate complex operational strategies by prioritizing quantitative data and reviewing outcomes to ensure improved decision-making in the future? Consider how you can balance priorities like stakeholder trust, safety, reliability, and operational excellence, while effectively utilizing data systems, outcome metrics, and feedback loops.",
+          "answer": [
+            {
+              "answerId": "94eca7bc-cddc-4289-a667-3d124c5917e2",
+              "answerText": "Develop an integrated strategy that employs comprehensive data analysis, aligns with stakeholder priorities, and incorporates continuous feedback for refining strategic outcomes.",
+              "explanation": "This option uses a balanced approach, combining robust data analysis with stakeholder priorities, and reinforces learning through continuous feedback loops.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "2fc26338-42e2-43c5-9a94-a0af8afab947",
+              "answerText": "Depend primarily on subjective assessments complemented by occasional consultations with stakeholders, as a means to quickly adapt to changing situations.",
+              "explanation": "Over-reliance on subjective assessments without systematic data-driven approaches risks inconsistency and overlooks structured improvement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "840c5513-fc13-4536-8dab-aca732f6256f",
+              "answerText": "Leverage predictive data models to preempt potential issues while minimizing stakeholder engagement to expedite decision-making processes.",
+              "explanation": "Minimizing stakeholder engagement might expedite decisions but could undermine trust and reduce the quality of collaborative insights.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "902998cd-78ce-4ecf-997e-6bc2f78914d1",
+              "answerText": "Solely focus on enhancing reliability metrics, with the assumption that achieving operational excellence will naturally address other priorities.",
+              "explanation": "A singular focus on reliability may ignore other strategic goals, leading to imbalanced improvements that do not adequately address all priorities.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}

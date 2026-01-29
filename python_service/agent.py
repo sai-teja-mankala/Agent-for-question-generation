@@ -106,9 +106,9 @@ def _learning_objective_descriptions(payload: PipelineInput) -> List[str]:
     return [entry["description"] for entry in _normalize_learning_objectives(payload) if entry.get("description")]
 
 
-def build_prompt_payloads(state: GraphState) -> GraphState:
+def create_question_configs(state: GraphState) -> GraphState:
     data = state["input"]
-    logger.info("Building prompt payloads")
+    logger.info("Creating question configurations")
     locale = data.get("locale", "en")
     source_text = data.get("sourceText", "")
     number_of_questions = data.get("numberOfQuestions", 3)
@@ -171,10 +171,10 @@ def build_prompt_payloads(state: GraphState) -> GraphState:
                         }
                     )
 
-    state["prompt_payloads"] = payloads
+    state["question_configs"] = payloads
     logger.info("Built %s prompt payloads", len(payloads))
     
-    state["prompt_payloads"] = payloads
+    state["question_configs"] = payloads
     return state
 
 
@@ -208,12 +208,12 @@ def _run_decomposed_node(
 
 def build_scenario(state: GraphState) -> GraphState:
     """Node 1: Generate scenario with decision point (for Intermediate/Advanced)."""
-    logger.info("Building scenarios for decomposed generation")
+    logger.info("Building scenarios")
     client = build_client()
     deployment = get_deployment_name()
     
     scenarios: List[Dict[str, Any]] = []
-    for payload in state["prompt_payloads"]:
+    for payload in state["question_configs"]:
         scenario_payload = {
             "learning_objective": payload["learningObjective"],
             "difficulty": payload["difficultyLevel"],
@@ -232,15 +232,12 @@ def build_scenario(state: GraphState) -> GraphState:
     
     state["scenarios"] = scenarios
     logger.info("Built %s scenarios", len(scenarios))
-    
-    state["scenarios"] = scenarios
-    logger.info("Built %s scenarios", len(scenarios))
     return state
 
 
 def build_question(state: GraphState) -> GraphState:
     """Node 2: Generate question text based on scenario."""
-    logger.info("Building questions for decomposed generation")
+    logger.info("Building questions")
     client = build_client()
     deployment = get_deployment_name()
     
@@ -265,16 +262,12 @@ def build_question(state: GraphState) -> GraphState:
     
     state["questions"] = questions
     logger.info("Built %s questions", len(questions))
-    
-    # Log step output
-    state["questions"] = questions
-    logger.info("Built %s questions", len(questions))
     return state
 
 
 def build_options(state: GraphState) -> GraphState:
     """Node 3: Generate answer options for each question."""
-    logger.info("Building options for decomposed generation")
+    logger.info("Building options")
     client = build_client()
     deployment = get_deployment_name()
     
@@ -291,7 +284,7 @@ def build_options(state: GraphState) -> GraphState:
             client, deployment, OPTIONS_GENERATION_PROMPT, options_payload
         )
         
-        # Format as v1 expects
+        # Format as expected by downstream nodes
         formatted_result = {
             "LearningObjective": payload["learningObjective"],
             "questions": [
@@ -313,11 +306,7 @@ def build_options(state: GraphState) -> GraphState:
         )
     
     state["raw_outputs"] = outputs
-    logger.info("Built %s complete question packages", len(outputs))
-    
-    
-    state["raw_outputs"] = outputs
-    logger.info("Built %s full question outputs", len(outputs))
+    logger.info("Built %s complete questions", len(outputs))
     return state
 
 
@@ -395,16 +384,6 @@ def _extract_mcq_parts(question: Dict[str, Any]) -> Dict[str, Any]:
         "correct_answers": [a for a in correct_answers if a],
         "distractors": [d for d in distractors if d],
     }
-
-
-def _count_result_questions(result: Any) -> int:
-    if isinstance(result, list) and result and isinstance(result[0], dict):
-        result = result[0]
-    if isinstance(result, dict):
-        questions = result.get("questions")
-        if isinstance(questions, list):
-            return len(questions)
-    return 0
 
 
 def _improve_single_output(
@@ -1096,7 +1075,7 @@ def _route_from_validate_quality(state: GraphState) -> str:
 
 def build_graph():
     graph = StateGraph[GraphState, None, GraphState, GraphState](GraphState)
-    graph.add_node("build_prompts", build_prompt_payloads)
+    # Removed create_configs node - runs before graph execution
     graph.add_node("build_scenario", build_scenario)
     graph.add_node("build_question", build_question)
     graph.add_node("build_options", build_options)
@@ -1106,9 +1085,9 @@ def build_graph():
     graph.add_node("validate_quality", validate_quality)
     graph.add_node("correct_quality", correct_quality)
     
-    graph.set_entry_point("build_prompts")
+    # Entry point is now build_scenario (configs are pre-populated)
+    graph.set_entry_point("build_scenario")
     
-    graph.add_edge("build_prompts", "build_scenario")
     graph.add_edge("build_scenario", "build_question")
     graph.add_edge("build_question", "build_options")
     graph.add_edge("build_options", "improve")
@@ -1133,70 +1112,6 @@ def build_graph():
     )
     graph.add_edge("correct_quality", "validate_quality")
     return graph.compile()
-
-
-def _fill_missing_questions(
-    app, payload: PipelineInput, final_state: Dict[str, Any]
-) -> Dict[str, Any]:
-    max_fill_attempts = payload.get("maxFillAttempts", 1)
-    if max_fill_attempts < 1:
-        return final_state
-    target_count = payload.get("numberOfQuestions", 3)
-    missing_sections: List[Dict[str, Any]] = []
-    for item in final_state.get("improved_outputs", []):
-        result = item.get("result")
-        current_count = _count_result_questions(result)
-        if current_count < target_count:
-            missing_sections.append(
-                {
-                    "item": item,
-                    "missing": target_count - current_count,
-                }
-            )
-    if not missing_sections:
-        return final_state
-
-    for entry in missing_sections:
-        item = entry["item"]
-        missing = entry["missing"]
-        scoped_payload: PipelineInput = dict(payload)
-        scoped_payload["learningObjectives"] = [item["payload"]["learningObjective"]]
-        scoped_payload["questionTypes"] = [item["payload"]["questionType"]]
-        scoped_payload["difficultyLevels"] = [item["payload"]["difficultyLevel"]]
-        scoped_payload["numberOfQuestions"] = missing
-
-        scoped_state = app.invoke(
-            {
-                "input": scoped_payload,
-                "prompt_payloads": [],
-                "raw_outputs": [],
-                "improved_outputs": [],
-                "formatted": [],
-            }
-        )
-        new_entries = scoped_state.get("improved_outputs", [])
-        if not new_entries:
-            continue
-        new_result = new_entries[0].get("result")
-        if isinstance(new_result, list) and new_result and isinstance(new_result[0], dict):
-            new_result = new_result[0]
-        if not isinstance(new_result, dict):
-            continue
-        new_questions = new_result.get("questions")
-        if not isinstance(new_questions, list) or not new_questions:
-            continue
-
-        current_result = item.get("result")
-        if isinstance(current_result, list) and current_result and isinstance(current_result[0], dict):
-            current_result = current_result[0]
-        if not isinstance(current_result, dict):
-            continue
-        current_questions = current_result.get("questions")
-        if not isinstance(current_questions, list):
-            continue
-        current_result["questions"] = current_questions + new_questions
-
-    return final_state
 
 
 def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -1285,18 +1200,20 @@ def _build_output(payload: PipelineInput, items: List[Dict[str, Any]]) -> Dict[s
 
 
 def run_pipeline(payload: PipelineInput) -> Dict[str, Any]:
+    # Step 1: Create question configs BEFORE graph execution (no LLM calls)
+    config_state = create_question_configs({
+        "input": payload,
+        "question_configs": [],
+        "scenarios": [],
+        "questions": [],
+        "raw_outputs": [],
+        "improved_outputs": [],
+        "formatted": [],
+    })
+    
+    # Step 2: Run graph with pre-populated configs
     app = build_graph()
-    final_state = app.invoke(
-        {
-            "input": payload,
-            "prompt_payloads": [],
-            "scenarios": [],
-            "questions": [],
-            "raw_outputs": [],
-            "improved_outputs": [],
-            "formatted": [],
-        }
-    )
+    final_state = app.invoke(config_state)
     
     # Post-graph processing: format conversion and validation
     # REMOVED: _fill_missing_questions - causing infinite loops with per-question payloads

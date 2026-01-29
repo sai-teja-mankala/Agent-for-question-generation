@@ -1,0 +1,155 @@
+{
+  "learningObjectives": [
+    {
+      "learningObjective": "Encourages cross-functional alignment on key initiatives.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "6948b26a-dac8-4d21-a79d-f1f243d84ade",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "A product manager at a tech company is leading a new initiative to launch a mobile application. The marketing team wants to prioritize features that highlight brand visibility, while the engineering team is focused on the technical feasibility and minimal viable product. How should the product manager evaluate these competing priorities to encourage cross-functional alignment on the initiative?",
+          "answer": [
+            {
+              "answerId": "ca0a9147-427c-4051-a484-0ef02d9419ef",
+              "answerText": "Facilitate a cross-functional workshop to prioritize customer value.",
+              "explanation": "This approach encourages alignment by focusing on shared customer-centric goals.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "28760485-26aa-4ea4-a35d-1b9b3409c625",
+              "answerText": "Prioritize features that balance technical feasibility and brand visibility to ensure a cohesive approach.",
+              "explanation": "Although this aims for balance, it may overshadow broader customer value drivers that align teams.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "f712cb12-eeca-41e2-b175-757a2cb6d29a",
+              "answerText": "Conduct separate focus groups with each team to understand their specific constraints and limitations.",
+              "explanation": "This may provide insight but risks reinforcing silos instead of fostering alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "04c332a7-6ec9-48d0-8719-5fda32bdec4f",
+              "answerText": "Develop a phased rollout plan to gradually integrate marketing and engineering priorities.",
+              "explanation": "A phased plan may defer alignment to later stages, potentially delaying cohesive strategy.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "02757764-30df-4b64-b9a9-2a0e566e0a10",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "When leading a cross-functional team to develop a new product line under strict constraints, how should the project manager assess alignment strategies to ensure success while balancing the varied priorities of departments like marketing, R&D, and production?",
+          "answer": [
+            {
+              "answerId": "5381eaac-2a0c-44c5-89c1-9e76219a8970",
+              "answerText": "Integrate departmental objectives into a flexible strategic plan with regular progress assessments and adjustments.",
+              "explanation": "This method promotes alignment by respecting each department's priorities and allows for ongoing adjustments, supporting continuous improvement.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "3c90554d-dd73-4abf-b0fe-9eb344cbbb3c",
+              "answerText": "Focus primarily on the department with the highest budget, adjusting only if critical issues arise.",
+              "explanation": "Prioritizing based purely on budget can lead to overlooking critical needs and insights from less-financed departments, causing alignment issues.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "98cb970f-cf48-4d2f-b36e-1a45fcdfd19c",
+              "answerText": "Implement a strict project plan, focusing on deadlines without accommodating evolving departmental needs.",
+              "explanation": "A strict adherence to initial plans can prevent necessary adaptations to changing circumstances and priorities, hindering cross-functional alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "813ec00a-da84-4034-93f0-5a8a5964e427",
+              "answerText": "Host routine collaborative sessions with departments to unify efforts and review strategic direction based on collective input.",
+              "explanation": "While collaborative reviews foster alignment, relying solely on meetings without strategic integration limits proactive adjustment capabilities.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    },
+    {
+      "learningObjective": "Tracks team progress, adjusts plans, and drives continuous improvement.",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 2,
+      "questions": [
+        {
+          "id": "c560c2c1-8a0d-4065-87f6-78de2b9e55e8",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Given the unanticipated supply chain disruptions and regulatory changes at the nuclear facility project, how should the Band H Leader evaluate current team progress and adjust the project plan to balance the project timeline, budget constraints, and safety standards while driving continuous improvement?",
+          "answer": [
+            {
+              "answerId": "b7e1243f-3948-45aa-b170-130fa186eaa6",
+              "answerText": "Reassess project priorities, engage stakeholders to identify mitigation strategies, and adjust timelines balancing budget and safety.",
+              "explanation": "This option effectively addresses timeline, budget, and safety priorities, involving stakeholders for continuous improvement and risk mitigation.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "f3d3c29f-d2d5-42ac-8e4c-81c7e3fb268a",
+              "answerText": "Focus on optimizing resource allocation across teams to streamline current workflows and enhance overall efficiency.",
+              "explanation": "While efficiency is important, this option does not directly address the pressing issues of budget and safety within the project plan.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "ce2383b9-abdf-41b6-9b26-fd4f4d9d43f4",
+              "answerText": "Implement a phased compliance integration strategy to align regulatory needs with ongoing project activities.",
+              "explanation": "This option addresses compliance but misses the immediate need to adjust timelines and budget considerations.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "0cacbd8e-0638-418e-aa6c-0b1756fb6c65",
+              "answerText": "Establish a cross-functional task force to assess and align immediate and strategic objectives with long-term project goals.",
+              "explanation": "This option focuses on objectives alignment but lacks explicit emphasis on current budget and safety considerations.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "fba3de6d-7af5-4867-9b10-4afc10df9077",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, you discover your team is underperforming and dealing with safety concerns due to frequent equipment failures. How should you strategically adjust the operational plan to improve performance and ensure safety while balancing stakeholder expectations and facilitating continuous improvement?",
+          "answer": [
+            {
+              "answerId": "69263bb5-c91f-4a32-b24e-13455f5a534b",
+              "answerText": "Perform a comprehensive risk assessment to prioritize equipment upgrades and engage stakeholders in discussions about strategic investments.",
+              "explanation": "This approach ensures a strategic focus on addressing equipment failures, aligning with stakeholder interests and supporting long-term improvements.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "fa83d932-3503-4b52-80d2-3899df76de62",
+              "answerText": "Launch a targeted communication strategy to reassure stakeholders while maintaining current operational methods.",
+              "explanation": "While addressing stakeholder trust, it risks maintaining the status quo without strategically tackling the root causes of performance and safety issues.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "295f7d82-42bb-4de8-8f42-3370ac741d5e",
+              "answerText": "Develop a cross-functional task force to provide immediate feedback on performance metrics and safety procedures.",
+              "explanation": "Encourages collaboration but might not directly address fundamental equipment-related problems and long-term solutions.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "64720ef8-0544-4e45-b366-eb89c2c9e4ad",
+              "answerText": "Implement real-time monitoring systems to track equipment performance and make tactical adjustments as data is received.",
+              "explanation": "Focused on data collection and reactive measures but lacks a strategic plan to address underlying equipment issues or stakeholder engagement.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}
