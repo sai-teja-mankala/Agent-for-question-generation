@@ -1,0 +1,182 @@
+{
+  "learningObjectives": [
+    {
+      "learningObjective": "Leverages organizational expertise to promote data-driven and risk-informed decisions aligned with corporate goals and values",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "3bf6e7ee-d440-4fc4-9a8f-e978a6a0de6b",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "Given the constraints of budget limitations and the necessity to align with OPG's corporate values, how should Jane evaluate and prioritize data-driven insights on equipment upgrades to ensure operational excellence at the nuclear facility? Consider the competing priorities of safety, environmental stewardship, and efficiency in your analysis of the trade-offs involved in the decision-making process.",
+          "answer": [
+            {
+              "answerId": "1a5e3f4c-c010-4c9c-af70-1b69d2d409f5",
+              "answerText": "Prioritize equipment upgrades that most impact safety under budget constraints while supporting corporate values.",
+              "explanation": "Prioritizing safety aligns with core corporate values while managing budget constraints and operational risks.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "8b6f3d2f-aef0-46a4-8e17-92e8f2f24bbd",
+              "answerText": "Prioritize upgrades that offer a balanced improvement across safety and efficiency, while adhering to budget constraints.",
+              "explanation": "Balancing safety and efficiency adheres to corporate values but may overlook the immediacy of safety concerns.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "eb287a41-ab7c-4e4d-ab33-ec8f77fe74e2",
+              "answerText": "Evaluate upgrades solely on potential for long-term cost reduction, underestimating immediate safety risks.",
+              "explanation": "Focusing on cost reductions may compromise immediate safety requirements, conflicting with corporate values.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "e40da68f-857f-438b-b198-07053f5f0868",
+              "answerText": "Initiate upgrades that comply with environmental stewardship goals, deferring safety projects for later budget cycles.",
+              "explanation": "Deferring safety risks in favor of environmental goals may not align with corporate priorities on safety.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "a2320259-fc52-4f17-95e9-026447f51b19",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, you are assessing a proposed upgrade to the hydraulic systems in your hydroelectric stations. The upgrade promises enhanced efficiency but involves a significant investment. How should you evaluate and prioritize this proposal given the potential for both financial and safety risks, while ensuring alignment with corporate goals of safety, reliability, and clean energy production?",
+          "answer": [
+            {
+              "answerId": "8e5ea89e-1209-4515-896f-1ead9328985b",
+              "answerText": "Conduct a cost-benefit analysis considering safety, reliability, and clean energy goals.",
+              "explanation": "This approach evaluates financial investment against efficiency gains, ensuring risks are aligned with corporate goals.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "48d0933a-64a1-45bb-99b2-6fe15c37783e",
+              "answerText": "Focus primarily on efficiency improvements but periodically review financial impacts.",
+              "explanation": "Partial prioritization error: Regular financial reviews are positive, but without initial consideration, the evaluation lacks comprehensive balance.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "0b6634b2-8039-48e6-b82a-e861ae169f06",
+              "answerText": "Prioritize upgrades based on initial cost reduction estimates, deferring risk analysis until later stages.",
+              "explanation": "Sequencing error: Postponing risk assessment undermines alignment with corporate safety and reliability goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "116f179f-3e60-4576-9173-bf95c5a64844",
+              "answerText": "Engage with cross-functional teams early to assess both direct operational and strategic impacts.",
+              "explanation": "While this method is beneficial for holistic input, without initial structured analysis, the prioritization may still miss strategic alignment.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "2ce128e5-cfb8-4385-a610-79583dd8180b",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, with extensive data on plant performance, safety incidences, and operational reliability over the past year, how should you evaluate this data to make risk-informed decisions that align with the corporate goal of reducing operational disruptions by 15%, while adhering to safety standards and enhancing stakeholder trust?",
+          "answer": [
+            {
+              "answerId": "d713107f-4ae3-4a59-9f43-e1b34565ef9b",
+              "answerText": "Prioritize analyzing data that links performance metrics to disruption reduction.",
+              "explanation": "Focusing on data that directly connects to disruption reduction addresses the core objective and aligns with corporate goals.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "81632208-4caf-473d-8652-67fa2546a623",
+              "answerText": "Emphasize immediate safety metrics without relating them to disruption trends.",
+              "explanation": "This misfocuses on immediate safety concerns without considering their impact on long-term disruption trends, which is essential for strategic alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "31c7442e-b90d-429e-8baa-a8b41913bb9d",
+              "answerText": "Focus on improving stakeholder communication without integrating data insights.",
+              "explanation": "This diverts from the core strategy by emphasizing communication efforts over actionable insights from data analysis, hindering risk-informed decision-making.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a5c53ee5-05c0-45b5-9df4-a00d95b0c0cc",
+              "answerText": "Rely primarily on historical performance data without adaptation to current trends.",
+              "explanation": "This relies on past data without considering the need for adapting strategies to current trends, potentially disregarding innovative approaches needed for effective disruption reduction.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "41920793-9950-48ae-b3de-45522285665f",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, how should you evaluate and integrate the new data on potential risks in existing protocols to ensure that the project aligns with corporate goals and values, while maintaining safety, reliability, and fostering stakeholder trust? Consider regulatory compliance, cost-efficiency, and timelines during your evaluation.",
+          "answer": [
+            {
+              "answerId": "88aa7621-47c0-44df-b990-335f6be5c8d0",
+              "answerText": "Conduct a comprehensive risk assessment focusing on safety, integrating stakeholder input, and aligning with corporate values.",
+              "explanation": "This approach ensures that safety and stakeholder trust are prioritized while aligning with corporate goals, considering all outlined constraints.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "18f98441-dfca-45cb-9eb8-619c66a15090",
+              "answerText": "Limit risk evaluation to areas with previous issues, assuming other aspects are less critical.",
+              "explanation": "Focusing only on known problem areas may neglect new or emerging risks, potentially compromising project safety and alignment with broader goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "9d390a89-a089-4d24-be59-724bceeded6c",
+              "answerText": "Focus extensively on meeting regulatory requirements, viewing them as the key determinant of project success.",
+              "explanation": "Overemphasizing regulatory compliance can lead to overlooking the importance of broader corporate alignment and stakeholder engagement.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "27d043d1-9f6c-406b-bb04-f5feb1066195",
+              "answerText": "Adapt protocols primarily based on cost and timeline considerations, assuming alignment with corporate objectives due to budget adherence.",
+              "explanation": "Prioritizing cost and timelines over thorough risk assessment could result in missing alignment with corporate values and stakeholder expectations.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "2a349f32-dd9e-4232-8b41-104cf44db3fb",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation, tasked with implementing a new data analytics platform, how should you weigh the trade-offs between potential operational efficiency improvements and resource demands, including financial costs and workforce training, to ensure alignment with corporate goals of operational excellence and shareholder trust?",
+          "answer": [
+            {
+              "answerId": "532567d1-ab28-40e7-9dbf-2180e9e14445",
+              "answerText": "Conduct a comprehensive cost-benefit analysis emphasizing both immediate resource commitments and long-term strategic gains, while evaluating alignment with corporate values and stakeholder interests.",
+              "explanation": "This approach ensures a balanced analysis of immediate and future impacts, while considering alignment with broader corporate objectives.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "9854d38c-9863-4ba2-a24c-b8511cf8ec6f",
+              "answerText": "Prioritize minimizing initial costs and resource usage while seeking incremental improvements to avoid disruption.",
+              "explanation": "This focuses on short-term cost savings at the risk of missing significant long-term strategic alignment and value gains.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "74942ece-08b8-4f92-8e4e-adcc35abe5b5",
+              "answerText": "Integrate the platform within existing projects to leverage current competencies, delaying full-scale training until later phases.",
+              "explanation": "This risks underestimating the need for upfront training and resource allocation to realize the platform's full potential.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "8b74cbad-6975-425f-9db3-54950ebe2efa",
+              "answerText": "Focus solely on scalability and future-proofing to ensure the platform supports long-term goals without immediate efficiency concerns.",
+              "explanation": "This overlooks the necessity of evaluating current operational impacts and the need to manage immediate disruptions.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}

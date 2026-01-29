@@ -1,0 +1,80 @@
+{
+  "learningObjectives": [
+    {
+      "learningObjective": "Leverages organizational expertise to promote data-driven and risk-informed decisions aligned with corporate goals and values",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "142836dd-89f1-4414-aa30-264f25ee3daf",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "A company is considering launching a new product but faces potential risks in terms of market acceptance and production costs. The organization aims to make a data-driven and risk-informed decision that aligns with its goal of sustainable growth. How should the company's leadership evaluate this opportunity, balancing the risks and potential rewards, while ensuring alignment with corporate goals and values?",
+          "answer": [
+            {
+              "answerId": "219f9579-e5e0-4254-a323-0720a0db3e29",
+              "answerText": "Conduct a scenario analysis to assess market risks and explore different financial outcomes.",
+              "explanation": "Scenario analysis helps in evaluating risks and rewards while aligning decisions with corporate goals via diverse financial projections.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "e4639164-c3fa-4274-9b30-62486bff53e4",
+              "answerText": "Focus solely on customer satisfaction metrics without integrating financial feasibility studies.",
+              "explanation": "CRITICAL OVERSIGHT: Exclusively targeting customer satisfaction metrics while ignoring financial and risk analyses can lead to misaligned priorities with corporate goals.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "4acbd776-552a-487a-8670-97cc20f777ab",
+              "answerText": "Implement aggressive marketing strategies while deferring a thorough cost-benefit analysis.",
+              "explanation": "TIMING ISSUE: Prioritizing marketing without concurrently understanding the full financial implications neglects critical aspects of risk-informed decision-making.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "d8e0dc84-3381-4977-82d9-83d125ca8137",
+              "answerText": "Base decisions primarily on short-term financial gains, disregarding long-term sustainability factors.",
+              "explanation": "MISALIGNED FOCUS: Concentrating only on immediate financial success can overlook necessary sustainability considerations crucial for informed and balanced growth decisions.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "7fcfcfeb-ea50-421c-9c06-c63226335999",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "As a Band H Leader at Ontario Power Generation working on enhancing the nuclear power generation process, how should you evaluate the integration of the new data analytics tool to ensure it aligns with OPG's safety and reliability goals, while maintaining stakeholder trust and promoting a culture of continuous improvement? Weigh the operational, safety, and cost-effectiveness impacts while considering potential trade-offs and competing priorities.",
+          "answer": [
+            {
+              "answerId": "ebcaa770-bf9f-4f06-b7c0-71c4616bb257",
+              "answerText": "Evaluate the trade-offs between cost-effectiveness and safety enhancements, ensuring both meet OPG's strategic objectives while engaging stakeholders to maintain trust.",
+              "explanation": "This approach requires balancing competing priorities and is aligned with OPG's goals, ensuring a comprehensive evaluation strategy.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "721f626b-f3e1-4212-87e4-df28f3a5d769",
+              "answerText": "Prioritize cost-saving opportunities first, with an assumption that these naturally lead to improved operational safety.",
+              "explanation": "This assumes a false correlation between cost-saving and safety, potentially compromising stakeholder trust and misaligning with strategic objectives.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "373ec2ef-8f13-4a50-b57c-08d593a1997f",
+              "answerText": "Ensure regulatory compliance as a first step, assuming this will inherently address stakeholder concerns and safety requirements.",
+              "explanation": "Focusing solely on compliance may neglect broader stakeholder engagement and strategic alignment, risking narrow evaluations.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "a3a2db89-e745-4ebc-bdd9-739b92cd5b94",
+              "answerText": "Focus solely on achieving efficiency improvements in operations, postponing the safety evaluation.",
+              "explanation": "This neglects the vital aspect of safety, risking misalignment with OPG's core values and strategic objectives.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}

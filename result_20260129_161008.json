@@ -1,0 +1,80 @@
+{
+  "learningObjectives": [
+    {
+      "learningObjective": "Leverages organizational expertise to promote data-driven and risk-informed decisions aligned with corporate goals and values",
+      "learningObjectiveUuid": null,
+      "learningObjectiveOrder": 1,
+      "questions": [
+        {
+          "id": "0c869c8a-38c3-439e-b5bc-b04de62aed32",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "A project manager is considering two strategic initiatives to enhance organizational effectiveness: one relies heavily on data analytics, while the other requires subjective risk assessment but aligns closely with corporate values. The organization's resources are limited, necessitating a choice between the two initiatives. How should the manager evaluate these options to make a data-driven and risk-informed decision that supports corporate goals and values?",
+          "answer": [
+            {
+              "answerId": "31aaf06e-b62e-4496-902a-4d1206910943",
+              "answerText": "Conduct a cost-benefit analysis incorporating risk, alignment with values, and potential for data-driven insights.",
+              "explanation": "Balances data-driven analysis with risk assessment and value alignment, aligning with organizational constraints.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "47cdce9b-bc6e-4bb0-9d45-693b0c9cdb5d",
+              "answerText": "Select the initiative that promises to leverage existing data capabilities, even if it requires additional resources.",
+              "explanation": "While it may make use of data capabilities, it could involve additional risks or resource demands without aligning values.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "afcae4cb-789b-491f-80e5-5a539fedd49c",
+              "answerText": "Evaluate which initiative offers greater flexibility to adapt to unforeseen challenges, even if initial data support is weak.",
+              "explanation": "Flexibility is beneficial, but without strong data support, it may not ensure alignment with goals or risk management.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "129effc5-5685-49d9-b2f1-85b3d50fd38a",
+              "answerText": "Assess the potential for direct financial return while considering compatibility with ethical standards.",
+              "explanation": "Emphasizes financial returns but might overlook broader data analysis or comprehensive risk assessment.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        },
+        {
+          "id": "06d50758-5b26-4fdb-83bc-b80868f36ba7",
+          "questionType": "MULTIPLE_CHOICE",
+          "aiGeneratedDifficulty": "Advanced",
+          "questionText": "How should you, as a Band H Leader at Ontario Power Generation, strategically evaluate and synthesize organizational expertise to promote data-driven and risk-informed decisions, ensuring alignment with the corporate objectives of reliability and safety, while optimizing operations at the hydroelectric station?",
+          "answer": [
+            {
+              "answerId": "5a205fef-dc38-4826-a2c1-265d4115bd30",
+              "answerText": "Integrate cross-functional expertise throughout the decision-making process to ensure comprehensive risk assessment and alignment with corporate safety and reliability goals.",
+              "explanation": "This approach ensures that diverse perspectives contribute from the outset, facilitating decisions that are well-aligned with both safety and efficiency through comprehensive expertise utilization.",
+              "isCorrect": true
+            },
+            {
+              "answerId": "0f841e1d-59fa-40a6-adad-bc800c383483",
+              "answerText": "Develop decisions based solely on data scientists' analyses to ensure a focused approach towards data-driven outcomes.",
+              "explanation": "Relying only on data scientists can result in narrow perspectives, potentially neglecting broader operational insights needed for safety and efficiency alignment.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "aa528b4b-88ba-4d55-b11f-ca04292804fd",
+              "answerText": "Consult operational experts at all phases to balance strategic insights with empirical data analysis actively.",
+              "explanation": "Engaging experts throughout balances strategic insight with data-driven analysis, enhancing alignment with corporate goals and risk management strategies.",
+              "isCorrect": false
+            },
+            {
+              "answerId": "2b1763da-772c-471b-9f88-10af5d9dfc81",
+              "answerText": "Prioritize faster implementation of data-driven initiatives over detailed risk assessments to remain agile in decision-making.",
+              "explanation": "Focusing on speed without thorough risk assessment may overlook essential safety and operational considerations, misaligning with the core corporate objectives.",
+              "isCorrect": false
+            }
+          ],
+          "isUploaded": false,
+          "scenarioFocus": null
+        }
+      ]
+    }
+  ],
+  "questionGenerationStatus": "READY_FOR_REVIEW"
+}
